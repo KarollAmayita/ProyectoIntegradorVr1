@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const authRepository = require('../repositories/authRepository');
+const userService = require('./userService');
 
 const login = async ({ username, password }) => {
   if (!username || !password) {
@@ -43,6 +44,7 @@ const login = async ({ username, password }) => {
   return {
     message: 'Inicio de sesión exitoso',
     token,
+    refreshToken,
     user: {
       id: user.id,
       nombre: user.nombre,
@@ -55,6 +57,88 @@ const login = async ({ username, password }) => {
   };
 };
 
+const register = async (payload) => {
+  if (!payload.rol_id) {
+    throw new Error('Rol es obligatorio para el registro');
+  }
+
+  const newUser = await userService.createUser(payload);
+
+  return {
+    message: 'Usuario registrado correctamente',
+    user: {
+      id: newUser.id,
+      nombre: newUser.nombre,
+      apellido: newUser.apellido,
+      email: newUser.email,
+      username: newUser.username,
+    },
+  };
+};
+
+const refreshToken = async (token) => {
+  if (!token) {
+    throw new Error('Refresh token no proporcionado');
+  }
+
+  const storedToken = await authRepository.findRefreshToken(token);
+
+  if (!storedToken) {
+    throw new Error('Refresh token inválido');
+  }
+
+  if (new Date(storedToken.expires_at) < new Date()) {
+    await authRepository.deleteRefreshToken(token);
+    throw new Error('Refresh token expirado');
+  }
+
+  if (storedToken.usuarios.estado !== 'activo') {
+    throw new Error('El usuario se encuentra inactivo');
+  }
+
+  const user = storedToken.usuarios;
+
+  const newToken = jwt.sign(
+    {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      rol: user.roles?.nombre,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: '2h' }
+  );
+
+  return {
+    message: 'Token renovado exitosamente',
+    token: newToken,
+  };
+};
+
+const logout = async (token) => {
+  if (!token) {
+    throw new Error('Token no proporcionado');
+  }
+
+  await authRepository.deleteRefreshToken(token);
+
+  return {
+    message: 'Sesión cerrada exitosamente',
+  };
+};
+
+const logoutAll = async (userId) => {
+  await authRepository.deleteAllUserRefreshTokens(userId);
+
+  return {
+    message: 'Todas las sesiones han sido cerradas',
+  };
+};
+
 module.exports = {
   login,
+  register,
+  refreshToken,
+  logout,
+  logoutAll,
 };

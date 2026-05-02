@@ -94,6 +94,15 @@ create table solicitudes_contacto (
   constraint solicitudes_finalidad_check check (finalidad in ('Servicio', 'Programa EDIFICA', 'Shows y conferencias'))
 );
 
+-- Tabla refresh_tokens
+create table refresh_tokens (
+  id bigint generated always as identity primary key,
+  usuario_id bigint not null references usuarios(id) on delete cascade,
+  token text not null unique,
+  expires_at timestamptz not null,
+  created_at timestamptz default now()
+);
+
 -- ============================================
 -- Datos iniciales
 -- ============================================

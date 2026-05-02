@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const userRepository = require('../repositories/userRepository');
+const rolRepository = require('../repositories/rolRepository');
 
 const getUsers = async () => {
   return await userRepository.findAllUsers();
@@ -18,6 +19,13 @@ const createUser = async (payload) => {
 
   if (!nombre || !apellido || !email || !username || !password || !rol_id) {
     throw new Error('Nombre, apellido, email, username, password y rol son obligatorios');
+  }
+
+  if (!pais_id) {
+    const rol = await rolRepository.findRolById(rol_id);
+    if (rol?.nombre !== 'superadmin') {
+      throw new Error('pais_id es obligatorio para este rol');
+    }
   }
 
   const existingUser = await userRepository.findUserByUsernameOrEmail(username, email);
