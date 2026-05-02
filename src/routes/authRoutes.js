@@ -5,9 +5,8 @@ const { verifyToken } = require('../middlewares/authMiddleware');
 
 router.post('/login', authController.login);
 router.post('/register', authController.register);
-// Refresh token routes temporalmente desactivados
-// router.post('/refresh-token', authController.refreshToken);
-// router.post('/logout', verifyToken, authController.logout);
-// router.post('/logout-all', verifyToken, authController.logoutAll);
+router.post('/refresh-token', authController.refreshToken);
+router.post('/logout', verifyToken, authController.logout);
+router.post('/logout-all', verifyToken, authController.logoutAll);
 
 module.exports = router;

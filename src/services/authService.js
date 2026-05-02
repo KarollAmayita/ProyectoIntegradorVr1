@@ -41,6 +41,15 @@ const login = async ({ username, password }) => {
     { expiresIn: '2h' }
   );
 
+  const refreshToken = jwt.sign(
+    { id: user.id, type: 'refresh' },
+    process.env.JWT_SECRET,
+    { expiresIn: '7d' }
+  );
+
+  const expires_at = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+  await authRepository.createRefreshToken(user.id, refreshToken, expires_at);
+
   return {
     message: 'Inicio de sesión exitoso',
     token,
