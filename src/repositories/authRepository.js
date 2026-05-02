@@ -47,7 +47,7 @@ const updateLastAccess = async (userId) => {
 const createRefreshToken = async (usuario_id, token, expires_at) => {
   const { data, error } = await supabase
     .from('refresh_tokens')
-    .insert([{ usuario_id, token, expires_at }])
+    .insert([{ usuario_id: usuario_id, token: token, expires_at: expires_at }])
     .select()
     .single();
 
