@@ -33,6 +33,20 @@ const findUserByUsername = async (username) => {
   return data;
 };
 
+const findUserByEmail = async (email) => {
+  const { data, error } = await supabase
+    .from('usuarios')
+    .select('id, email')
+    .eq('email', email)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
 const updateLastAccess = async (userId) => {
   const { error } = await supabase
     .from('usuarios')
@@ -105,6 +119,7 @@ const deleteAllUserRefreshTokens = async (usuario_id) => {
 
 module.exports = {
   findUserByUsername,
+  findUserByEmail,
   updateLastAccess,
   createRefreshToken,
   findRefreshToken,

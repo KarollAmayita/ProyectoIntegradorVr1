@@ -45,11 +45,44 @@ src/
 ├── services/     # Lógica de negocio
 ├── repositories/ # Acceso a datos
 ├── routes/      # Rutas API
-├── middlewares/  # Autenticación y roles
-└── scripts/    # Scripts utilitarios
-```
+├── middlewares/  # Autenticación, roles y errores
+├── utils/       # Utilidades (errores personalizados)
+├── scripts/     # Scripts utilitarios
+└── db/          # Esquema de base de datos
 
-## Esquema de Base de Datos
+frontend/
+├── assets/
+│   ├── css/
+│   │   └── styles.css
+│   └── js/
+│       └── auth.js
+└── pages/
+    ├── login.html
+    ├── register.html
+    └── dashboard.html
+```
+src/
+├── config/        # Configuración (Supabase)
+├── controllers/   # Controladores
+├── services/     # Lógica de negocio
+├── repositories/ # Acceso a datos
+├── routes/      # Rutas API
+├── middlewares/  # Autenticación, roles y errores
+├── utils/       # Utilidades (errores personalizados)
+├── scripts/     # Scripts utilitarios
+└── db/          # Esquema de base de datos
+
+frontend/
+├── assets/
+│   ├── css/
+│   │   └── styles.css
+│   └── js/
+│       └── auth.js
+└── pages/
+    ├── login.html
+    ├── register.html
+    └── dashboard.html
+```
 
 ### Tabla `paises`
 | Columna | Tipo | Restricciones |

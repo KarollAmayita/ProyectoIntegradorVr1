@@ -114,5 +114,5 @@ insert into paises (nombre, codigo, slug) values
 
 insert into roles (nombre, descripcion) values
 ('superadmin', 'Administrador general del sistema'),
-('admin_pais', 'Administrador de un pais especifico'),
+('admin_pais', 'Administrador de un país específico'),
 ('editor', 'Usuario editor de contenidos');
