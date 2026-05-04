@@ -1,4 +1,4 @@
-# CMS Multipais - Backend
+# CMS Multipais
 
 API REST para sistema de gestión de contenidos multi-país desarrollado con Express y Supabase.
 
@@ -19,7 +19,7 @@ Backend administrativo para un CMS multi-país que permite gestionar contenidos 
 - Módulo de testimonios
 - Módulo de solicitudes de contacto
 - API pública para noticias y testimonios
-- Frontend de prueba incluido
+- Frontend de prueba incluido (diseño con Bootstrap 5)
 
 ## Roles
 
@@ -35,178 +35,48 @@ Backend administrativo para un CMS multi-país que permite gestionar contenidos 
 - Supabase (PostgreSQL)
 - JWT (jsonwebtoken)
 - bcryptjs
+- Bootstrap 5 (Frontend)
+- Vanilla JavaScript
 
-## Estructura
+## Estructura del Proyecto
 
 ```
-src/
-├── config/        # Configuración (Supabase)
-├── controllers/   # Controladores
-├── services/     # Lógica de negocio
-├── repositories/ # Acceso a datos
-├── routes/      # Rutas API
-├── middlewares/  # Autenticación, roles y errores
-├── utils/       # Utilidades (errores personalizados)
-├── scripts/     # Scripts utilitarios
-└── db/          # Esquema de base de datos
-
-frontend/
-├── assets/
-│   ├── css/
-│   │   └── styles.css
-│   └── js/
-│       └── auth.js
-└── pages/
-    ├── login.html
-    ├── register.html
-    └── dashboard.html
-```
-src/
-├── config/        # Configuración (Supabase)
-├── controllers/   # Controladores
-├── services/     # Lógica de negocio
-├── repositories/ # Acceso a datos
-├── routes/      # Rutas API
-├── middlewares/  # Autenticación, roles y errores
-├── utils/       # Utilidades (errores personalizados)
-├── scripts/     # Scripts utilitarios
-└── db/          # Esquema de base de datos
-
-frontend/
-├── assets/
-│   ├── css/
-│   │   └── styles.css
-│   └── js/
-│       └── auth.js
-└── pages/
-    ├── login.html
-    ├── register.html
-    └── dashboard.html
-```
-
-### Tabla `paises`
-| Columna | Tipo | Restricciones |
-|---------|------|---------------|
-| id | bigint | PK, identity |
-| nombre | text | NOT NULL |
-| codigo | text | NOT NULL, UNIQUE |
-| slug | text | NOT NULL, UNIQUE |
-| estado | text | DEFAULT 'activo' |
-| created_at | timestamptz | DEFAULT now() |
-| updated_at | timestamptz | DEFAULT now() |
-
-### Tabla `roles`
-| Columna | Tipo | Restricciones |
-|---------|------|---------------|
-| id | bigint | PK, identity |
-| nombre | text | NOT NULL, UNIQUE |
-| descripcion | text | - |
-| created_at | timestamptz | DEFAULT now() |
-
-### Tabla `usuarios`
-| Columna | Tipo | Restricciones |
-|---------|------|---------------|
-| id | bigint | PK, identity |
-| nombre | text | NOT NULL |
-| apellido | text | NOT NULL |
-| email | text | NOT NULL, UNIQUE |
-| username | text | NOT NULL, UNIQUE |
-| password_hash | text | NOT NULL |
-| rol_id | bigint | FK -> roles(id) |
-| pais_id | bigint | FK -> paises(id) |
-| estado | text | DEFAULT 'activo' |
-| ultimo_acceso | timestamptz | - |
-| created_at | timestamptz | DEFAULT now() |
-| updated_at | timestamptz | DEFAULT now() |
-
-### Tabla `refresh_tokens`
-| Columna | Tipo | Restricciones |
-|---------|------|---------------|
-| id | bigint | PK, identity |
-| usuario_id | bigint | FK -> usuarios(id) ON DELETE CASCADE |
-| token | text | NOT NULL, UNIQUE |
-| expires_at | timestamptz | NOT NULL |
-| created_at | timestamptz | DEFAULT now() |
-
-### Tabla `noticias`
-| Columna | Tipo | Restricciones |
-|---------|------|---------------|
-| id | bigint | PK, identity |
-| pais_id | bigint | FK -> paises(id) ON DELETE CASCADE |
-| titulo | text | NOT NULL |
-| slug | text | NOT NULL |
-| resumen | text | NOT NULL |
-| contenido | text | NOT NULL |
-| imagen_principal_url | text | - |
-| autor_id | bigint | FK -> usuarios(id) |
-| estado | text | DEFAULT 'borrador', CHECK (borrador/publicado/despublicado) |
-| fecha_publicacion | timestamptz | - |
-| created_at | timestamptz | DEFAULT now() |
-| updated_at | timestamptz | DEFAULT now() |
-| UNIQUE (pais_id, slug) | - | - |
-
-### Tabla `testimonios`
-| Columna | Tipo | Restricciones |
-|---------|------|---------------|
-| id | bigint | PK, identity |
-| pais_id | bigint | FK -> paises(id) ON DELETE CASCADE |
-| nombre | text | NOT NULL |
-| cargo | text | - |
-| empresa | text | - |
-| contenido | text | NOT NULL |
-| foto_url | text | NOT NULL |
-| instagram_url | text | - |
-| facebook_url | text | - |
-| estado | text | DEFAULT 'borrador', CHECK (borrador/publicado/despublicado) |
-| destacado | boolean | DEFAULT false |
-| autor_id | bigint | FK -> usuarios(id) |
-| fecha_publicacion | timestamptz | - |
-| created_at | timestamptz | DEFAULT now() |
-| updated_at | timestamptz | DEFAULT now() |
-
-### Tabla `solicitudes_contacto`
-| Columna | Tipo | Restricciones |
-|---------|------|---------------|
-| id | bigint | PK, identity |
-| pais_id | bigint | FK -> paises(id) ON DELETE CASCADE |
-| nombre | text | NOT NULL |
-| correo | text | NOT NULL |
-| telefono | text | NOT NULL |
-| finalidad | text | NOT NULL, CHECK (Servicio/Programa EDIFICA/Shows y conferencias) |
-| mensaje | text | - |
-| estado | text | DEFAULT 'pendiente', CHECK (pendiente/en_proceso/gestionada/cerrada) |
-| observaciones_admin | text | - |
-| fecha_gestion | timestamptz | - |
-| gestionado_por | bigint | FK -> usuarios(id) |
-| created_at | timestamptz | DEFAULT now() |
-| updated_at | timestamptz | DEFAULT now() |
-
-## Instalación
-src/
-├── config/        # Configuración (Supabase)
-├── controllers/   # Controladores
-├── services/     # Lógica de negocio
-├── repositories/ # Acceso a datos
-├── routes/      # Rutas API
-├── middlewares/  # Autenticación y roles
-├── scripts/     # Scripts utilitarios
-└── db/          # Esquema de base de datos
-
-frontend/         # Frontend de prueba (login/register)
-├── index.html
-├── style.css
-└── app.js
+ProyectoIntegradorVr1/
+├── backend/
+│   ├── src/
+│   │   ├── config/        # Configuración (Supabase)
+│   │   ├── controllers/   # Controladores
+│   │   ├── services/     # Lógica de negocio
+│   │   ├── repositories/ # Acceso a datos
+│   │   ├── routes/      # Rutas API
+│   │   ├── middlewares/  # Autenticación, roles y errores
+│   │   ├── utils/       # Utilidades (errores personalizados)
+│   │   ├── scripts/     # Scripts utilitarios
+│   │   └── db/          # Esquema de base de datos
+│   ├── package.json
+│   └── .env
+└── frontend/
+    ├── assets/
+    │   ├── css/
+    │   │   └── styles.css
+    │   └── js/
+    │       └── auth.js
+    └── pages/
+        ├── login.html
+        ├── register.html
+        └── dashboard.html
 ```
 
 ## Instalación
 
 ```bash
+cd backend
 npm install
 ```
 
 ## Configuración
 
-Crear archivo `.env`:
+Crear archivo `.env` en la carpeta `backend/`:
 
 ```env
 PORT=3001
@@ -221,7 +91,7 @@ Ejecutar el script SQL en el SQL Editor de Supabase:
 
 ```bash
 # El archivo está en:
-src/db/cms-multipais.sql
+backend/src/db/cms-multipais.sql
 ```
 
 Este script crea:
@@ -232,30 +102,30 @@ Este script crea:
 
 ```bash
 # Crear países (si no existen)
-node src/scripts/createCountries.js
+node backend/src/scripts/createCountries.js
 
 # Crear superadmin (usuario: superadmin, pass: 123456)
-node src/scripts/createSuperAdmin.js
+node backend/src/scripts/createSuperAdmin.js
 
 # Crear usuario editor de prueba
-node src/scripts/createTestUser.js
+node backend/src/scripts/createTestUser.js
 ```
 
 ## Ejecución
 
 ```bash
+cd backend
 npm run dev
 ```
 
 El servidor corre en `http://localhost:3001`
 
-## Frontend de Prueba
+## Frontend
 
-Abre `frontend/index.html` en tu navegador para probar:
-- Login
-- Registro
-- Refresh token
-- Logout
+Abre `frontend/pages/login.html` en tu navegador para probar:
+- Diseño con Bootstrap 5 y paleta de colores muted coral/peach
+- Login, Registro, Dashboard con sidebar
+- Navegación dinámica sin recargar página
 
 Credenciales de prueba:
 - **Superadmin**: usuario `superadmin`, password `123456`
@@ -324,11 +194,13 @@ Credenciales de prueba:
 | PUT | /api/contact-requests/:id/status | Actualizar estado |
 | DELETE | /api/contact-requests/:id | Eliminar solicitud |
 
-## Convenciones de Commits
+## Diseño Frontend
 
-Este proyecto usa [Conventional Commits](https://www.conventionalcommits.org/).
-
-Ver [CONVENTIONAL_COMMITS.md](./CONVENTIONAL_COMMITS.md) para más información.
+- **Paleta de colores**: Muted Coral/Peach (#C75F5A, #E8877A, #F5C9A6, #FCE8BE)
+- **Framework**: Bootstrap 5 (CDN)
+- **Tipografía**: Poppins (Google Fonts)
+- **Iconos**: Bootstrap Icons
+- **Layout**: Dashboard con sidebar fijo y contenido dinámico
 
 ## Licencia
 
