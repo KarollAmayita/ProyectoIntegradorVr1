@@ -208,22 +208,6 @@ Backend administrativo para un CMS multi-país que permite gestionar contenidos 
 | created_at | timestamptz | DEFAULT now() |
 | updated_at | timestamptz | DEFAULT now() |
 
-## Instalación
-src/
-├── config/        # Configuración (Supabase)
-├── controllers/   # Controladores
-├── services/     # Lógica de negocio
-├── repositories/ # Acceso a datos
-├── routes/      # Rutas API
-├── middlewares/  # Autenticación y roles
-├── scripts/     # Scripts utilitarios
-└── db/          # Esquema de base de datos
-
-frontend/         # Frontend de prueba (login/register)
-├── index.html
-├── style.css
-└── app.js
-```
 
 ## Instalación
 
