@@ -39,6 +39,75 @@ Backend administrativo para un CMS multi-país que permite gestionar contenidos 
 ## Estructura
 
 ```
+├── backend
+│   ├── src
+│   │   ├── config
+│   │   │   └── supabase.js
+│   │   ├── controllers
+│   │   │   ├── adminController.js
+│   │   │   ├── authController.js
+│   │   │   ├── contactRequestController.js
+│   │   │   ├── countryController.js
+│   │   │   ├── newsController.js
+│   │   │   ├── profileController.js
+│   │   │   ├── testimonialController.js
+│   │   │   └── userController.js
+│   │   ├── db
+│   │   │   └── cms-multipais.sql
+│   │   ├── middlewares
+│   │   │   ├── authMiddleware.js
+│   │   │   ├── errorHandler.js
+│   │   │   ├── roleMiddleware.js
+│   │   │   └── validationMiddleware.js
+│   │   ├── repositories
+│   │   │   ├── authRepository.js
+│   │   │   ├── contactRequestRepository.js
+│   │   │   ├── countryRepository.js
+│   │   │   ├── newsRepository.js
+│   │   │   ├── rolRepository.js
+│   │   │   ├── testimonialRepository.js
+│   │   │   └── userRepository.js
+│   │   ├── routes
+│   │   │   ├── adminRoutes.js
+│   │   │   ├── authRoutes.js
+│   │   │   ├── contactRequestRoutes.js
+│   │   │   ├── countryRoutes.js
+│   │   │   ├── newsRoutes.js
+│   │   │   ├── profileRoutes.js
+│   │   │   ├── testimonialRoutes.js
+│   │   │   └── userRoutes.js
+│   │   ├── scripts
+│   │   │   ├── createCountries.js
+│   │   │   ├── createRefreshTokensTable.js
+│   │   │   ├── createSuperAdmin.js
+│   │   │   ├── createTestUser.js
+│   │   │   └── setupDatabase.js
+│   │   ├── services
+│   │   │   ├── authService.js
+│   │   │   ├── contactRequestService.js
+│   │   │   ├── countryService.js
+│   │   │   ├── newsService.js
+│   │   │   ├── testimonialService.js
+│   │   │   └── userService.js
+│   │   ├── utils
+│   │   │   └── errors.js
+│   │   └── app.js
+│   ├── package-lock.json
+│   └── package.json
+├── frontend
+│   ├── assets
+│   │   ├── css
+│   │   │   └── styles.css
+│   │   └── js
+│   │       └── auth.js
+│   ├── pages
+│   │   ├── dashboard.html
+│   │   ├── login.html
+│   │   └── register.html
+│   └── index.html
+├── .gitignore
+└── README.md
+
 ```
 
 
