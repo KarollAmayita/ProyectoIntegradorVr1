@@ -94,6 +94,15 @@ create table solicitudes_contacto (
   constraint solicitudes_finalidad_check check (finalidad in ('Servicio', 'Programa EDIFICA', 'Shows y conferencias'))
 );
 
+-- Tabla refresh_tokens
+create table refresh_tokens (
+  id bigint generated always as identity primary key,
+  usuario_id bigint not null references usuarios(id) on delete cascade,
+  token text not null unique,
+  expires_at timestamptz not null,
+  created_at timestamptz default now()
+);
+
 -- ============================================
 -- Datos iniciales
 -- ============================================
@@ -105,5 +114,5 @@ insert into paises (nombre, codigo, slug) values
 
 insert into roles (nombre, descripcion) values
 ('superadmin', 'Administrador general del sistema'),
-('admin_pais', 'Administrador de un pais especifico'),
+('admin_pais', 'Administrador de un país específico'),
 ('editor', 'Usuario editor de contenidos');

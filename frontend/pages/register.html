@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS Multipais - Registro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --coral-muted: #C75F5A;
+            --coral-soft: #E8877A;
+            --peach-light: #F5C9A6;
+            --cream-pale: #FCE8BE;
+            --text-dark: #2d3436;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #FCE8BE 0%, #F5C9A6 50%, #E8877A 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0;
+        }
+        
+        .register-wrapper {
+            width: 100%;
+            max-width: 450px;
+            padding: 15px;
+        }
+        
+        .register-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(199, 95, 90, 0.2);
+            overflow: hidden;
+            border: none;
+        }
+        
+        .card-header-custom {
+            background: linear-gradient(135deg, #C75F5A 0%, #E8877A 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .card-header-custom svg {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header-custom h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: -0.3px;
+        }
+        
+        .card-header-custom p {
+            font-size: 14px;
+            opacity: 0.95;
+            font-weight: 300;
+            margin-bottom: 0;
+        }
+        
+        .card-body-custom {
+            padding: 40px 30px;
+        }
+        
+        .form-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #C75F5A;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        
+        .form-control {
+            padding: 13px 15px;
+            border: 2px solid #F5C9A6;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #FFFBF7;
+        }
+        
+        .form-control:focus {
+            border-color: #C75F5A;
+            box-shadow: 0 0 0 4px rgba(199, 95, 90, 0.1);
+            background: white;
+            outline: none;
+        }
+        
+        .form-select {
+            padding: 13px 15px;
+            border: 2px solid #F5C9A6;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #FFFBF7;
+        }
+        
+        .form-select:focus {
+            border-color: #C75F5A;
+            box-shadow: 0 0 0 4px rgba(199, 95, 90, 0.1);
+            background: white;
+            outline: none;
+        }
+        
+        .btn-custom {
+            background: linear-gradient(135deg, #C75F5A 0%, #E8877A 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(199, 95, 90, 0.3);
+            color: white;
+        }
+        
+        .alert-custom {
+            border-radius: 12px;
+            font-size: 13px;
+            padding: 12px 15px;
+        }
+        
+        .links {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #F5C9A6;
+            margin-top: 20px;
+        }
+        
+        .links p {
+            color: #636e72;
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+        
+        .links a {
+            color: #C75F5A;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .links a:hover {
+            color: #E8877A;
+        }
+        
+        @media (max-width: 480px) {
+            .card-header-custom {
+                padding: 30px 25px;
+            }
+            
+            .card-body-custom {
+                padding: 30px 25px;
+            }
+            
+            .card-header-custom h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-wrapper">
+        <div class="register-card">
+            <div class="card-header-custom">
+                <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                    <rect width="60" height="60" rx="15" fill="rgba(255,255,255,0.2)"/>
+                    <path d="M18 30L27 39L42 21" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1>CMS Multipais</h1>
+                <p>Crea tu cuenta</p>
+            </div>
+            
+            <div class="card-body-custom">
+                <h2 class="mb-1" style="font-size: 24px; font-weight: 600; color: #2d3436;">Crear Cuenta</h2>
+                <p class="mb-4" style="color: #636e72; font-size: 14px;">Completa tus datos para registrarte</p>
+                
+                <form id="registerForm">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="apellido" class="form-label">Apellido</label>
+                            <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Apellido" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="tu@email.com" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Usuario</label>
+                        <input type="text" id="username" name="username" class="form-control" placeholder="tu_usuario" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Mínimo 6 caracteres" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="pais_id" class="form-label">País *</label>
+                        <select id="pais_id" name="pais_id" class="form-select" required>
+                            <option value="">Selecciona un país</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" id="registerBtn" class="btn-custom">Registrarme</button>
+                    
+                    <div id="errorMessage" class="alert alert-danger alert-custom mt-3" style="display: none;"></div>
+                    <div id="successMessage" class="alert alert-success alert-custom mt-3" style="display: none;"></div>
+                </form>
+                
+                <div class="links">
+                    <p class="mb-0">¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../assets/js/auth.js"></script>
+</body>
+</html>
