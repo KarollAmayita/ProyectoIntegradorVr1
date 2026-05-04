@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS Multipais - Gestión de Contenido Multi-País</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --coral-muted: #C75F5A;
+            --coral-soft: #E8877A;
+            --peach-light: #F5C9A6;
+            --cream-pale: #FCE8BE;
+            --text-dark: #2d3436;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+        }
+        
+        .navbar-custom {
+            background: white;
+            box-shadow: 0 2px 15px rgba(199, 95, 90, 0.1);
+            padding: 15px 0;
+        }
+        
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--coral-muted) !important;
+        }
+        
+        .navbar-brand span {
+            color: var(--peach-light);
+        }
+        
+        .btn-custom {
+            background: linear-gradient(135deg, var(--coral-muted) 0%, var(--coral-soft) 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(199, 95, 90, 0.3);
+            color: white;
+        }
+        
+        .btn-outline-custom {
+            background: transparent;
+            color: var(--coral-muted);
+            border: 2px solid var(--coral-muted);
+            padding: 10px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-custom:hover {
+            background: var(--coral-muted);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #FCE8BE 0%, #F5C9A6 50%, #E8877A 100%);
+            padding: 100px 0;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+        }
+        
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero-text {
+            font-size: 18px;
+            color: #636e72;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 40px rgba(199, 95, 90, 0.08);
+            height: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 5px solid var(--coral-muted);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(199, 95, 90, 0.15);
+        }
+        
+        .feature-card .icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #FCE8BE 0%, #F5C9A6 100%);
+        }
+        
+        .feature-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+        
+        .feature-card p {
+            color: #636e72;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        .country-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(199, 95, 90, 0.08);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .country-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .country-flag {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .country-card h4 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+        
+        .country-card p {
+            color: #636e72;
+            font-size: 14px;
+        }
+        
+        .stats-section {
+            background: linear-gradient(135deg, var(--coral-muted) 0%, var(--coral-soft) 100%);
+            padding: 80px 0;
+            color: white;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .testimonial-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(199, 95, 90, 0.08);
+            margin-bottom: 20px;
+        }
+        
+        .testimonial-card .quote {
+            font-size: 16px;
+            color: #636e72;
+            font-style: italic;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .testimonial-card .author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .testimonial-card .author-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--peach-light), var(--coral-soft));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .testimonial-card .author-info h5 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-dark);
+        }
+        
+        .testimonial-card .author-info p {
+            font-size: 13px;
+            color: #636e72;
+            margin: 0;
+        }
+        
+        .footer {
+            background: var(--text-dark);
+            color: white;
+            padding: 60px 0 30px 0;
+        }
+        
+        .footer h5 {
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .footer a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 40px;
+            padding-top: 30px;
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+        
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+        
+        .section-subtitle {
+            font-size: 16px;
+            color: #636e72;
+            margin-bottom: 50px;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 32px;
+            }
+            
+            .hero-section {
+                padding: 60px 0;
+                min-height: auto;
+            }
+            
+            .section-title {
+                font-size: 28px;
+            }
+            
+            .stat-number {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-custom">
+        <div class="container">
+            <span class="navbar-brand">
+                <i class="bi bi-layers" style="margin-right: 8px;"></i>
+                CMS <span>Multipais</span>
+            </span>
+            <div class="d-flex gap-2">
+                <a href="/pages/login.html" class="btn-outline-custom">Iniciar Sesión</a>
+                <a href="/pages/register.html" class="btn-custom">Registrarse</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="hero-title">Gestión de Contenido Multi-País</h1>
+                    <p class="hero-text">Administra noticias, testimonios y solicitudes de contacto para múltiples países desde una sola plataforma. Una solución integral para tu negocio global.</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="/pages/register.html" class="btn-custom">Comenzar Ahora</a>
+                        <a href="#features" class="btn-outline-custom">Saber Más</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <div style="background: white; border-radius: 20px; padding: 40px; box-shadow: 0 20px 60px rgba(199, 95, 90, 0.2);">
+                        <div style="font-size: 80px; margin-bottom: 20px;">🌍</div>
+                        <h3 style="color: var(--coral-muted); font-weight: 600;">CMS Multipais</h3>
+                        <p style="color: #636e72;">Sistema de gestión de contenidos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" style="padding: 100px 0; background: #FCE8BE;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Características Principales</h2>
+                <p class="section-subtitle">Descubre todo lo que nuestro CMS multi-país puede hacer por tu negocio</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="icon">📰</div>
+                        <h3>Gestión de Noticias</h3>
+                        <p>Crea, edita y publica noticias específicas para cada país. Mantén a tus usuarios informados.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="icon">💬</div>
+                        <h3>Testimonios</h3>
+                        <p>Administra testimonios de clientes organizados por país. Genera confianza en tu audiencia.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="icon">📩</div>
+                        <h3>Solicitudes</h3>
+                        <p>Gestiona las solicitudes de contacto recibidas desde diferentes países.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="icon">👥</div>
+                        <h3>Usuarios y Roles</h3>
+                        <p>Control de acceso basado en roles. Superadmin, Admin de País y Editores.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Countries Section -->
+    <section style="padding: 100px 0;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Países Disponibles</h2>
+                <p class="section-subtitle">Nuestro sistema está configurado para gestionar contenido en múltiples países</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="country-card">
+                        <div class="country-flag">🇨🇴</div>
+                        <h4>Colombia</h4>
+                        <p>Contenido localizado para el mercado colombiano</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="country-card">
+                        <div class="country-flag">🇨🇱</div>
+                        <h4>Chile</h4>
+                        <p>Gestión de contenidos para usuarios chilenos</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="country-card">
+                        <div class="country-flag">🇨🇨</div>
+                        <h4>Ecuador</h4>
+                        <p>Contenido personalizado para Ecuador</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Países</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">24</div>
+                        <div class="stat-label">Noticias</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">18</div>
+                        <div class="stat-label">Testimonios</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">150+</div>
+                        <div class="stat-label">Usuarios</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Preview -->
+    <section style="padding: 100px 0; background: #FCE8BE;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Lo que dicen de nosotros</h2>
+                <p class="section-subtitle">Testimonios de clientes satisfechos con nuestro sistema</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <p class="quote">"El CMS Multipais ha transformado la forma en que gestionamos contenido para nuestros clientes en diferentes países. Es fácil de usar y muy eficiente."</p>
+                        <div class="author">
+                            <div class="author-img">MC</div>
+                            <div class="author-info">
+                                <h5>María Castro</h5>
+                                <p>Directora de Marketing, Empresa A</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <p class="quote">"Gracias al sistema multi-país, ahora podemos mantener nuestras noticias y testimonios organizados por región de manera automática."</p>
+                        <div class="author">
+                            <div class="author-img">JP</div>
+                            <div class="author-info">
+                                <h5>Juan Pérez</h5>
+                                <p>CEO, Empresa B</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <p class="quote">"La mejor inversión que hemos hecho para nuestra estrategia de contenidos multi-país. Totalmente recomendado."</p>
+                        <div class="author">
+                            <div class="author-img">AL</div>
+                            <div class="author-info">
+                                <h5>Ana López</h5>
+                                <p>Gerente de Comunicaciones, Empresa C</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section style="padding: 100px 0;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="section-title">¿Listo para comenzar?</h2>
+                    <p class="section-subtitle">Crea tu cuenta hoy mismo y empieza a gestionar contenido multi-país de manera profesional.</p>
+                    <a href="/pages/register.html" class="btn-custom" style="padding: 15px 40px; font-size: 16px;">Registrarse Ahora</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5><i class="bi bi-layers" style="margin-right: 8px;"></i> CMS Multipais</h5>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.6;">
+                        Sistema de gestión de contenidos multi-país desarrollado con tecnología moderna. Gestiona noticias, testimonios y más para múltiples países.
+                    </p>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h5>Enlaces</h5>
+                    <a href="/pages/login.html">Iniciar Sesión</a>
+                    <a href="/pages/register.html">Registrarse</a>
+                    <a href="#features">Características</a>
+                </div>
+                
+                <div class="col-lg-3 col-md-4 mb-4">
+                    <h5>Servicios</h5>
+                    <a href="#">Gestión de Noticias</a>
+                    <a href="#">Testimonios</a>
+                    <a href="#">Solicitudes de Contacto</a>
+                    <a href="#">Administración de Usuarios</a>
+                </div>
+                
+                <div class="col-lg-3 mb-4">
+                    <h5>Contacto</h5>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin-bottom: 10px;">
+                        <i class="bi bi-envelope"></i> info@cmsmultipais.com
+                    </p>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 14px;">
+                        <i class="bi bi-phone"></i> +57 300 123 4567
+                    </p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 CMS Multipais. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

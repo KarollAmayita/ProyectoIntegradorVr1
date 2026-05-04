@@ -1,5 +1,5 @@
 class AppError extends Error {
-  constructor(message, statusCode = 400) {
+  constructor(message, statusCode = 500) {
     super(message);
     this.statusCode = statusCode;
     this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
@@ -9,46 +9,34 @@ class AppError extends Error {
   }
 }
 
-class ValidationError extends AppError {
-  constructor(message) {
-    super(message, 400);
-    this.name = 'ValidationError';
-  }
-}
-
 class AuthenticationError extends AppError {
-  constructor(message) {
+  constructor(message = 'Authentication failed') {
     super(message, 401);
-    this.name = 'AuthenticationError';
   }
 }
 
 class AuthorizationError extends AppError {
-  constructor(message) {
+  constructor(message = 'Not authorized') {
     super(message, 403);
-    this.name = 'AuthorizationError';
   }
 }
 
 class NotFoundError extends AppError {
-  constructor(message) {
+  constructor(message = 'Resource not found') {
     super(message, 404);
-    this.name = 'NotFoundError';
   }
 }
 
-class ConflictError extends AppError {
-  constructor(message) {
-    super(message, 409);
-    this.name = 'ConflictError';
+class ValidationError extends AppError {
+  constructor(message = 'Validation error') {
+    super(message, 400);
   }
 }
 
 module.exports = {
   AppError,
-  ValidationError,
   AuthenticationError,
   AuthorizationError,
   NotFoundError,
-  ConflictError,
+  ValidationError
 };

@@ -3,7 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 const path = require('path');
 
-// Rutas
+// Importar rutas
 const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const adminRoutes = require('./routes/adminRoutes');
@@ -13,7 +13,7 @@ const newsRoutes = require('./routes/newsRoutes');
 const testimonialRoutes = require('./routes/testimonialRoutes');
 const contactRequestRoutes = require('./routes/contactRequestRoutes');
 
-// Middlewares
+// Importar middlewares
 const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
 
 const app = express();
@@ -23,14 +23,13 @@ app.use(cors());
 app.use(express.json());
 
 // Servir archivos estáticos del frontend
-app.use(express.static(path.join(__dirname, '..', 'frontend'), {
-  index: false,
-  extensions: ['html', 'css', 'js']
-}));
+app.use(express.static(path.join(__dirname, '..', '..', 'frontend')));
+app.use('/pages', express.static(path.join(__dirname, '..', '..', 'frontend', 'pages')));
+app.use('/assets', express.static(path.join(__dirname, '..', '..', 'frontend', 'assets')));
 
-// Ruta base - redirigir a login
+// Ruta base - servir index.html
 app.get('/', (req, res) => {
-  res.redirect('/pages/login.html');
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'index.html'));
 });
 
 // Ruta base API
@@ -50,10 +49,10 @@ app.use('/api/news', newsRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/contact-requests', contactRequestRoutes);
 
-// Manejo de rutas no encontradas
+// Middleware de rutas no encontradas
 app.use(notFoundHandler);
 
-// Manejo de errores global
+// Middleware de manejo de errores global
 app.use(errorHandler);
 
 // Servidor
