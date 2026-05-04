@@ -1,254 +1,148 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*:where(:not(iframe, canvas, img, svg, video):not(svg *)) {
+  all: unset;
+  display: revert;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    position: relative;
-    overflow: hidden;
-}
-
-.background {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: 0;
-}
-
-.shape {
-    position: absolute;
-    border-radius: 50%;
-    opacity: 0.1;
-    background: white;
-}
-
-.shape1 {
-    width: 500px;
-    height: 500px;
-    top: -250px;
-    right: -100px;
-    animation: float 6s ease-in-out infinite;
-}
-
-.shape2 {
-    width: 400px;
-    height: 400px;
-    bottom: -200px;
-    left: -100px;
-    animation: float 8s ease-in-out infinite reverse;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+  display: flex;
+  min-height: 100vh;
+  background: #f8f9fa;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
 .container {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 440px;
-    padding: 20px;
+  width: 100%;
+  max-width: 440px;
+  margin: auto;
+  padding: 20px;
 }
 
-.card {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 40px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: slideUp 0.6s ease-out;
+.grid {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.logo {
+  text-align: center;
+  margin-bottom: 30px;
 }
 
-.logo-section {
-    text-align: center;
-    margin-bottom: 30px;
+.logo svg {
+  margin-bottom: 10px;
 }
 
-.logo-icon {
-    margin-bottom: 15px;
+.logo h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 4px;
 }
 
-.logo-section h1 {
-    font-size: 28px;
-    font-weight: 700;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 5px;
-}
-
-.logo-section p {
-    color: #666;
-    font-size: 14px;
-    font-weight: 300;
+.logo p {
+  color: #6c757d;
+  font-size: 14px;
 }
 
 h2 {
-    font-size: 24px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 5px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 8px;
 }
 
-.subtitle {
-    color: #888;
-    font-size: 14px;
-    margin-bottom: 30px;
-}
-
-.form-group {
-    margin-bottom: 20px;
+form p {
+  color: #6c757d;
+  font-size: 14px;
+  margin-bottom: 24px;
 }
 
 label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #555;
-    margin-bottom: 8px;
-}
-
-label svg {
-    width: 16px;
-    height: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 16px;
 }
 
 input {
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #e0e0e0;
-    border-radius: 10px;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    font-family: 'Inter', sans-serif;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
 }
 
 input:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-input::placeholder {
-    color: #aaa;
+  border-color: #1a1a2e;
+  outline: none;
 }
 
 button {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 10px;
+  width: 100%;
+  padding: 12px;
+  background: #1a1a2e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: 8px;
 }
 
 button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+  background: #2d2d3a;
 }
 
 button:active {
-    transform: translateY(0);
-}
-
-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
+  transform: translateY(1px);
 }
 
 .error-message {
-    margin-top: 15px;
-    padding: 12px;
-    background: #fee;
-    color: #c33;
-    border-radius: 10px;
-    font-size: 14px;
-    display: none;
-    animation: shake 0.5s ease-in-out;
+  margin-top: 16px;
+  padding: 12px;
+  background: #f8d7da;
+  color: #721c24;
+  border-radius: 8px;
+  font-size: 13px;
+  display: none;
 }
 
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    75% { transform: translateX(10px); }
+footer {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e9ecef;
 }
 
-.success-message {
-    margin-top: 15px;
-    padding: 12px;
-    background: #d4edda;
-    color: #155724;
-    border-radius: 10px;
-    font-size: 14px;
-    display: none;
+footer p {
+  color: #6c757d;
+  font-size: 14px;
 }
 
-.links {
-    text-align: center;
-    margin-top: 25px;
-    padding-top: 25px;
-    border-top: 1px solid #eee;
+footer a {
+  color: #1a1a2e;
+  text-decoration: none;
+  font-weight: 600;
 }
 
-.links p {
-    color: #666;
-    font-size: 14px;
-}
-
-.links a {
-    color: #667eea;
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s ease;
-}
-
-.links a:hover {
-    color: #764ba2;
+footer a:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 480px) {
-    .card {
-        padding: 30px 25px;
-    }
-    
-    .logo-section h1 {
-        font-size: 24px;
-    }
-    
-    h2 {
-        font-size: 20px;
-    }
+  .grid {
+    padding: 30px 25px;
+  }
+  
+  .logo h1 {
+    font-size: 24px;
+  }
 }
