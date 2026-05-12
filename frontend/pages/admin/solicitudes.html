@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Argentina Comparte - Solicitudes</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin-styles.css" />
+</head>
+<body>
+
+  <div id="zona-sidebar"></div>
+
+  <main class="contenido-principal">
+    <div id="zona-topbar"></div>
+
+    <section class="panel-contenido">
+
+      <div class="panel-contenido__cabecera">
+        <h2 class="panel-contenido__titulo">Solicitudes de contacto</h2>
+        <span style="font-size:13px; color:#5A6C84;">
+          <i class="bi bi-info-circle"></i> Las solicitudes llegan desde el formulario p\u00fablico del portal.
+        </span>
+      </div>
+
+      <div class="barra-filtros">
+        <input type="text" id="filtro-busqueda" placeholder="Buscar por nombre o correo..." />
+        <select id="filtro-estado">
+          <option value="">Todos los estados</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="en_proceso">En proceso</option>
+          <option value="gestionada">Gestionada</option>
+          <option value="cerrada">Cerrada</option>
+        </select>
+      </div>
+
+      <div class="tabla-contenedor">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Tel\u00e9fono</th>
+              <th>Motivo</th>
+              <th>Pa\u00eds</th>
+              <th>Estado</th>
+              <th>Recibida</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-solicitudes">
+            <tr><td colspan="8" class="tabla__sin-datos">Cargando solicitudes...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       MODAL: ver detalle y cambiar estado de la solicitud
+       ============================================================ -->
+  <div class="fondo-modal" id="modal-detalle">
+    <div class="modal modal--ancho">
+      <div class="modal__cabecera">
+        <h3 class="modal__titulo">Detalle de la solicitud</h3>
+        <button class="modal__cerrar" onclick="cerrarModal('modal-detalle')">&times;</button>
+      </div>
+
+      <form id="formulario-estado">
+        <div class="modal__cuerpo">
+          <input type="hidden" id="solicitud-id" />
+
+          <!-- Datos de solo lectura de la solicitud -->
+          <div class="campos-en-fila">
+            <div class="campo-formulario">
+              <label>Nombre</label>
+              <input type="text" id="ver-nombre" readonly />
+            </div>
+            <div class="campo-formulario">
+              <label>Correo</label>
+              <input type="text" id="ver-correo" readonly />
+            </div>
+          </div>
+
+          <div class="campos-en-fila">
+            <div class="campo-formulario">
+              <label>Tel\u00e9fono</label>
+              <input type="text" id="ver-telefono" readonly />
+            </div>
+            <div class="campo-formulario">
+              <label>Pa\u00eds</label>
+              <input type="text" id="ver-pais" readonly />
+            </div>
+          </div>
+
+          <div class="campo-formulario">
+            <label>Motivo</label>
+            <input type="text" id="ver-motivo" readonly />
+          </div>
+
+          <div class="campo-formulario">
+            <label>Mensaje</label>
+            <textarea id="ver-mensaje" rows="3" readonly></textarea>
+          </div>
+
+          <hr style="border:none; border-top:1px solid #E1E8F0; margin:20px 0;" />
+
+          <!-- Solo los autorizados pueden modificar -->
+          <div id="zona-cambio-estado" style="display:none;">
+            <div class="campos-en-fila">
+              <div class="campo-formulario">
+                <label for="solicitud-estado">Cambiar estado</label>
+                <select id="solicitud-estado" required>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="en_proceso">En proceso</option>
+                  <option value="gestionada">Gestionada</option>
+                  <option value="cerrada">Cerrada</option>
+                </select>
+              </div>
+              <div class="campo-formulario">
+                <label>Recibida</label>
+                <input type="text" id="ver-fecha" readonly />
+              </div>
+            </div>
+
+            <div class="campo-formulario">
+              <label for="solicitud-observaciones">Observaciones del administrador</label>
+              <textarea id="solicitud-observaciones" rows="3" placeholder="Notas internas sobre la gesti\u00f3n..."></textarea>
+            </div>
+
+            <div id="mensaje-error-solicitud" class="mensaje mensaje--error" hidden></div>
+          </div>
+        </div>
+
+        <div class="modal__pie">
+          <button type="button" class="boton boton--secundario" onclick="cerrarModal('modal-detalle')">Cerrar</button>
+          <button type="submit" class="boton boton--principal" id="boton-guardar-estado" style="display:none;">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de confirmaci\u00f3n para eliminar -->
+  <div class="fondo-modal" id="modal-confirmar-eliminar">
+    <div class="modal">
+      <div class="modal__cuerpo">
+        <div class="confirmacion">
+          <i class="bi bi-exclamation-triangle confirmacion__icono"></i>
+          <p class="confirmacion__pregunta">\u00bfElimin\u00e1s esta solicitud?</p>
+          <p class="confirmacion__texto" id="texto-confirmar-eliminar">Esta acci\u00f3n no se puede deshacer.</p>
+        </div>
+      </div>
+      <div class="modal__pie">
+        <button class="boton boton--secundario" onclick="cerrarModal('modal-confirmar-eliminar')">Cancelar</button>
+        <button class="boton boton--peligro" id="boton-confirmar-eliminar">S\u00ed, eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin-shared.js"></script>
+  <script>
+    exigirSesion();
+    pintarSidebar('solicitudes');
+    pintarTopbar('Solicitudes');
+
+    let solicitudes = [];
+    let idSolicitudAEliminar = null;
+
+    const tabla = document.getElementById('tabla-solicitudes');
+    const filtroBusqueda = document.getElementById('filtro-busqueda');
+    const filtroEstado = document.getElementById('filtro-estado');
+    const formulario = document.getElementById('formulario-estado');
+    const cajaError = document.getElementById('mensaje-error-solicitud');
+    const botonGuardar = document.getElementById('boton-guardar-estado');
+
+    async function cargarSolicitudes() {
+      try {
+        solicitudes = await llamarApi('/contact-requests');
+        pintarTabla();
+      } catch (error) {
+        tabla.innerHTML = `<tr><td colspan="8" class="tabla__sin-datos">Error: ${error.message}</td></tr>`;
+      }
+    }
+
+    function pintarTabla() {
+      const textoBusqueda = filtroBusqueda.value.toLowerCase();
+      const estadoFiltro = filtroEstado.value;
+
+      const filtradas = solicitudes.filter(solicitud => {
+        const coincideTexto = !textoBusqueda
+          || solicitud.nombre.toLowerCase().includes(textoBusqueda)
+          || solicitud.correo.toLowerCase().includes(textoBusqueda);
+        const coincideEstado = !estadoFiltro || solicitud.estado === estadoFiltro;
+        return coincideTexto && coincideEstado;
+      });
+
+      if (filtradas.length === 0) {
+        tabla.innerHTML = `<tr><td colspan="8" class="tabla__sin-datos">No hay solicitudes para mostrar.</td></tr>`;
+        return;
+      }
+
+      tabla.innerHTML = filtradas.map(solicitud => {
+        const pais = solicitud.paises?.nombre || '\u2014';
+
+        const botonEliminar = usuarioEs('superadmin', 'admin_pais')
+          ? `<button class="boton-icono-fila boton-icono-fila--peligro" onclick="confirmarEliminar(${solicitud.id}, '${solicitud.nombre.replace(/'/g, "\\'")}')" title="Eliminar"><i class="bi bi-trash"></i></button>`
+          : '';
+
+        return `
+          <tr>
+            <td><strong>${solicitud.nombre}</strong></td>
+            <td>${solicitud.correo}</td>
+            <td>${solicitud.telefono}</td>
+            <td>${solicitud.finalidad}</td>
+            <td>${pais}</td>
+            <td><span class="etiqueta-estado etiqueta-estado--${solicitud.estado}">${solicitud.estado}</span></td>
+            <td>${formatearFecha(solicitud.created_at)}</td>
+            <td>
+              <div class="acciones-fila">
+                <button class="boton-icono-fila" onclick="abrirDetalle(${solicitud.id})" title="Ver detalle"><i class="bi bi-eye"></i></button>
+                ${botonEliminar}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    filtroBusqueda.addEventListener('input', pintarTabla);
+    filtroEstado.addEventListener('change', pintarTabla);
+
+    /* ----------------------------------------------------------
+       Abrir el modal de detalle
+       ---------------------------------------------------------- */
+    function abrirDetalle(idSolicitud) {
+      const solicitud = solicitudes.find(s => s.id === idSolicitud);
+      if (!solicitud) return;
+
+      document.getElementById('solicitud-id').value = solicitud.id;
+      document.getElementById('ver-nombre').value = solicitud.nombre;
+      document.getElementById('ver-correo').value = solicitud.correo;
+      document.getElementById('ver-telefono').value = solicitud.telefono;
+      document.getElementById('ver-pais').value = solicitud.paises?.nombre || '\u2014';
+      document.getElementById('ver-motivo').value = solicitud.finalidad;
+      document.getElementById('ver-mensaje').value = solicitud.mensaje || '(sin mensaje)';
+      document.getElementById('ver-fecha').value = formatearFecha(solicitud.created_at);
+      document.getElementById('solicitud-estado').value = solicitud.estado;
+      document.getElementById('solicitud-observaciones').value = solicitud.observaciones_admin || '';
+
+      // Solo superadmin/admin_pais pueden cambiar el estado (los editores solo ven)
+      if (usuarioEs('superadmin', 'admin_pais')) {
+        document.getElementById('zona-cambio-estado').style.display = 'block';
+        botonGuardar.style.display = 'inline-flex';
+      } else {
+        document.getElementById('zona-cambio-estado').style.display = 'none';
+        botonGuardar.style.display = 'none';
+      }
+
+      cajaError.hidden = true;
+      abrirModal('modal-detalle');
+    }
+
+    /* ----------------------------------------------------------
+       Guardar cambio de estado y observaciones
+       ---------------------------------------------------------- */
+    formulario.addEventListener('submit', async (evento) => {
+      evento.preventDefault();
+      cajaError.hidden = true;
+
+      const idSolicitud = document.getElementById('solicitud-id').value;
+      const datos = {
+        estado: document.getElementById('solicitud-estado').value,
+        observaciones_admin: document.getElementById('solicitud-observaciones').value.trim() || null
+      };
+
+      botonGuardar.disabled = true;
+
+      try {
+        await llamarApi(`/contact-requests/${idSolicitud}/status`, {
+          method: 'PUT',
+          body: datos
+        });
+        cerrarModal('modal-detalle');
+        await cargarSolicitudes();
+      } catch (error) {
+        cajaError.textContent = error.message;
+        cajaError.hidden = false;
+      } finally {
+        botonGuardar.disabled = false;
+      }
+    });
+
+    function confirmarEliminar(idSolicitud, nombreSolicitante) {
+      idSolicitudAEliminar = idSolicitud;
+      document.getElementById('texto-confirmar-eliminar').textContent =
+        `La solicitud de "${nombreSolicitante}" se eliminar\u00e1 definitivamente.`;
+      abrirModal('modal-confirmar-eliminar');
+    }
+
+    document.getElementById('boton-confirmar-eliminar').addEventListener('click', async () => {
+      if (!idSolicitudAEliminar) return;
+      try {
+        await llamarApi(`/contact-requests/${idSolicitudAEliminar}`, { method: 'DELETE' });
+        cerrarModal('modal-confirmar-eliminar');
+        idSolicitudAEliminar = null;
+        await cargarSolicitudes();
+      } catch (error) {
+        alert('No se pudo eliminar: ' + error.message);
+      }
+    });
+
+    cargarSolicitudes();
+  </script>
+</body>
+</html>

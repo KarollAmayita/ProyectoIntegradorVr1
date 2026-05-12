@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Argentina Comparte - Dashboard</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin-styles.css" />
+</head>
+<body>
+
+  <div id="zona-sidebar"></div>
+
+  <main class="contenido-principal">
+    <div id="zona-topbar"></div>
+
+    <!-- Tarjetas con conteos -->
+    <section class="grilla-estadisticas">
+      <div class="tarjeta-estadistica">
+        <p class="tarjeta-estadistica__etiqueta">
+          <i class="bi bi-newspaper"></i>
+          Total noticias
+        </p>
+        <p class="tarjeta-estadistica__numero" id="conteo-noticias">\u2014</p>
+      </div>
+
+      <div class="tarjeta-estadistica tarjeta-estadistica--verde">
+        <p class="tarjeta-estadistica__etiqueta">
+          <i class="bi bi-check-circle"></i>
+          Noticias publicadas
+        </p>
+        <p class="tarjeta-estadistica__numero" id="conteo-noticias-publicadas">\u2014</p>
+      </div>
+
+      <div class="tarjeta-estadistica tarjeta-estadistica--amarilla">
+        <p class="tarjeta-estadistica__etiqueta">
+          <i class="bi bi-chat-quote"></i>
+          Testimonios
+        </p>
+        <p class="tarjeta-estadistica__numero" id="conteo-testimonios">\u2014</p>
+      </div>
+
+      <div class="tarjeta-estadistica tarjeta-estadistica--naranja">
+        <p class="tarjeta-estadistica__etiqueta">
+          <i class="bi bi-envelope-exclamation"></i>
+          Solicitudes pendientes
+        </p>
+        <p class="tarjeta-estadistica__numero" id="conteo-solicitudes-pendientes">\u2014</p>
+      </div>
+    </section>
+
+    <!-- Bienvenida -->
+    <section class="panel-contenido">
+      <h2 class="panel-contenido__titulo">Hola, <span id="saludo-nombre">administrador</span></h2>
+      <p style="color:#5A6C84; font-size:14px; margin-top:8px;">
+        Desde ac\u00e1 pod\u00e9s gestionar las noticias, los testimonios y las solicitudes
+        del portal Argentina Comparte. Tus permisos est\u00e1n definidos por tu rol.
+      </p>
+    </section>
+
+    <!-- \u00daltimas solicitudes -->
+    <section class="panel-contenido">
+      <div class="panel-contenido__cabecera">
+        <h2 class="panel-contenido__titulo">\u00daltimas solicitudes recibidas</h2>
+        <a href="solicitudes.html" class="boton boton--secundario">Ver todas</a>
+      </div>
+      <div class="tabla-contenedor">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Motivo</th>
+              <th>Estado</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-ultimas-solicitudes">
+            <tr><td colspan="5" class="tabla__sin-datos">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="admin-shared.js"></script>
+  <script>
+    exigirSesion();
+    pintarSidebar('dashboard');
+    pintarTopbar('Dashboard');
+
+    document.getElementById('saludo-nombre').textContent = obtenerUsuario()?.nombre || 'administrador';
+
+    // Cargar conteos en paralelo
+    async function cargarResumen() {
+      try {
+        const [noticias, testimonios, solicitudes] = await Promise.all([
+          llamarApi('/news'),
+          llamarApi('/testimonials'),
+          llamarApi('/contact-requests')
+        ]);
+
+        document.getElementById('conteo-noticias').textContent = noticias.length;
+        document.getElementById('conteo-noticias-publicadas').textContent =
+          noticias.filter(noticia => noticia.estado === 'publicado').length;
+        document.getElementById('conteo-testimonios').textContent = testimonios.length;
+        document.getElementById('conteo-solicitudes-pendientes').textContent =
+          solicitudes.filter(solicitud => solicitud.estado === 'pendiente').length;
+
+        // Pintar las \u00faltimas 5 solicitudes
+        const ultimas = solicitudes.slice(0, 5);
+        const tbody = document.getElementById('tabla-ultimas-solicitudes');
+
+        if (ultimas.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" class="tabla__sin-datos">Todav\u00eda no hay solicitudes registradas.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = ultimas.map(solicitud => `
+          <tr>
+            <td>${solicitud.nombre}</td>
+            <td>${solicitud.correo}</td>
+            <td>${solicitud.finalidad}</td>
+            <td><span class="etiqueta-estado etiqueta-estado--${solicitud.estado}">${solicitud.estado}</span></td>
+            <td>${formatearFecha(solicitud.created_at)}</td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        console.error('Error cargando el dashboard:', error);
+      }
+    }
+
+    cargarResumen();
+  </script>
+</body>
+</html>

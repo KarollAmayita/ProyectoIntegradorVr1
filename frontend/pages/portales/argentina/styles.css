@@ -1,0 +1,904 @@
+/* ============================================================
+   PORTAL ARGENTINA COMPARTE - Estilos
+   Paleta basada en la bandera argentina: celeste + amarillo + blanco
+
+   Convención de este archivo:
+   - Nombres de clases y variables CSS en inglés.
+   - Comentarios en español para que sea fácil de explicar.
+   ============================================================ */
+
+:root {
+  /* Colores principales del portal Argentina */
+  --light-blue: #DCEAF5;
+  --medium-blue: #74ACDF;
+  --strong-blue: #4A90C2;
+  --navy: #1B3A5C;
+  --dark-blue-bg: #0F2A4A;
+
+  --yellow: #FCBF49;
+  --yellow-hover: #F0AC2F;
+
+  --white: #FFFFFF;
+  --gray-bg: #F5F7FA;
+  --gray-text: #5A6C84;
+  --gray-border: #E1E8F0;
+
+  /* Sombras reutilizables */
+  --shadow-soft: 0 4px 16px rgba(27, 58, 92, 0.08);
+  --shadow-medium: 0 10px 30px rgba(27, 58, 92, 0.12);
+  --shadow-strong: 0 20px 50px rgba(27, 58, 92, 0.18);
+}
+
+/* ============================================================
+   Reset básico y tipografía global
+   ============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: var(--navy);
+  background: var(--white);
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+ul {
+  list-style: none;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ============================================================
+   NAVBAR (barra superior)
+   ============================================================ */
+.top-bar {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.top-bar__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  gap: 24px;
+}
+
+.top-bar__brand {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.brand-argentina {
+  color: var(--navy);
+}
+
+.brand-comparte {
+  color: var(--strong-blue);
+}
+
+.main-menu {
+  display: flex;
+  gap: 28px;
+}
+
+.main-menu__link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-text);
+  transition: color 0.2s ease;
+  position: relative;
+  padding: 4px 0;
+}
+
+.main-menu__link:hover {
+  color: var(--strong-blue);
+}
+
+.main-menu__link--active {
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.main-menu__link--active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--strong-blue);
+  border-radius: 2px;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-button {
+  background: transparent;
+  border: none;
+  color: var(--gray-text);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.icon-button:hover {
+  background: var(--light-blue);
+  color: var(--strong-blue);
+}
+
+.donate-button {
+  background: var(--yellow);
+  color: var(--navy);
+  padding: 10px 22px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.donate-button:hover {
+  background: var(--yellow-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-soft);
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  background: linear-gradient(135deg, #EAF3FB 0%, #DCEAF5 100%);
+  padding: 80px 0 100px;
+  overflow: hidden;
+}
+
+.hero__content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.hero__tag {
+  display: inline-block;
+  background: var(--yellow);
+  color: var(--navy);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 6px 14px;
+  border-radius: 4px;
+  margin-bottom: 24px;
+}
+
+.hero__title {
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--navy);
+  margin-bottom: 20px;
+}
+
+.hero__title--highlight {
+  display: block;
+  color: var(--strong-blue);
+}
+
+.hero__subtitle {
+  font-size: 17px;
+  color: var(--gray-text);
+  margin-bottom: 32px;
+  max-width: 480px;
+}
+
+.hero__buttons {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* Botones reutilizables */
+.yellow-button {
+  background: var(--yellow);
+  color: var(--navy);
+  padding: 14px 28px;
+  border-radius: 28px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: inline-block;
+  border: 2px solid var(--yellow);
+}
+
+.yellow-button:hover {
+  background: var(--yellow-hover);
+  border-color: var(--yellow-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.light-blue-button {
+  background: var(--white);
+  color: var(--navy);
+  padding: 14px 28px;
+  border-radius: 28px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 2px solid var(--white);
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.light-blue-button:hover {
+  background: var(--light-blue);
+  border-color: var(--medium-blue);
+  color: var(--strong-blue);
+}
+
+/* Imagen de la derecha del hero */
+.hero__image {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-strong);
+  height: 420px;
+}
+
+.hero__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__photo-tag {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: var(--white);
+  color: var(--navy);
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: var(--shadow-medium);
+}
+
+.hero__photo-tag i {
+  color: var(--strong-blue);
+}
+
+/* ============================================================
+   ENCABEZADOS DE SECCIÓN (reutilizable para Voces y Actualidad)
+   ============================================================ */
+.section-header {
+  margin-bottom: 48px;
+  position: relative;
+}
+
+.section-header--with-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.section-header__title {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 8px;
+  position: relative;
+  display: inline-block;
+}
+
+.section-header__title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: var(--yellow);
+  border-radius: 2px;
+}
+
+.section-header__description {
+  font-size: 15px;
+  color: var(--gray-text);
+  margin-top: 20px;
+  max-width: 560px;
+}
+
+.see-all-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--strong-blue);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap 0.2s ease;
+}
+
+.see-all-link:hover {
+  gap: 10px;
+}
+
+/* ============================================================
+   SECCIÓN VOCES DE CAMBIO (testimonios)
+   ============================================================ */
+.voices-section {
+  background: var(--gray-bg);
+  padding: 80px 0;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 24px;
+}
+
+.testimonial-card {
+  background: var(--light-blue);
+  border-radius: 16px;
+  padding: 32px;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-medium);
+}
+
+.testimonial-card--wide {
+  background: var(--light-blue);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.testimonial-card--wide .testimonial-card__content {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.testimonial-card--wide .testimonial-card__image {
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  object-fit: cover;
+}
+
+.testimonial-card__quote-icon {
+  font-size: 32px;
+  color: var(--strong-blue);
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+.testimonial-card__quote {
+  font-size: 15px;
+  color: var(--navy);
+  font-style: italic;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.testimonial-card__author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.testimonial-card__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--yellow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.testimonial-card__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.testimonial-card__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.testimonial-card__role {
+  font-size: 12px;
+  color: var(--gray-text);
+}
+
+/* ============================================================
+   SECCIÓN ACTUALIDAD (noticias)
+   ============================================================ */
+.news-section {
+  background: var(--white);
+  padding: 80px 0;
+}
+
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.news-card {
+  background: var(--white);
+  border: 1px solid var(--gray-border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.news-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-medium);
+  border-color: var(--medium-blue);
+}
+
+.news-card__image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.news-card__body {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.news-card__category {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--strong-blue);
+  margin-bottom: 10px;
+}
+
+.news-card__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.news-card__summary {
+  font-size: 13px;
+  color: var(--gray-text);
+  margin-bottom: 14px;
+  flex-grow: 1;
+}
+
+.news-card__date {
+  font-size: 12px;
+  color: var(--gray-text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.news-card__date i {
+  color: var(--strong-blue);
+}
+
+/* ============================================================
+   SECCIÓN SUMATE (formulario de contacto)
+   ============================================================ */
+.join-section {
+  background: var(--white);
+  padding: 60px 0 100px;
+}
+
+.join-block {
+  background: var(--medium-blue);
+  border-radius: 24px;
+  padding: 50px;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 50px;
+  color: var(--white);
+  box-shadow: var(--shadow-strong);
+}
+
+.join-block__left {
+  color: var(--white);
+}
+
+.join-block__title {
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  color: var(--white);
+}
+
+.join-block__description {
+  font-size: 14px;
+  margin-bottom: 28px;
+  opacity: 0.95;
+  line-height: 1.6;
+}
+
+.contact-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.contact-info__icon {
+  width: 38px;
+  height: 38px;
+  background: var(--yellow);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--navy);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.contact-info__label {
+  font-size: 13px;
+  color: var(--white);
+}
+
+/* Formulario propiamente dicho */
+.contact-form {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.contact-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.contact-form__field label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gray-text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.contact-form__field input,
+.contact-form__field select,
+.contact-form__field textarea {
+  padding: 12px 14px;
+  border: 1.5px solid var(--gray-border);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--navy);
+  background: var(--white);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-form__field input:focus,
+.contact-form__field select:focus,
+.contact-form__field textarea:focus {
+  outline: none;
+  border-color: var(--strong-blue);
+  box-shadow: 0 0 0 3px rgba(74, 144, 194, 0.15);
+}
+
+.contact-form__field textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.send-button {
+  background: var(--yellow);
+  color: var(--navy);
+  border: none;
+  padding: 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.send-button:hover {
+  background: var(--yellow-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.send-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Mensajes de éxito y error dentro del formulario */
+.message {
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.message--success {
+  background: #E0F4E5;
+  color: #2D6A3F;
+  border: 1px solid #A8DDB5;
+}
+
+.message--error {
+  background: #FCE3E3;
+  color: #8B2C2C;
+  border: 1px solid #F4B4B4;
+}
+
+/* ============================================================
+   FOOTER (pie de página)
+   ============================================================ */
+.footer {
+  background: var(--dark-blue-bg);
+  color: var(--white);
+  padding-top: 60px;
+}
+
+.footer__columns {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
+  gap: 40px;
+  padding-bottom: 40px;
+}
+
+.footer__brand-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.footer__brand-title .brand-argentina {
+  color: var(--white);
+}
+
+.footer__title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--medium-blue);
+  margin-bottom: 20px;
+}
+
+.footer__text {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.7;
+}
+
+.footer__list li {
+  margin-bottom: 10px;
+}
+
+.footer__list a {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  transition: color 0.2s ease;
+}
+
+.footer__list a:hover {
+  color: var(--yellow);
+}
+
+.footer__newsletter {
+  display: flex;
+  margin-top: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.footer__newsletter input {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  padding: 10px 12px;
+  color: var(--white);
+  font-size: 13px;
+  outline: none;
+}
+
+.footer__newsletter input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.footer__newsletter button {
+  background: var(--yellow);
+  border: none;
+  color: var(--navy);
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.footer__bottom-bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 24px 0;
+}
+
+.footer__bottom-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer__social {
+  display: flex;
+  gap: 14px;
+}
+
+.footer__social a {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.footer__social a:hover {
+  background: var(--yellow);
+  color: var(--navy);
+}
+
+.footer__copyright {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ============================================================
+   DISEÑO RESPONSIVO
+   ============================================================ */
+@media (max-width: 992px) {
+  .hero__content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .hero__title {
+    font-size: 42px;
+  }
+
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .news-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .join-block {
+    grid-template-columns: 1fr;
+    padding: 40px;
+  }
+
+  .join-block__title {
+    font-size: 36px;
+  }
+
+  .footer__columns {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .main-menu {
+    display: none;
+  }
+
+  .hero {
+    padding: 50px 0 60px;
+  }
+
+  .hero__title {
+    font-size: 36px;
+  }
+
+  .section-header__title {
+    font-size: 28px;
+  }
+
+  .news-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-form__row {
+    grid-template-columns: 1fr;
+  }
+
+  .testimonial-card--wide {
+    grid-template-columns: 1fr;
+  }
+
+  .footer__columns {
+    grid-template-columns: 1fr;
+  }
+
+  .join-block__title {
+    font-size: 30px;
+  }
+}

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Argentina Comparte - Portal de Voluntariado</title>
+
+  <!-- Bootstrap y fuentes -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Estilos del portal Argentina -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVBAR (barra superior con logo, menú y botones)
+       ============================================================ -->
+  <header class="top-bar">
+    <div class="container top-bar__content">
+
+      <a href="index.html" class="top-bar__brand">
+        <img src="../../../assets/img/portales/argentina_logo.png"
+          alt="Logo de Argentina Comparte" width="75" height="75" />
+      </a>
+
+      <nav class="main-menu">
+        <a href="#about-us" class="main-menu__link main-menu__link--active">Sobre nosotros</a>
+        <a href="#news" class="main-menu__link">Actualidad</a>
+        <a href="#contact" class="main-menu__link">Contacto</a>
+      </nav>
+
+      <div class="top-actions">
+        <button class="icon-button" aria-label="Buscar">
+          <i class="bi bi-search"></i>
+        </button>
+        <button class="icon-button" aria-label="Compartir">
+          <i class="bi bi-share"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================
+       HERO (presentación principal con imagen de Buenos Aires)
+       ============================================================ -->
+  <section class="hero" id="about-us">
+    <div class="container hero__content">
+
+      <div class="hero__text">
+        <span class="hero__tag">ARGENTINA COMPARTE</span>
+        <h1 class="hero__title">
+          Unidos por
+          <span class="hero__title--highlight">nuestra gente</span>
+        </h1>
+        <p class="hero__subtitle">
+          Impulsamos el desarrollo social federal desde la Quiaca hasta Ushuaia.
+          Argentina Comparte conecta voluntarios para transformar realidades locales.
+        </p>
+        <div class="hero__buttons">
+          <a href="#news" class="yellow-button">Nuestra Misión</a>
+          <a href="#voices" class="light-blue-button">Ver impacto</a>
+        </div>
+      </div>
+
+      <div class="hero__image">
+        <img
+          src="../../../assets/img/argentina/obelisco.jpg"
+          alt="Obelisco de Buenos Aires"
+        />
+        <span class="hero__photo-tag">
+          <i class="bi bi-geo-alt-fill"></i>
+          Buenos Aires, Argentina
+        </span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       VOCES DE CAMBIO (testimonios)
+       ============================================================ -->
+  <section class="voices-section" id="voices">
+    <div class="container">
+
+      <div class="section-header">
+        <h2 class="section-header__title">Voces de Cambio</h2>
+        <p class="section-header__description">
+          Líderes que en Argentina Comparte están transformando el futuro en cada rincón del país.
+        </p>
+      </div>
+
+      <!-- Aquí se inyectan los testimonios desde main.js -->
+      <div class="testimonials-grid" id="testimonials-container"></div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ACTUALIDAD Y ACCIÓN (noticias)
+       ============================================================ -->
+  <section class="news-section" id="news">
+    <div class="container">
+
+      <div class="section-header section-header--with-link">
+        <div>
+          <h2 class="section-header__title">Actualidad y Acción</h2>
+          <p class="section-header__description">
+            Crónicas del trabajo federal de Argentina Comparte.
+          </p>
+        </div>
+        <a href="#" class="see-all-link">Ver todas las noticias <i class="bi bi-arrow-right"></i></a>
+      </div>
+
+      <!-- Aquí se inyectan las noticias desde main.js -->
+      <div class="news-grid" id="news-container"></div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SUMATE (formulario de contacto)
+       ============================================================ -->
+  <section class="join-section" id="contact">
+    <div class="container">
+      <div class="join-block">
+
+        <!-- Lado izquierdo: título y datos de contacto -->
+        <div class="join-block__left">
+          <h2 class="join-block__title">
+            Sumate a<br />
+            Argentina<br />
+            Comparte.
+          </h2>
+          <p class="join-block__description">
+            ¿Tenés una idea, un proyecto o querés ser voluntario?
+            Construyamos juntos el país que soñamos.
+          </p>
+
+          <div class="contact-info">
+            <div class="contact-info__icon"><i class="bi bi-telephone-fill"></i></div>
+            <div>
+              <p class="contact-info__label">Av. Corrientes 1234, CABA</p>
+            </div>
+          </div>
+          <div class="contact-info">
+            <div class="contact-info__icon"><i class="bi bi-envelope-fill"></i></div>
+            <div>
+              <p class="contact-info__label">contacto@argentinacomparte.org.ar</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lado derecho: el formulario -->
+        <!--
+          NOTA sobre los atributos name de los inputs:
+          - Están en inglés porque son nombres internos del front
+            (los lee el JS con form.userName.value, form.email.value, etc.).
+          - Cuando el JS arme el objeto que se envía al backend,
+            las CLAVES de ese objeto sí van en español (pais_id, nombre,
+            correo, telefono, finalidad, mensaje) porque así las espera
+            el backend. Ese mapeo está en main.js > sendContactForm.
+        -->
+        <div class="join-block__right">
+          <form id="contact-form" class="contact-form" novalidate>
+
+            <div class="contact-form__row">
+              <div class="contact-form__field">
+                <label for="field-name">Nombre</label>
+                <input type="text" id="field-name" name="userName" placeholder="Tu nombre" required />
+              </div>
+              <div class="contact-form__field">
+                <label for="field-email">Email</label>
+                <input type="email" id="field-email" name="email" placeholder="tu@email.com" required />
+              </div>
+            </div>
+
+            <div class="contact-form__field">
+              <label for="field-phone">Teléfono</label>
+              <input type="tel" id="field-phone" name="phone" placeholder="11 1234 5678" required />
+            </div>
+
+            <div class="contact-form__field">
+              <label for="field-purpose">Motivo</label>
+              <select id="field-purpose" name="purpose" required>
+                <option value="">Seleccioná un motivo</option>
+                <option value="Servicio">Servicio</option>
+                <option value="Programa EDIFICA">Programa EDIFICA</option>
+                <option value="Shows y conferencias">Shows y conferencias</option>
+              </select>
+            </div>
+
+            <div class="contact-form__field">
+              <label for="field-message">Mensaje</label>
+              <textarea id="field-message" name="message" rows="4" placeholder="¿Cómo podemos ayudarte?"></textarea>
+            </div>
+
+            <button type="submit" class="send-button" id="send-button">
+              ENVIAR MENSAJE
+            </button>
+
+            <!-- Mensajes de éxito o error -->
+            <div id="success-message" class="message message--success" hidden></div>
+            <div id="error-message" class="message message--error" hidden></div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="footer">
+    <div class="container footer__columns">
+
+      <div class="footer__block">
+        <h3 class="footer__brand-title">
+          <span class="brand-argentina">Argentina</span>
+          <span class="brand-comparte">Comparte</span>
+        </h3>
+        <p class="footer__text">
+          Somos una red de voluntarios y líderes federales transformando comunidades a través del impacto social.
+        </p>
+        <img src="../../../assets/img/portales/argentina_logo.png"
+          alt="Logo de Argentina Comparte" width="100" height="100" />
+      </div>
+
+      <div class="footer__block">
+        <h4 class="footer__title">Argentina</h4>
+        <ul class="footer__list">
+          <li><a href="#">Buenos Aires</a></li>
+          <li><a href="#">Córdoba</a></li>
+          <li><a href="#">Salta</a></li>
+          <li><a href="#">Ushuaia</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__block">
+        <h4 class="footer__title">Organización</h4>
+        <ul class="footer__list">
+          <li><a href="#">Sobre Nosotros</a></li>
+          <li><a href="#">Transparencia</a></li>
+          <li><a href="#">Comunidad</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__block">
+        <h4 class="footer__title">Suscribite</h4>
+        <p class="footer__text">Recibí nuestras novedades en tu correo.</p>
+        <form class="footer__newsletter" onsubmit="event.preventDefault();">
+          <input type="email" placeholder="tu@email.com" />
+          <button type="submit" aria-label="Suscribirse">
+            <i class="bi bi-arrow-right"></i>
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+    <div class="footer__bottom-bar">
+      <div class="container footer__bottom-content">
+        <div class="footer__social">
+          <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+        </div>
+        <p class="footer__copyright">
+          © 2026 Argentina Comparte.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lógica del portal: noticias, testimonios y formulario -->
+  <script src="main.js"></script>
+
+</body>
+</html>

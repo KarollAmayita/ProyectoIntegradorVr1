@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Argentina Comparte - Usuarios</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin-styles.css" />
+</head>
+<body>
+
+  <div id="zona-sidebar"></div>
+
+  <main class="contenido-principal">
+    <div id="zona-topbar"></div>
+
+    <section class="panel-contenido">
+
+      <div class="panel-contenido__cabecera">
+        <h2 class="panel-contenido__titulo">Gesti\u00f3n de usuarios</h2>
+        <button class="boton boton--principal" id="boton-nuevo-usuario">
+          <i class="bi bi-person-plus"></i>
+          Nuevo usuario
+        </button>
+      </div>
+
+      <div class="barra-filtros">
+        <input type="text" id="filtro-busqueda" placeholder="Buscar por nombre, usuario o email..." />
+      </div>
+
+      <div class="tabla-contenedor">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Usuario</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Pa\u00eds</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-usuarios">
+            <tr><td colspan="7" class="tabla__sin-datos">Cargando usuarios...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       MODAL: crear nuevo usuario
+       ============================================================ -->
+  <div class="fondo-modal" id="modal-usuario">
+    <div class="modal modal--ancho">
+      <div class="modal__cabecera">
+        <h3 class="modal__titulo">Nuevo usuario</h3>
+        <button class="modal__cerrar" onclick="cerrarModal('modal-usuario')">&times;</button>
+      </div>
+
+      <form id="formulario-usuario">
+        <div class="modal__cuerpo">
+
+          <div class="campos-en-fila">
+            <div class="campo-formulario">
+              <label for="usuario-nombre">Nombre *</label>
+              <input type="text" id="usuario-nombre" required />
+            </div>
+            <div class="campo-formulario">
+              <label for="usuario-apellido">Apellido *</label>
+              <input type="text" id="usuario-apellido" required />
+            </div>
+          </div>
+
+          <div class="campos-en-fila">
+            <div class="campo-formulario">
+              <label for="usuario-email">Email *</label>
+              <input type="email" id="usuario-email" required />
+            </div>
+            <div class="campo-formulario">
+              <label for="usuario-username">Nombre de usuario *</label>
+              <input type="text" id="usuario-username" required />
+            </div>
+          </div>
+
+          <div class="campo-formulario">
+            <label for="usuario-password">Contrase\u00f1a *</label>
+            <input type="password" id="usuario-password" minlength="6" required />
+          </div>
+
+          <div class="campos-en-fila">
+            <div class="campo-formulario">
+              <label for="usuario-rol">Rol *</label>
+              <select id="usuario-rol" required>
+                <option value="">Seleccion\u00e1 un rol</option>
+                <option value="1">Superadmin</option>
+                <option value="2">Admin de pa\u00eds</option>
+                <option value="3">Editor</option>
+              </select>
+            </div>
+            <div class="campo-formulario" id="contenedor-pais-usuario">
+              <label for="usuario-pais">Pa\u00eds</label>
+              <select id="usuario-pais"></select>
+            </div>
+          </div>
+
+          <hr style="border:none; border-top:1px solid #E1E8F0; margin:16px 0;" />
+
+          <p style="font-size:13px; color:#5A6C84; margin-bottom:14px;">
+            <i class="bi bi-info-circle"></i>
+            La pregunta y respuesta de seguridad servir\u00e1n para recuperar la contrase\u00f1a si la olvida.
+          </p>
+
+          <div class="campo-formulario">
+            <label for="usuario-pregunta">Pregunta de seguridad *</label>
+            <input type="text" id="usuario-pregunta" placeholder="Ej: \u00bfCu\u00e1l es el c\u00f3digo inicial del sistema?" required />
+          </div>
+
+          <div class="campo-formulario">
+            <label for="usuario-respuesta">Respuesta de seguridad *</label>
+            <input type="text" id="usuario-respuesta" required />
+          </div>
+
+          <div id="mensaje-error-usuario" class="mensaje mensaje--error" hidden></div>
+        </div>
+
+        <div class="modal__pie">
+          <button type="button" class="boton boton--secundario" onclick="cerrarModal('modal-usuario')">Cancelar</button>
+          <button type="submit" class="boton boton--principal" id="boton-guardar-usuario">Crear usuario</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL: cambiar contrase\u00f1a (admin reseteando a otro usuario)
+       ============================================================ -->
+  <div class="fondo-modal" id="modal-password">
+    <div class="modal">
+      <div class="modal__cabecera">
+        <h3 class="modal__titulo">Cambiar contrase\u00f1a</h3>
+        <button class="modal__cerrar" onclick="cerrarModal('modal-password')">&times;</button>
+      </div>
+
+      <form id="formulario-password">
+        <div class="modal__cuerpo">
+          <input type="hidden" id="password-usuario-id" />
+          <p style="font-size:13px; color:#5A6C84; margin-bottom:14px;" id="texto-password-usuario">Asign\u00e1 una nueva contrase\u00f1a.</p>
+
+          <div class="campo-formulario">
+            <label for="password-nueva">Nueva contrase\u00f1a *</label>
+            <input type="password" id="password-nueva" minlength="6" required />
+          </div>
+
+          <div id="mensaje-error-password" class="mensaje mensaje--error" hidden></div>
+        </div>
+
+        <div class="modal__pie">
+          <button type="button" class="boton boton--secundario" onclick="cerrarModal('modal-password')">Cancelar</button>
+          <button type="submit" class="boton boton--principal" id="boton-guardar-password">Cambiar contrase\u00f1a</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="admin-shared.js"></script>
+  <script>
+    exigirSesion();
+    pintarSidebar('usuarios');
+    pintarTopbar('Usuarios');
+
+    // Solo superadmin puede entrar a esta p\u00e1gina
+    if (!usuarioEs('superadmin')) {
+      window.location.href = 'dashboard.html';
+    }
+
+    let usuarios = [];
+    let paisesActivos = [];
+
+    const tabla = document.getElementById('tabla-usuarios');
+    const filtroBusqueda = document.getElementById('filtro-busqueda');
+    const formulario = document.getElementById('formulario-usuario');
+    const cajaError = document.getElementById('mensaje-error-usuario');
+    const botonGuardar = document.getElementById('boton-guardar-usuario');
+    const formularioPassword = document.getElementById('formulario-password');
+    const cajaErrorPassword = document.getElementById('mensaje-error-password');
+
+    async function cargarUsuarios() {
+      try {
+        usuarios = await llamarApi('/users');
+        pintarTabla();
+      } catch (error) {
+        tabla.innerHTML = `<tr><td colspan="7" class="tabla__sin-datos">Error: ${error.message}</td></tr>`;
+      }
+    }
+
+    async function cargarPaises() {
+      try {
+        paisesActivos = await llamarApi('/countries/active');
+        const selectorPais = document.getElementById('usuario-pais');
+        selectorPais.innerHTML = '<option value="">Sin pa\u00eds (solo para superadmin)</option>' +
+          paisesActivos.map(pais => `<option value="${pais.id}">${pais.nombre}</option>`).join('');
+      } catch (error) {
+        console.error('Error cargando pa\u00edses:', error);
+      }
+    }
+
+    function pintarTabla() {
+      const textoBusqueda = filtroBusqueda.value.toLowerCase();
+
+      const filtrados = usuarios.filter(usuario =>
+        !textoBusqueda
+        || usuario.nombre.toLowerCase().includes(textoBusqueda)
+        || usuario.apellido.toLowerCase().includes(textoBusqueda)
+        || usuario.username.toLowerCase().includes(textoBusqueda)
+        || usuario.email.toLowerCase().includes(textoBusqueda)
+      );
+
+      if (filtrados.length === 0) {
+        tabla.innerHTML = `<tr><td colspan="7" class="tabla__sin-datos">No hay usuarios para mostrar.</td></tr>`;
+        return;
+      }
+
+      tabla.innerHTML = filtrados.map(usuario => {
+        const rol = usuario.roles?.nombre || '\u2014';
+        const pais = usuario.paises?.nombre || 'Todos';
+        const estadoActivo = usuario.estado === 'activo';
+
+        return `
+          <tr>
+            <td><strong>${usuario.nombre} ${usuario.apellido}</strong></td>
+            <td>${usuario.username}</td>
+            <td>${usuario.email}</td>
+            <td><span class="etiqueta-rol etiqueta-rol--${rol}">${rol}</span></td>
+            <td>${pais}</td>
+            <td>
+              <span class="etiqueta-estado etiqueta-estado--${estadoActivo ? 'publicado' : 'cerrada'}">
+                ${usuario.estado}
+              </span>
+            </td>
+            <td>
+              <div class="acciones-fila">
+                <button class="boton-icono-fila" onclick="abrirCambioPassword(${usuario.id}, '${usuario.username}')" title="Cambiar contrase\u00f1a">
+                  <i class="bi bi-key"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    filtroBusqueda.addEventListener('input', pintarTabla);
+
+    /* ----------------------------------------------------------
+       Crear usuario nuevo
+       ---------------------------------------------------------- */
+    document.getElementById('boton-nuevo-usuario').addEventListener('click', () => {
+      formulario.reset();
+      cajaError.hidden = true;
+      abrirModal('modal-usuario');
+    });
+
+    formulario.addEventListener('submit', async (evento) => {
+      evento.preventDefault();
+      cajaError.hidden = true;
+
+      const rolId = Number(document.getElementById('usuario-rol').value);
+      const paisId = document.getElementById('usuario-pais').value;
+
+      // Si el rol no es superadmin, el pa\u00eds es obligatorio
+      if (rolId !== 1 && !paisId) {
+        cajaError.textContent = 'El pa\u00eds es obligatorio para roles distintos a superadmin.';
+        cajaError.hidden = false;
+        return;
+      }
+
+      const datos = {
+        nombre: document.getElementById('usuario-nombre').value.trim(),
+        apellido: document.getElementById('usuario-apellido').value.trim(),
+        email: document.getElementById('usuario-email').value.trim(),
+        username: document.getElementById('usuario-username').value.trim(),
+        password: document.getElementById('usuario-password').value,
+        rol_id: rolId,
+        pais_id: paisId ? Number(paisId) : null,
+        pregunta_seguridad: document.getElementById('usuario-pregunta').value.trim(),
+        respuesta_seguridad: document.getElementById('usuario-respuesta').value.trim()
+      };
+
+      botonGuardar.disabled = true;
+
+      try {
+        await llamarApi('/users', { method: 'POST', body: datos });
+        cerrarModal('modal-usuario');
+        await cargarUsuarios();
+      } catch (error) {
+        cajaError.textContent = error.message;
+        cajaError.hidden = false;
+      } finally {
+        botonGuardar.disabled = false;
+      }
+    });
+
+    /* ----------------------------------------------------------
+       Cambiar contrase\u00f1a de un usuario existente
+       ---------------------------------------------------------- */
+    function abrirCambioPassword(idUsuario, nombreUsuario) {
+      formularioPassword.reset();
+      document.getElementById('password-usuario-id').value = idUsuario;
+      document.getElementById('texto-password-usuario').textContent =
+        `Asign\u00e1 una nueva contrase\u00f1a para ${nombreUsuario}.`;
+      cajaErrorPassword.hidden = true;
+      abrirModal('modal-password');
+    }
+
+    formularioPassword.addEventListener('submit', async (evento) => {
+      evento.preventDefault();
+      cajaErrorPassword.hidden = true;
+
+      const idUsuario = document.getElementById('password-usuario-id').value;
+      const nuevaPassword = document.getElementById('password-nueva').value;
+
+      try {
+        await llamarApi(`/users/${idUsuario}/password`, {
+          method: 'PUT',
+          body: { nueva_password: nuevaPassword }
+        });
+        cerrarModal('modal-password');
+      } catch (error) {
+        cajaErrorPassword.textContent = error.message;
+        cajaErrorPassword.hidden = false;
+      }
+    });
+
+    cargarPaises();
+    cargarUsuarios();
+  </script>
+</body>
+</html>
