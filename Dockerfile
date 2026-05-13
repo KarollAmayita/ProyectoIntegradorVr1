@@ -1,14 +1,8 @@
-FROM node:20-alpine AS build
+FROM node:20-alpine
 WORKDIR /app
 COPY backend/package*.json ./
-RUN npm ci --only=production
-
-FROM node:20-alpine
-RUN apk add --no-cache tini
-WORKDIR /app
-COPY --from=build /app/node_modules ./node_modules
+RUN npm ci --only=production && npm cache clean --force
 COPY backend/ .
 COPY frontend/ ../frontend/
 EXPOSE 3001
-ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["node", "src/app.js"]
+CMD ["node", "--max-old-space-size=128", "src/app.js"]

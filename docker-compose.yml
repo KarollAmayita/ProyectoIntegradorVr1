@@ -9,3 +9,9 @@ services:
       - "3001:3001"
     volumes:
       - ./backend/.env:/app/.env:ro
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
