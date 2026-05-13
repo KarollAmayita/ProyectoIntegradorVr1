@@ -1,33 +1,7 @@
-/* ============================================================
-   PORTAL ARGENTINA COMPARTE - Lógica del portal público
-   - Carga testimonios y noticias (datos quemados por ahora)
-   - Envía el formulario de contacto al backend real
-
-   Convenciones que usamos en este archivo:
-   - Las variables y funciones están en inglés (código).
-   - Los comentarios están en español (para que sea fácil de explicar).
-   - Los textos que ve el usuario están en español.
-   - Cuando armamos el cuerpo que se envía al backend, las CLAVES
-     se mantienen en español (pais_id, nombre, correo, telefono...)
-     porque así las espera el backend; el resto del código es inglés.
-   ============================================================ */
-
-/* ------------------------------------------------------------
-   CONFIGURACIÓN: cambiar estos valores si varía el backend
-   o si el ID del país Argentina cambia en la base de datos.
-   ------------------------------------------------------------ */
 const BACKEND_URL = 'http://localhost:3001/api';
-const ARGENTINA_COUNTRY_ID = 4;
-// NOTA: el seed actual del SQL crea Colombia (id 1), Chile (id 2)
-// y Ecuador (id 3). Cuando se agregue Argentina, será id 4.
-// Si en el seed se reemplaza Colombia por Argentina, cambiar a 1.
+const ARGENTINA_COUNTRY_ID = 2;
+const COUNTRY_SLUG = 'argentina';
 
-/* ------------------------------------------------------------
-   DATOS QUEMADOS (mock): testimonios y noticias del portal
-   Más adelante se reemplazarán por llamadas a:
-     GET /api/testimonials/public/argentina
-     GET /api/news/public/argentina
-   ------------------------------------------------------------ */
 const testimonialsMock = [
   {
     quote: '"En el corazón de La Matanza, la solidaridad es el motor que nos permite construir comedores y espacios de estudio."',
@@ -68,19 +42,33 @@ const newsMock = [
   }
 ];
 
-/* ------------------------------------------------------------
-   FUNCIÓN: pintar los testimonios dentro de la grilla
-   ------------------------------------------------------------ */
-function printTestimonials() {
+async function loadTestimonials() {
   const container = document.getElementById('testimonials-container');
   if (!container) return;
 
+  try {
+    const res = await fetch(`${BACKEND_URL}/testimonials/public/${COUNTRY_SLUG}`);
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    if (!data || data.length === 0) throw new Error('No data');
+    renderTestimonials(data.map(t => ({
+      quote: `"${t.contenido}"`,
+      authorName: t.nombre,
+      authorRole: t.cargo || t.empresa || '',
+      avatar: t.foto_url || '../../../assets/img/argentina/mujer.png',
+      sideImage: null
+    })));
+  } catch {
+    renderTestimonials(testimonialsMock);
+  }
+}
+
+function renderTestimonials(list) {
+  const container = document.getElementById('testimonials-container');
   let html = '';
 
-  testimonialsMock.forEach((testimonial, index) => {
-    // El primer testimonio es la tarjeta pequeña.
-    // El segundo es la tarjeta ancha con imagen al costado.
-    if (index === 0) {
+  list.forEach((testimonial, index) => {
+    if (index === 0 || !testimonial.sideImage) {
       html += `
         <article class="testimonial-card">
           <div class="testimonial-card__quote-icon">"</div>
@@ -94,8 +82,7 @@ function printTestimonials() {
               <p class="testimonial-card__role">${testimonial.authorRole}</p>
             </div>
           </div>
-        </article>
-      `;
+        </article>`;
     } else {
       html += `
         <article class="testimonial-card testimonial-card--wide">
@@ -113,26 +100,48 @@ function printTestimonials() {
             </div>
           </div>
           <img class="testimonial-card__image" src="${testimonial.sideImage}" alt="Imagen del testimonio" />
-        </article>
-      `;
+        </article>`;
     }
   });
 
   container.innerHTML = html;
 }
 
-/* ------------------------------------------------------------
-   FUNCIÓN: pintar las noticias dentro de la grilla
-   ------------------------------------------------------------ */
-function printNews() {
+async function loadNews() {
   const container = document.getElementById('news-container');
   if (!container) return;
 
-  const html = newsMock.map(news => `
+  try {
+    const res = await fetch(`${BACKEND_URL}/news/public/${COUNTRY_SLUG}`);
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    if (!data || data.length === 0) throw new Error('No data');
+    renderNews(data.map(n => ({
+      category: '',
+      title: n.titulo,
+      summary: n.resumen,
+      date: formatDate(n.fecha_publicacion),
+      image: n.imagen_principal_url || '../../../assets/img/argentina/biblioteca_cordoba.jpg',
+      slug: n.slug
+    })));
+  } catch {
+    renderNews(newsMock);
+  }
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function renderNews(list) {
+  const container = document.getElementById('news-container');
+  const html = list.map(news => `
     <article class="news-card">
-      <img class="news-card__image" src="${news.image}" alt="${news.title}" />
+      <img class="news-card__image" src="${news.image}" alt="${news.title}" loading="lazy" />
       <div class="news-card__body">
-        <span class="news-card__category">${news.category}</span>
+        ${news.category ? `<span class="news-card__category">${news.category}</span>` : ''}
         <h3 class="news-card__title">${news.title}</h3>
         <p class="news-card__summary">${news.summary}</p>
         <p class="news-card__date">
@@ -142,19 +151,79 @@ function printNews() {
       </div>
     </article>
   `).join('');
-
   container.innerHTML = html;
 }
 
-/* ------------------------------------------------------------
-   FUNCIÓN: enviar el formulario de contacto al backend
-   POST /api/contact-requests/public
+function initSmoothScroll() {
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+}
 
-   IMPORTANTE: las claves del JSON que se envía (pais_id, nombre,
-   correo, telefono, finalidad, mensaje) están en español porque
-   así las espera el backend. El resto del código sigue en inglés.
-   ------------------------------------------------------------ */
-async function sendContactForm(event) {
+function initSeeAllNews() {
+  const link = document.querySelector('.see-all-link');
+  if (!link) return;
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const grid = document.getElementById('news-container');
+    const allHidden = grid.querySelectorAll('.news-card.hidden');
+    if (allHidden.length > 0) {
+      allHidden.forEach(c => c.classList.remove('hidden'));
+      link.innerHTML = 'Mostrar menos <i class="bi bi-arrow-up"></i>';
+    } else {
+      const cards = grid.querySelectorAll('.news-card');
+      if (cards.length > 3) {
+        cards.forEach((c, i) => { if (i >= 3) c.classList.add('hidden'); });
+        link.innerHTML = 'Ver todas las noticias <i class="bi bi-arrow-right"></i>';
+      }
+    }
+  });
+}
+
+function initFooterLinks() {
+  document.querySelectorAll('.footer__social a').forEach(link => {
+    const label = link.getAttribute('aria-label');
+    const urls = { Facebook: 'https://facebook.com', Instagram: 'https://instagram.com', Twitter: 'https://x.com' };
+    if (urls[label]) link.href = urls[label];
+    link.target = '_blank';
+    link.rel = 'noopener';
+  });
+
+  document.querySelectorAll('.footer__list a').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+function initNewsletter() {
+  const form = document.querySelector('.footer__newsletter');
+  if (!form) return;
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const input = form.querySelector('input');
+    const email = input.value.trim();
+    if (!email) return;
+    const btn = form.querySelector('button');
+    const original = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-check-lg"></i>';
+    input.value = '';
+    input.placeholder = '¡Gracias por suscribirte!';
+    setTimeout(() => {
+      input.placeholder = 'tu@email.com';
+      btn.innerHTML = original;
+    }, 3000);
+  });
+}
+
+async function sendTestimonialForm(event) {
   event.preventDefault();
 
   const form = event.target;
@@ -162,45 +231,38 @@ async function sendContactForm(event) {
   const successBox = document.getElementById('success-message');
   const errorBox = document.getElementById('error-message');
 
-  // Ocultar mensajes anteriores
   successBox.hidden = true;
   errorBox.hidden = true;
 
-  // Leemos los valores escritos por el usuario (variables en inglés)
   const userName = form.userName.value.trim();
-  const email = form.email.value.trim();
-  const phone = form.phone.value.trim();
-  const purpose = form.purpose.value;
-  const message = form.message.value.trim() || null;
+  const role = form.role.value.trim() || null;
+  const company = form.company.value.trim() || null;
+  const content = form.content.value.trim();
+  const photoUrl = form.photoUrl.value.trim() || null;
+  const instagram = form.instagram.value.trim() || null;
+  const facebook = form.facebook.value.trim() || null;
 
-  // Validaciones básicas del lado del cliente
-  if (!userName || !email || !phone || !purpose) {
-    showError('Por favor completá todos los campos obligatorios.');
+  if (!userName || !content) {
+    showError('Por favor completá tu nombre y tu testimonio.');
     return;
   }
 
-  if (!isValidEmail(email)) {
-    showError('El correo electrónico no tiene un formato válido.');
-    return;
-  }
-
-  // Armamos el cuerpo que viaja al backend.
-  // Las CLAVES van en español porque así están definidas en el backend.
   const payload = {
     pais_id: ARGENTINA_COUNTRY_ID,
     nombre: userName,
-    correo: email,
-    telefono: phone,
-    finalidad: purpose,
-    mensaje: message
+    cargo: role,
+    empresa: company,
+    contenido: content,
+    foto_url: photoUrl,
+    instagram_url: instagram,
+    facebook_url: facebook
   };
 
-  // Bloqueamos el botón mientras viaja la petición
   sendButton.disabled = true;
   sendButton.textContent = 'ENVIANDO...';
 
   try {
-    const response = await fetch(`${BACKEND_URL}/contact-requests/public`, {
+    const response = await fetch(`${BACKEND_URL}/testimonials/public`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -209,80 +271,115 @@ async function sendContactForm(event) {
     const responseJson = await response.json();
 
     if (!response.ok) {
-      throw new Error(responseJson.message || 'No se pudo enviar la solicitud');
+      throw new Error(responseJson.message || 'No se pudo enviar el testimonio');
     }
 
-    // Éxito: limpiamos el formulario y mostramos el mensaje
     form.reset();
-    successBox.textContent = '¡Mensaje enviado! Pronto nos pondremos en contacto.';
+    successBox.textContent = '¡Testimonio enviado! Gracias por compartir tu experiencia.';
     successBox.hidden = false;
   } catch (error) {
     showError(error.message);
   } finally {
     sendButton.disabled = false;
-    sendButton.textContent = 'ENVIAR MENSAJE';
+    sendButton.textContent = 'ENVIAR TESTIMONIO';
   }
 }
 
-/* ------------------------------------------------------------
-   FUNCIÓN: verificar que un correo tenga forma válida
-   Un correo válido es del estilo:  algo@algo.algo
-   Ejemplo bueno: maria@gmail.com
-   Ejemplos malos: maria, maria@gmail, @gmail.com, "ma ria@gmail.com"
-   ------------------------------------------------------------ */
-function isValidEmail(email) {
-  // Regla 1: no puede tener espacios
-  if (email.includes(' ')) {
-    return false;
-  }
-
-  // Regla 2: tiene que tener exactamente UN símbolo @
-  const parts = email.split('@');
-  if (parts.length !== 2) {
-    return false;
-  }
-
-  const beforeAt = parts[0];
-  const afterAt = parts[1];
-
-  // Regla 3: antes del @ tiene que haber algo escrito
-  if (beforeAt.length === 0) {
-    return false;
-  }
-
-  // Regla 4: después del @ tiene que haber un punto (para el dominio)
-  if (!afterAt.includes('.')) {
-    return false;
-  }
-
-  // Regla 5: después del último punto tiene que haber al menos una letra
-  const domainParts = afterAt.split('.');
-  const lastPart = domainParts[domainParts.length - 1];
-  if (lastPart.length === 0) {
-    return false;
-  }
-
-  return true;
-}
-
-/* ------------------------------------------------------------
-   FUNCIÓN: mostrar un mensaje de error dentro del formulario
-   ------------------------------------------------------------ */
 function showError(message) {
   const errorBox = document.getElementById('error-message');
   errorBox.textContent = message;
   errorBox.hidden = false;
 }
 
-/* ------------------------------------------------------------
-   PUNTO DE ARRANQUE: cuando carga la página, ejecuta todo
-   ------------------------------------------------------------ */
-document.addEventListener('DOMContentLoaded', () => {
-  printTestimonials();
-  printNews();
+function sharePage() {
+  const url = window.location.href;
+  const title = document.title;
 
-  const form = document.getElementById('contact-form');
-  if (form) {
-    form.addEventListener('submit', sendContactForm);
+  if (navigator.share) {
+    navigator.share({ title, url }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.querySelector('.icon-button[aria-label="Compartir"]');
+      const original = btn.innerHTML;
+      btn.innerHTML = '<i class="bi bi-check-lg"></i>';
+      setTimeout(() => { btn.innerHTML = original; }, 2000);
+    }).catch(() => {});
   }
+}
+
+function toggleSearch() {
+  const searchBar = document.getElementById('search-bar');
+  const isHidden = searchBar.hidden;
+  searchBar.hidden = !isHidden;
+  if (!isHidden) {
+    document.getElementById('search-input').value = '';
+    document.getElementById('search-results').hidden = true;
+  } else {
+    document.getElementById('search-input').focus();
+  }
+}
+
+function performSearch() {
+  const query = document.getElementById('search-input').value.trim().toLowerCase();
+  const resultsContainer = document.getElementById('search-results');
+
+  if (!query) {
+    resultsContainer.hidden = true;
+    return;
+  }
+
+  const allContent = [
+    ...newsMock.map(n => ({ type: 'noticia', title: n.title, text: n.summary, category: n.category })),
+    ...testimonialsMock.map(t => ({ type: 'testimonio', title: t.authorName, text: t.quote.replace(/['"]+/g, ''), category: t.authorRole }))
+  ];
+
+  const matches = allContent.filter(item =>
+    item.title.toLowerCase().includes(query) ||
+    item.text.toLowerCase().includes(query) ||
+    item.category.toLowerCase().includes(query)
+  );
+
+  if (matches.length === 0) {
+    resultsContainer.innerHTML = '<p class="search-bar__result-empty">No se encontraron resultados</p>';
+    resultsContainer.hidden = false;
+    return;
+  }
+
+  const highlight = (text, term) => {
+    const regex = new RegExp(`(${term})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+  };
+
+  resultsContainer.innerHTML = matches.map(item => `
+    <div class="search-bar__result-item">
+      <strong>${highlight(item.title, query)}</strong>
+      <span style="font-size:12px;color:var(--gray-text);margin-left:8px">${item.type}</span>
+      <p style="font-size:13px;margin-top:4px;color:var(--gray-text)">${highlight(item.text.substring(0, 120), query)}${item.text.length > 120 ? '...' : ''}</p>
+    </div>
+  `).join('');
+  resultsContainer.hidden = false;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadTestimonials();
+  loadNews();
+  initSmoothScroll();
+  initSeeAllNews();
+  initFooterLinks();
+  initNewsletter();
+
+  const form = document.getElementById('testimonial-form');
+  if (form) form.addEventListener('submit', sendTestimonialForm);
+
+  const searchButton = document.querySelector('.icon-button[aria-label="Buscar"]');
+  if (searchButton) searchButton.addEventListener('click', toggleSearch);
+
+  const shareButton = document.querySelector('.icon-button[aria-label="Compartir"]');
+  if (shareButton) shareButton.addEventListener('click', sharePage);
+
+  const searchClose = document.getElementById('search-close');
+  if (searchClose) searchClose.addEventListener('click', toggleSearch);
+
+  const searchInput = document.getElementById('search-input');
+  if (searchInput) searchInput.addEventListener('input', performSearch);
 });

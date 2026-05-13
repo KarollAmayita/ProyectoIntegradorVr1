@@ -81,8 +81,8 @@
           body: { username: usuario, password: password }
         });
 
-        // Guardamos token + datos del usuario en localStorage
-        guardarSesion(respuesta.token, respuesta.user);
+        // Guardamos token + refreshToken + datos del usuario
+        guardarSesion(respuesta.token, respuesta.user, respuesta.refreshToken);
 
         // Redirigimos al panel
         window.location.href = 'dashboard.html';

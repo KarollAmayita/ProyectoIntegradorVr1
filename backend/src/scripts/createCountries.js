@@ -1,8 +1,8 @@
 const supabase = require('../config/supabase');
 
 const countries = [
-  { nombre: 'Colombia', codigo: 'CO', slug: 'colombia' },
   { nombre: 'Chile', codigo: 'CL', slug: 'chile' },
+  { nombre: 'Argentina', codigo: 'AR', slug: 'argentina' },
   { nombre: 'Ecuador', codigo: 'EC', slug: 'ecuador' },
 ];
 

@@ -68,7 +68,7 @@ create table testimonios (
   facebook_url text,
   estado text not null default 'borrador',
   destacado boolean not null default false,
-  autor_id bigint not null references usuarios(id),
+  autor_id bigint references usuarios(id),
   fecha_publicacion timestamptz,
   created_at timestamptz default now(),
   updated_at timestamptz default now(),
@@ -108,8 +108,8 @@ create table refresh_tokens (
 -- ============================================
 
 insert into paises (nombre, codigo, slug) values
-('Colombia', 'CO', 'colombia'),
 ('Chile', 'CL', 'chile'),
+('Argentina', 'AR', 'argentina'),
 ('Ecuador', 'EC', 'ecuador');
 
 insert into roles (nombre, descripcion) values

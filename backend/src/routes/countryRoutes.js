@@ -14,8 +14,6 @@ router.get(
 
 router.get(
   '/active',
-  verifyToken,
-  authorizeRoles('superadmin', 'admin_pais', 'editor'),
   countryController.listActiveCountries
 );
 

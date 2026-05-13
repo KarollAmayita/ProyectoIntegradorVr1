@@ -140,10 +140,48 @@ const deleteTestimonial = async (id, user) => {
   };
 };
 
+const createPublicTestimonial = async (payload) => {
+  const {
+    pais_id,
+    nombre,
+    cargo,
+    empresa,
+    contenido,
+    foto_url,
+    instagram_url,
+    facebook_url,
+  } = payload;
+
+  if (!pais_id || !nombre || !contenido) {
+    throw new Error('País, nombre y contenido son obligatorios');
+  }
+
+  const defaultPhotoUrl = '../../../assets/img/portales/default_avatar.png';
+
+  const { data: systemUser } = await testimonialRepository.findSystemUser();
+  const autorId = systemUser?.id || 1;
+
+  return await testimonialRepository.createTestimonial({
+    pais_id,
+    nombre,
+    cargo: cargo || null,
+    empresa: empresa || null,
+    contenido,
+    foto_url: foto_url || defaultPhotoUrl,
+    instagram_url: instagram_url || null,
+    facebook_url: facebook_url || null,
+    estado: 'borrador',
+    destacado: false,
+    autor_id: autorId,
+    fecha_publicacion: null,
+  });
+};
+
 module.exports = {
   getTestimonials,
   getPublicTestimonialsByCountry,
   createTestimonial,
+  createPublicTestimonial,
   updateTestimonial,
   deleteTestimonial,
 };

@@ -150,6 +150,17 @@ const deleteTestimonial = async (id) => {
   if (error) throw new Error(error.message);
 };
 
+const findSystemUser = async () => {
+  const { data, error } = await supabase
+    .from('usuarios')
+    .select('id')
+    .eq('username', 'sistema')
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  return { data };
+};
+
 module.exports = {
   findAllTestimonials,
   findTestimonialsByCountry,
@@ -158,4 +169,5 @@ module.exports = {
   createTestimonial,
   updateTestimonial,
   deleteTestimonial,
+  findSystemUser,
 };

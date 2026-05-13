@@ -27,7 +27,25 @@ const createUser = async (req, res) => {
   }
 };
 
+const updatePassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nueva_password } = req.body;
+
+    await userService.updatePassword(id, nueva_password);
+
+    return res.status(200).json({
+      message: 'Contraseña actualizada correctamente',
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   listUsers,
   createUser,
+  updatePassword,
 };

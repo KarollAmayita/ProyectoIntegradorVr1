@@ -9,6 +9,11 @@ const { authorizeRoles } = require('../middlewares/roleMiddleware');
   RUTAS PÚBLICAS
 */
 
+router.post(
+  '/public',
+  testimonialController.createPublicTestimonial
+);
+
 router.get(
   '/public/:countrySlug',
   testimonialController.listPublicTestimonials

@@ -48,7 +48,18 @@ const createUser = async (payload) => {
   });
 };
 
+const updatePassword = async (id, nueva_password) => {
+  if (!nueva_password || nueva_password.length < 6) {
+    throw new Error('La contraseña debe tener al menos 6 caracteres');
+  }
+
+  const password_hash = bcrypt.hashSync(nueva_password, 10);
+
+  return await userRepository.updateUserPassword(id, password_hash);
+};
+
 module.exports = {
   getUsers,
   createUser,
+  updatePassword,
 };

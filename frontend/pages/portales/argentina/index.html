@@ -45,6 +45,20 @@
   </header>
 
   <!-- ============================================================
+       BARRA DE BÚSQUEDA (se muestra al hacer clic en la lupa)
+       ============================================================ -->
+  <div class="search-bar" id="search-bar" hidden>
+    <div class="container search-bar__content">
+      <input type="text" id="search-input" class="search-bar__input"
+        placeholder="Buscá noticias, testimonios..." />
+      <button class="search-bar__close" id="search-close" aria-label="Cerrar búsqueda">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div id="search-results" class="search-bar__results" hidden></div>
+  </div>
+
+  <!-- ============================================================
        HERO (presentación principal con imagen de Buenos Aires)
        ============================================================ -->
   <section class="hero" id="about-us">
@@ -131,13 +145,13 @@
         <!-- Lado izquierdo: título y datos de contacto -->
         <div class="join-block__left">
           <h2 class="join-block__title">
-            Sumate a<br />
-            Argentina<br />
-            Comparte.
+            Compartí tu<br />
+            experiencia<br />
+            con nosotros.
           </h2>
           <p class="join-block__description">
-            ¿Tenés una idea, un proyecto o querés ser voluntario?
-            Construyamos juntos el país que soñamos.
+            ¿Participaste en alguna actividad de Argentina Comparte?
+            Contanos tu historia y formá parte de nuestras Voces de Cambio.
           </p>
 
           <div class="contact-info">
@@ -154,18 +168,9 @@
           </div>
         </div>
 
-        <!-- Lado derecho: el formulario -->
-        <!--
-          NOTA sobre los atributos name de los inputs:
-          - Están en inglés porque son nombres internos del front
-            (los lee el JS con form.userName.value, form.email.value, etc.).
-          - Cuando el JS arme el objeto que se envía al backend,
-            las CLAVES de ese objeto sí van en español (pais_id, nombre,
-            correo, telefono, finalidad, mensaje) porque así las espera
-            el backend. Ese mapeo está en main.js > sendContactForm.
-        -->
+        <!-- Lado derecho: formulario de testimonio -->
         <div class="join-block__right">
-          <form id="contact-form" class="contact-form" novalidate>
+          <form id="testimonial-form" class="contact-form" novalidate>
 
             <div class="contact-form__row">
               <div class="contact-form__field">
@@ -173,33 +178,39 @@
                 <input type="text" id="field-name" name="userName" placeholder="Tu nombre" required />
               </div>
               <div class="contact-form__field">
-                <label for="field-email">Email</label>
-                <input type="email" id="field-email" name="email" placeholder="tu@email.com" required />
+                <label for="field-role">Cargo</label>
+                <input type="text" id="field-role" name="role" placeholder="Ej: Voluntario" />
               </div>
             </div>
 
             <div class="contact-form__field">
-              <label for="field-phone">Teléfono</label>
-              <input type="tel" id="field-phone" name="phone" placeholder="11 1234 5678" required />
+              <label for="field-company">Empresa / Organización</label>
+              <input type="text" id="field-company" name="company" placeholder="Ej: Fundación Ayudar" />
             </div>
 
             <div class="contact-form__field">
-              <label for="field-purpose">Motivo</label>
-              <select id="field-purpose" name="purpose" required>
-                <option value="">Seleccioná un motivo</option>
-                <option value="Servicio">Servicio</option>
-                <option value="Programa EDIFICA">Programa EDIFICA</option>
-                <option value="Shows y conferencias">Shows y conferencias</option>
-              </select>
+              <label for="field-content">Tu testimonio</label>
+              <textarea id="field-content" name="content" rows="4" placeholder="Compartí tu experiencia con Argentina Comparte..." required></textarea>
             </div>
 
             <div class="contact-form__field">
-              <label for="field-message">Mensaje</label>
-              <textarea id="field-message" name="message" rows="4" placeholder="¿Cómo podemos ayudarte?"></textarea>
+              <label for="field-photo">URL de tu foto</label>
+              <input type="url" id="field-photo" name="photoUrl" placeholder="https://ejemplo.com/mi-foto.jpg" />
+            </div>
+
+            <div class="contact-form__row">
+              <div class="contact-form__field">
+                <label for="field-instagram">Instagram</label>
+                <input type="url" id="field-instagram" name="instagram" placeholder="https://instagram.com/tuPerfil" />
+              </div>
+              <div class="contact-form__field">
+                <label for="field-facebook">Facebook</label>
+                <input type="url" id="field-facebook" name="facebook" placeholder="https://facebook.com/tuPerfil" />
+              </div>
             </div>
 
             <button type="submit" class="send-button" id="send-button">
-              ENVIAR MENSAJE
+              ENVIAR TESTIMONIO
             </button>
 
             <!-- Mensajes de éxito o error -->

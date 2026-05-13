@@ -171,6 +171,88 @@ ul {
 }
 
 /* ============================================================
+   BARRA DE BÚSQUEDA
+   ============================================================ */
+.search-bar {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-border);
+  padding: 16px 0;
+  position: sticky;
+  top: 72px;
+  z-index: 99;
+  box-shadow: var(--shadow-soft);
+}
+
+.search-bar__content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-bar__input {
+  flex-grow: 1;
+  padding: 10px 16px;
+  border: 1.5px solid var(--gray-border);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--navy);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.search-bar__input:focus {
+  border-color: var(--strong-blue);
+}
+
+.search-bar__close {
+  background: transparent;
+  border: none;
+  color: var(--gray-text);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.search-bar__close:hover {
+  background: var(--light-blue);
+  color: var(--navy);
+}
+
+.search-bar__results {
+  margin-top: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.search-bar__result-item {
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-size: 14px;
+  color: var(--navy);
+}
+
+.search-bar__result-item:hover {
+  background: var(--light-blue);
+}
+
+.search-bar__result-item mark {
+  background: var(--yellow);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.search-bar__result-empty {
+  font-size: 13px;
+  color: var(--gray-text);
+  padding: 10px 14px;
+}
+
+/* ============================================================
    HERO
    ============================================================ */
 .hero {
@@ -463,6 +545,10 @@ ul {
 .news-section {
   background: var(--white);
   padding: 80px 0;
+}
+
+.news-card.hidden {
+  display: none;
 }
 
 .news-grid {

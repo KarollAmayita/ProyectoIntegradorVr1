@@ -22,14 +22,18 @@ function obtenerUsuario() {
   return datos ? JSON.parse(datos) : null;
 }
 
-function guardarSesion(token, usuario) {
+function guardarSesion(token, usuario, refreshToken) {
   localStorage.setItem('token', token);
   localStorage.setItem('user', JSON.stringify(usuario));
+  if (refreshToken) {
+    localStorage.setItem('refreshToken', refreshToken);
+  }
 }
 
 function limpiarSesion() {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
+  localStorage.removeItem('refreshToken');
 }
 
 /* ------------------------------------------------------------
@@ -178,6 +182,16 @@ function pintarTopbar(tituloPagina) {
    CERRAR SESI\u00d3N
    ------------------------------------------------------------ */
 function cerrarSesion() {
+  const refreshToken = localStorage.getItem('refreshToken');
+
+  if (refreshToken) {
+    fetch(`${URL_BACKEND}/auth/logout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken })
+    }).catch(() => {});
+  }
+
   limpiarSesion();
   window.location.href = 'login.html';
 }
