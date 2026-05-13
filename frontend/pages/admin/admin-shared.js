@@ -40,10 +40,12 @@ function limpiarSesion() {
    AUTENTICACI\u00d3N: si no hay token, redirige al login
    Se llama al cargar cualquier p\u00e1gina del admin (excepto login).
    ------------------------------------------------------------ */
+const BASE_ADMIN = '/admin';
+
 function exigirSesion() {
   const token = obtenerToken();
   if (!token) {
-    window.location.href = 'login.html';
+    window.location.href = `${BASE_ADMIN}/login`;
   }
 }
 
@@ -68,10 +70,9 @@ async function llamarApi(ruta, opciones = {}) {
     body: opciones.body ? JSON.stringify(opciones.body) : undefined
   });
 
-  // Si el token expir\u00f3 o es inv\u00e1lido, cerrar sesi\u00f3n
   if (respuesta.status === 401) {
     limpiarSesion();
-    window.location.href = 'login.html';
+    window.location.href = `${BASE_ADMIN}/login`;
     throw new Error('Sesi\u00f3n expirada');
   }
 
@@ -118,7 +119,7 @@ function pintarSidebar(paginaActiva) {
   const htmlEnlaces = enlacesPermitidos.map(enlace => {
     const claseActivo = enlace.id === paginaActiva ? 'barra-lateral__enlace--activo' : '';
     return `
-      <a href="${enlace.archivo}" class="barra-lateral__enlace ${claseActivo}">
+      <a href="${BASE_ADMIN}/${enlace.id}" class="barra-lateral__enlace ${claseActivo}">
         <i class="bi bi-${enlace.icono}"></i>
         ${enlace.etiqueta}
       </a>
@@ -193,7 +194,7 @@ function cerrarSesion() {
   }
 
   limpiarSesion();
-  window.location.href = 'login.html';
+  window.location.href = `${BASE_ADMIN}/login`;
 }
 
 /* ------------------------------------------------------------

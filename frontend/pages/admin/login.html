@@ -51,9 +51,8 @@
 
   <script src="admin-shared.js"></script>
   <script>
-    // Si el usuario ya tiene sesi\u00f3n, lo mandamos directo al dashboard
     if (obtenerToken()) {
-      window.location.href = 'dashboard.html';
+      window.location.href = '/admin/dashboard';
     }
 
     const formularioLogin = document.getElementById('formulario-login');
@@ -84,8 +83,7 @@
         // Guardamos token + refreshToken + datos del usuario
         guardarSesion(respuesta.token, respuesta.user, respuesta.refreshToken);
 
-        // Redirigimos al panel
-        window.location.href = 'dashboard.html';
+        window.location.href = '/admin/dashboard';
       } catch (error) {
         cajaError.textContent = error.message;
         cajaError.hidden = false;

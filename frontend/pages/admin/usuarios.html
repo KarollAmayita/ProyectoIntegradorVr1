@@ -172,9 +172,8 @@
     pintarSidebar('usuarios');
     pintarTopbar('Usuarios');
 
-    // Solo superadmin puede entrar a esta p\u00e1gina
     if (!usuarioEs('superadmin')) {
-      window.location.href = 'dashboard.html';
+      window.location.href = '/admin/dashboard';
     }
 
     let usuarios = [];

@@ -2,11 +2,21 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=pages/portales/argentina/index.html" />
-  <title>Redireccionando...</title>
+  <meta http-equiv="refresh" content="0; url=/argentina" />
+  <title>Argentina Comparte</title>
+  <style>
+    body { font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #f5f7fa; }
+    .menu { text-align: center; }
+    .menu a { display: inline-block; margin: 8px; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; }
+    .portal { background: #4A90C2; color: #fff; }
+    .admin { background: #FCBF49; color: #1B3A5C; }
+  </style>
 </head>
 <body>
-  <p>Redirigiendo al portal de Argentina... <a href="pages/portales/argentina/index.html">haga clic aquí</a></p>
-  <p style="margin-top:12px;"><a href="pages/admin/login.html" style="color:#4A90C2;">Ir al panel administrativo</a></p>
+  <div class="menu">
+    <p style="color:#5A6C84; margin-bottom:16px;">Redirigiendo al portal...</p>
+    <a href="/argentina" class="portal">Ir al portal Argentina</a>
+    <a href="/admin/login" class="admin">Panel administrativo</a>
+  </div>
 </body>
 </html>
