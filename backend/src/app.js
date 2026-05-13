@@ -24,16 +24,14 @@ app.use(cors());
 app.use(express.json());
 
 // Servir archivos estáticos del frontend
-app.use(express.static(path.join(__dirname, '..', '..', 'frontend', 'pages', 'portales', 'indice')));
-app.use(express.static(path.join(__dirname, '..', '..', 'frontend')));
-app.use('/pages', express.static(path.join(__dirname, '..', '..', 'frontend', 'pages')));
+app.use(express.static(path.join(__dirname, '..', '..', 'frontend', 'portales', 'indice')));
 app.use('/assets', express.static(path.join(__dirname, '..', '..', 'frontend', 'assets')));
-app.use('/admin', express.static(path.join(__dirname, '..', '..', 'frontend', 'pages', 'admin'), { redirect: false }));
-app.use('/argentina', express.static(path.join(__dirname, '..', '..', 'frontend', 'pages', 'portales', 'argentina')));
+app.use('/admin', express.static(path.join(__dirname, '..', '..', 'frontend', 'admin'), { redirect: false }));
+app.use('/argentina', express.static(path.join(__dirname, '..', '..', 'frontend', 'portales', 'argentina')));
 
 // Rutas del frontend con URLs limpias
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'pages', 'portales', 'indice', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'portales', 'indice', 'index.html'));
 });
 
 app.get(['/admin', '/admin/'], (req, res) => {
@@ -41,35 +39,35 @@ app.get(['/admin', '/admin/'], (req, res) => {
 });
 
 app.get('/admin/login', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'pages', 'admin', 'login.html'));
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'login.html'));
+});
+
+app.get('/admin/recuperar', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'recuperar.html'));
 });
 
 app.get('/admin/dashboard', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'pages', 'admin', 'dashboard.html'));
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'dashboard.html'));
 });
 
 app.get('/admin/noticias', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'pages', 'admin', 'noticias.html'));
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'noticias.html'));
 });
 
 app.get('/admin/testimonios', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'pages', 'admin', 'testimonios.html'));
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'testimonios.html'));
 });
 
 app.get('/admin/solicitudes', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'pages', 'admin', 'solicitudes.html'));
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'solicitudes.html'));
 });
 
 app.get('/admin/usuarios', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'pages', 'admin', 'usuarios.html'));
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'usuarios.html'));
 });
 
 app.get('/argentina', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'pages', 'portales', 'argentina', 'index.html'));
-});
-
-app.get('/indice', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'pages', 'portales', 'indice', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'portales', 'argentina', 'index.html'));
 });
 
 // Ruta base API

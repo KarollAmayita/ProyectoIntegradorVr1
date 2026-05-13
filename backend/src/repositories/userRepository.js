@@ -64,7 +64,11 @@ const createUser = async (payload) => {
 const updateUserPassword = async (id, password_hash) => {
   const { data, error } = await supabase
     .from('usuarios')
-    .update({ password_hash, updated_at: new Date().toISOString() })
+    .update({
+      password_hash,
+      password_updated_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
     .eq('id', id)
     .select('id, nombre, username')
     .single();

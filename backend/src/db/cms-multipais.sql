@@ -29,6 +29,9 @@ create table usuarios (
   email text not null unique,
   username text not null unique,
   password_hash text not null,
+  pregunta_seguridad text,
+  respuesta_seguridad_hash text,
+  password_updated_at timestamptz,
   rol_id bigint not null references roles(id),
   pais_id bigint references paises(id),
   estado text not null default 'activo',
@@ -116,3 +119,12 @@ insert into roles (nombre, descripcion) values
 ('superadmin', 'Administrador general del sistema'),
 ('admin_pais', 'Administrador de un país específico'),
 ('editor', 'Usuario editor de contenidos');
+
+-- ============================================
+-- Migración: Recuperación de contraseña
+-- ============================================
+
+alter table usuarios
+add column if not exists pregunta_seguridad text,
+add column if not exists respuesta_seguridad_hash text,
+add column if not exists password_updated_at timestamptz;

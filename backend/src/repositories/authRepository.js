@@ -117,12 +117,85 @@ const deleteAllUserRefreshTokens = async (usuario_id) => {
   }
 };
 
+const findUserById = async (id) => {
+  const { data, error } = await supabase
+    .from('usuarios')
+    .select(`
+      id,
+      nombre,
+      username,
+      email,
+      password_hash,
+      pregunta_seguridad,
+      respuesta_seguridad_hash,
+      password_updated_at,
+      estado,
+      pais_id,
+      roles (
+        id,
+        nombre
+      )
+    `)
+    .eq('id', id)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  return data;
+};
+
+const findUserSecurityQuestion = async (identifier) => {
+  const { data, error } = await supabase
+    .from('usuarios')
+    .select('id, username, pregunta_seguridad, respuesta_seguridad_hash')
+    .or(`username.eq.${identifier},email.eq.${identifier}`)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  return data;
+};
+
+const updatePasswordWithTimestamp = async (id, password_hash) => {
+  const { data, error } = await supabase
+    .from('usuarios')
+    .update({
+      password_hash,
+      password_updated_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+    .select('id, nombre, username')
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
+};
+
+const updateSecurityQuestion = async (id, pregunta_seguridad, respuesta_seguridad_hash) => {
+  const { data, error } = await supabase
+    .from('usuarios')
+    .update({
+      pregunta_seguridad,
+      respuesta_seguridad_hash,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+    .select('id, username')
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
+};
+
 module.exports = {
   findUserByUsername,
   findUserByEmail,
+  findUserById,
+  findUserSecurityQuestion,
   updateLastAccess,
   createRefreshToken,
   findRefreshToken,
   deleteRefreshToken,
   deleteAllUserRefreshTokens,
+  updatePasswordWithTimestamp,
+  updateSecurityQuestion,
 };

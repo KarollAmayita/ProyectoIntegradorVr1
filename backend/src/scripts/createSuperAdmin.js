@@ -22,6 +22,7 @@ const createSuperAdmin = async () => {
 
     console.log('🔐 Generando hash de contraseña...');
     const password_hash = bcrypt.hashSync(password, 10);
+    const respuesta_seguridad_hash = bcrypt.hashSync('cms2026', 10);
 
     console.log('🔎 Buscando rol superadmin...');
 
@@ -46,6 +47,8 @@ const createSuperAdmin = async () => {
           email,
           username,
           password_hash,
+          pregunta_seguridad: '¿Cuál es el código inicial del sistema?',
+          respuesta_seguridad_hash,
           rol_id: role.id,
           pais_id: null,
           estado: 'activo',

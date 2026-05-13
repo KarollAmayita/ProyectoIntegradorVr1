@@ -15,6 +15,8 @@ const createUser = async (payload) => {
     password,
     rol_id,
     pais_id,
+    pregunta_seguridad,
+    respuesta_seguridad,
   } = payload;
 
   if (!nombre || !apellido || !email || !username || !password || !rol_id) {
@@ -35,6 +37,9 @@ const createUser = async (payload) => {
   }
 
   const password_hash = bcrypt.hashSync(password, 10);
+  const respuesta_seguridad_hash = respuesta_seguridad
+    ? bcrypt.hashSync(respuesta_seguridad, 10)
+    : null;
 
   return await userRepository.createUser({
     nombre,
@@ -42,6 +47,8 @@ const createUser = async (payload) => {
     email,
     username,
     password_hash,
+    pregunta_seguridad: pregunta_seguridad || null,
+    respuesta_seguridad_hash,
     rol_id,
     pais_id: pais_id || null,
     estado: 'activo',
