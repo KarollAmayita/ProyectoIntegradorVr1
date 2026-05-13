@@ -24,16 +24,16 @@ app.use(cors());
 app.use(express.json());
 
 // Servir archivos estáticos del frontend
+app.use(express.static(path.join(__dirname, '..', '..', 'frontend', 'pages', 'portales', 'indice')));
 app.use(express.static(path.join(__dirname, '..', '..', 'frontend')));
 app.use('/pages', express.static(path.join(__dirname, '..', '..', 'frontend', 'pages')));
 app.use('/assets', express.static(path.join(__dirname, '..', '..', 'frontend', 'assets')));
 app.use('/admin', express.static(path.join(__dirname, '..', '..', 'frontend', 'pages', 'admin'), { redirect: false }));
 app.use('/argentina', express.static(path.join(__dirname, '..', '..', 'frontend', 'pages', 'portales', 'argentina')));
-app.use('/indice', express.static(path.join(__dirname, '..', '..', 'frontend', 'pages', 'portales', 'indice')));
 
 // Rutas del frontend con URLs limpias
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'pages', 'portales', 'indice', 'index.html'));
 });
 
 app.get(['/admin', '/admin/'], (req, res) => {
