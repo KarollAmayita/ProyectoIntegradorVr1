@@ -7,5 +7,5 @@ backend/.env
 backend/backend.log
 backend/backend.err
 frontend/**/*.html
-!frontend/index.html
-!frontend/pages/**/*.html
+!frontend/admin/*.html
+!frontend/portales/**/*.html
