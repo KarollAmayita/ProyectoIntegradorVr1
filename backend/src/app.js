@@ -27,14 +27,16 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', '..', 'frontend')));
 app.use('/pages', express.static(path.join(__dirname, '..', '..', 'frontend', 'pages')));
 app.use('/assets', express.static(path.join(__dirname, '..', '..', 'frontend', 'assets')));
+app.use('/admin', express.static(path.join(__dirname, '..', '..', 'frontend', 'pages', 'admin'), { redirect: false }));
+app.use('/argentina', express.static(path.join(__dirname, '..', '..', 'frontend', 'pages', 'portales', 'argentina')));
 
 // Rutas del frontend con URLs limpias
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'index.html'));
 });
 
-app.get('/admin', (req, res) => {
-  res.redirect('/pages/admin/login.html');
+app.get(['/admin', '/admin/'], (req, res) => {
+  res.redirect('/admin/login');
 });
 
 app.get('/admin/login', (req, res) => {
