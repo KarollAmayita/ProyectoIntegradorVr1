@@ -40,6 +40,19 @@ const observer = new IntersectionObserver(entries => {
 
 counters.forEach(c => observer.observe(c));
 
+// Scroll reveal animation
+const revealElements = document.querySelectorAll('.section-title, .section-subtitle, .about__content, .impact__grid, .news__grid, .contact__block, .footer__content');
+revealElements.forEach(el => {
+  el.classList.add('animate-on-scroll');
+  const obs = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) {
+      el.classList.add('visible');
+      obs.unobserve(el);
+    }
+  }, { threshold: 0.1 });
+  obs.observe(el);
+});
+
 // Contact form
 document.getElementById('contact-form')?.addEventListener('submit', async e => {
   e.preventDefault();
