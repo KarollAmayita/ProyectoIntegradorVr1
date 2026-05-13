@@ -1,4 +1,4 @@
-const BACKEND_URL = 'http://localhost:3001/api';
+const BACKEND_URL = '/api';
 const ARGENTINA_COUNTRY_ID = 2;
 const COUNTRY_SLUG = 'argentina';
 

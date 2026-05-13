@@ -8,7 +8,7 @@
    - Apertura/cierre de modales
    ============================================================ */
 
-const URL_BACKEND = 'http://localhost:3001/api';
+const URL_BACKEND = '/api';
 
 /* ------------------------------------------------------------
    SESI\u00d3N: leer/guardar/limpiar token y usuario
