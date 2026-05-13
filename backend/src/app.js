@@ -29,6 +29,7 @@ app.use('/pages', express.static(path.join(__dirname, '..', '..', 'frontend', 'p
 app.use('/assets', express.static(path.join(__dirname, '..', '..', 'frontend', 'assets')));
 app.use('/admin', express.static(path.join(__dirname, '..', '..', 'frontend', 'pages', 'admin'), { redirect: false }));
 app.use('/argentina', express.static(path.join(__dirname, '..', '..', 'frontend', 'pages', 'portales', 'argentina')));
+app.use('/indice', express.static(path.join(__dirname, '..', '..', 'frontend', 'pages', 'portales', 'indice')));
 
 // Rutas del frontend con URLs limpias
 app.get('/', (req, res) => {
@@ -65,6 +66,10 @@ app.get('/admin/usuarios', (req, res) => {
 
 app.get('/argentina', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'pages', 'portales', 'argentina', 'index.html'));
+});
+
+app.get('/indice', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'pages', 'portales', 'indice', 'index.html'));
 });
 
 // Ruta base API
