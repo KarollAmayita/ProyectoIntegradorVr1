@@ -181,13 +181,13 @@ img { max-width: 100%; display: block; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 20px 28px;
+  gap: 12px;
+  padding: 28px 36px;
   background: var(--white);
-  border-radius: 16px;
+  border-radius: 20px;
   box-shadow: var(--shadow-medium);
   transition: transform 0.3s, box-shadow 0.3s;
-  min-width: 140px;
+  min-width: 170px;
 }
 
 .country-card:hover {
@@ -196,13 +196,13 @@ img { max-width: 100%; display: block; }
 }
 
 .country-card img {
-  height: 48px;
+  height: 64px;
   width: auto;
 }
 
 .country-card span {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--navy);
 }
 
@@ -615,12 +615,12 @@ img { max-width: 100%; display: block; }
   }
 
   .country-card {
-    min-width: 130px;
-    padding: 14px 16px;
+    min-width: 150px;
+    padding: 18px 22px;
   }
 
   .country-card img {
-    height: 36px;
+    height: 48px;
   }
 
   .section-title {
@@ -694,17 +694,17 @@ img { max-width: 100%; display: block; }
   }
 
   .country-card {
-    min-width: 100px;
-    padding: 10px 12px;
-    gap: 6px;
+    min-width: 130px;
+    padding: 14px 18px;
+    gap: 8px;
   }
 
   .country-card img {
-    height: 28px;
+    height: 40px;
   }
 
   .country-card span {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .hero__cta {
@@ -758,16 +758,16 @@ img { max-width: 100%; display: block; }
   }
 
   .country-card {
-    min-width: 80px;
-    padding: 8px 10px;
+    min-width: 100px;
+    padding: 10px 14px;
   }
 
   .country-card img {
-    height: 24px;
+    height: 32px;
   }
 
   .country-card span {
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .contact__form input,
