@@ -1,3 +1,27 @@
+// Scroll progress bar
+const progressBar = document.getElementById('scroll-progress');
+// Back to top
+const backToTop = document.getElementById('back-to-top');
+// Navbar
+const navbar = document.querySelector('.navbar');
+
+function updateScrollProgress() {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = progress + '%';
+  backToTop.classList.toggle('visible', scrollTop > 500);
+  navbar.classList.toggle('navbar--scrolled', scrollTop > 50);
+}
+
+window.addEventListener('scroll', updateScrollProgress, { passive: true });
+updateScrollProgress();
+
+// Back to top click
+backToTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
 // Mobile menu toggle
 document.getElementById('menu-toggle')?.addEventListener('click', () => {
   document.querySelector('.navbar__menu').classList.toggle('navbar__menu--open');
@@ -17,7 +41,7 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
 
 // Animated counters
 const counters = document.querySelectorAll('.impact__number');
-const observer = new IntersectionObserver(entries => {
+const counterObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       const el = entry.target;
@@ -33,25 +57,25 @@ const observer = new IntersectionObserver(entries => {
           el.textContent = current;
         }
       }, 40);
-      observer.unobserve(el);
+      counterObserver.unobserve(el);
     }
   });
 }, { threshold: 0.5 });
 
-counters.forEach(c => observer.observe(c));
+counters.forEach(c => counterObserver.observe(c));
 
 // Scroll reveal animation
-const revealElements = document.querySelectorAll('.section-title, .section-subtitle, .about__content, .impact__grid, .news__grid, .contact__block, .footer__content');
-revealElements.forEach(el => {
-  el.classList.add('animate-on-scroll');
-  const obs = new IntersectionObserver(([entry]) => {
+const revealElements = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
     if (entry.isIntersecting) {
-      el.classList.add('visible');
-      obs.unobserve(el);
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
     }
-  }, { threshold: 0.1 });
-  obs.observe(el);
-});
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+revealElements.forEach(el => revealObserver.observe(el));
 
 // Contact form
 document.getElementById('contact-form')?.addEventListener('submit', async e => {

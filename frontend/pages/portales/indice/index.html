@@ -13,213 +13,231 @@
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <header class="navbar">
-    <div class="container navbar__content">
-      <a href="/" class="navbar__brand">
-        <img src="../../assets/img/portales/argentina_logo.png" alt="Latinoamérica Comparte" height="40" />
-        <span>Latinoamérica <strong>Comparte</strong></span>
+<div id="scroll-progress"></div>
+
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="container navbar__content">
+    <a href="/" class="navbar__brand">
+      <img src="../../assets/img/portales/argentina_logo.png" alt="Latinoamérica Comparte" height="40" />
+      <span>Latinoamérica <strong>Comparte</strong></span>
+    </a>
+    <nav class="navbar__menu">
+      <a href="#quienes" class="navbar__link">Quiénes somos</a>
+      <a href="#impacto" class="navbar__link">Impacto</a>
+      <a href="#noticias" class="navbar__link">Noticias</a>
+      <a href="#contacto" class="navbar__link">Contacto</a>
+    </nav>
+    <button class="navbar__toggle" id="menu-toggle" aria-label="Menú">
+      <i class="bi bi-list"></i>
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-blob hero-blob--1"></div>
+  <div class="hero-blob hero-blob--2"></div>
+  <div class="hero-blob hero-blob--3"></div>
+  <div class="hero-blob hero-blob--4"></div>
+
+  <div class="container hero__content">
+    <span class="hero__tag"><i class="bi bi-globe2"></i> Red continental</span>
+    <h1 class="hero__title">
+      Un propósito que nació<br />
+      <span class="hero__title--highlight">hoy inspira a toda Latinoamérica</span>
+    </h1>
+    <p class="hero__subtitle">
+      Una red que une personas, empresas y comunidades, para construir una región más humana, productiva y consciente.
+    </p>
+
+    <div class="hero__countries">
+      <a href="https://colombiacomparte.com" target="_blank" rel="noopener" class="country-card">
+        <img src="../../assets/img/portales/colombia_logo.png" alt="Colombia Comparte"
+          onerror="this.src='../../assets/img/portales/argentina_logo.png'" />
+        <span>Colombia</span>
       </a>
-      <nav class="navbar__menu">
-        <a href="#quienes" class="navbar__link">Quiénes somos</a>
-        <a href="#impacto" class="navbar__link">Impacto</a>
-        <a href="#noticias" class="navbar__link">Noticias</a>
-        <a href="#contacto" class="navbar__link">Contacto</a>
-      </nav>
-      <button class="navbar__toggle" id="menu-toggle" aria-label="Menú">
-        <i class="bi bi-list"></i>
-      </button>
-    </div>
-  </header>
-
-  <!-- HERO -->
-  <section class="hero" id="hero">
-    <div class="container hero__content">
-      <h1 class="hero__title">
-        Un propósito que nació<br />
-        <span class="hero__title--highlight">hoy inspira a toda Latinoamérica</span>
-      </h1>
-      <p class="hero__subtitle">
-        Una red que une personas, empresas y comunidades, para construir una región más humana, productiva y consciente.
-      </p>
-
-      <div class="hero__countries">
-        <a href="https://colombiacomparte.com" target="_blank" rel="noopener" class="country-card">
-          <img src="../../assets/img/portales/colombia_logo.png" alt="Colombia Comparte"
-            onerror="this.src='../../assets/img/portales/argentina_logo.png'" />
-          <span>Colombia</span>
-        </a>
-        <a href="https://ecuadorcomparte.com.co" target="_blank" rel="noopener" class="country-card">
-          <img src="../../assets/img/portales/ecuador_logo.png" alt="Ecuador Comparte" />
-          <span>Ecuador</span>
-        </a>
-        <a href="https://chilecomparte.com.co" target="_blank" rel="noopener" class="country-card">
-          <img src="../../assets/img/portales/chile_logo.png" alt="Chile Comparte" />
-          <span>Chile</span>
-        </a>
-        <a href="/argentina" class="country-card">
-          <img src="../../assets/img/portales/argentina_logo.png" alt="Argentina Comparte" />
-          <span>Argentina</span>
-        </a>
-      </div>
-
-      <a href="#quienes" class="hero__cta">Conoce más <i class="bi bi-arrow-down"></i></a>
-    </div>
-  </section>
-
-  <!-- QUIÉNES SOMOS -->
-  <section class="about" id="quienes">
-    <div class="container about__content">
-      <div class="about__text">
-        <h2 class="section-title">Quiénes somos</h2>
-        <p class="about__description">
-          En Latinoamérica Comparte creemos que transformar personas es transformar comunidades.
-          Lo que comenzó como un movimiento para ayudar a familias a reconstruir su productividad,
-          hoy se ha convertido en una red continental que promueve el bienestar, la cultura organizacional
-          y el emprendimiento con propósito.
-        </p>
-        <p class="about__description">
-          En cada país acompañamos a personas, familias y empresas a reencontrar su propósito productivo
-          y a construir un futuro sostenible. Porque cuando un país comparte, Latinoamérica avanza.
-        </p>
-      </div>
-      <div class="about__logos">
-        <img src="../../assets/img/portales/argentina_logo.png" alt="Argentina Comparte" />
-        <img src="../../assets/img/portales/chile_logo.png" alt="Chile Comparte" />
+      <a href="https://ecuadorcomparte.com.co" target="_blank" rel="noopener" class="country-card">
         <img src="../../assets/img/portales/ecuador_logo.png" alt="Ecuador Comparte" />
+        <span>Ecuador</span>
+      </a>
+      <a href="https://chilecomparte.com.co" target="_blank" rel="noopener" class="country-card">
+        <img src="../../assets/img/portales/chile_logo.png" alt="Chile Comparte" />
+        <span>Chile</span>
+      </a>
+      <a href="/argentina" class="country-card">
+        <img src="../../assets/img/portales/argentina_logo.png" alt="Argentina Comparte" />
+        <span>Argentina</span>
+      </a>
+    </div>
+
+    <a href="#quienes" class="hero__cta">Conoce más <i class="bi bi-arrow-down"></i></a>
+  </div>
+</section>
+
+<!-- QUIÉNES SOMOS -->
+<section class="about" id="quienes">
+  <div class="container about__content reveal">
+    <div class="about__text">
+      <h2 class="section-title"><span class="section-title__text">Quiénes somos</span></h2>
+      <p class="about__description">
+        En Latinoamérica Comparte creemos que transformar personas es transformar comunidades.
+        Lo que comenzó como un movimiento para ayudar a familias a reconstruir su productividad,
+        hoy se ha convertido en una red continental que promueve el bienestar, la cultura organizacional
+        y el emprendimiento con propósito.
+      </p>
+      <p class="about__description">
+        En cada país acompañamos a personas, familias y empresas a reencontrar su propósito productivo
+        y a construir un futuro sostenible. Porque cuando un país comparte, Latinoamérica avanza.
+      </p>
+    </div>
+    <div class="about__logos reveal reveal-delay-2">
+      <img src="../../assets/img/portales/argentina_logo.png" alt="Argentina Comparte" />
+      <img src="../../assets/img/portales/chile_logo.png" alt="Chile Comparte" />
+      <img src="../../assets/img/portales/ecuador_logo.png" alt="Ecuador Comparte" />
+    </div>
+  </div>
+</section>
+
+<!-- IMPACTO -->
+<section class="impact" id="impacto">
+  <div class="container">
+    <h2 class="section-title section-title--center reveal">
+      <span class="section-title__text section-title--light">Nuestro impacto</span>
+    </h2>
+    <div class="impact__grid">
+      <div class="impact__card reveal reveal-delay-1">
+        <span class="impact__number" data-target="5">0</span>
+        <span class="impact__label">años de impacto social</span>
+      </div>
+      <div class="impact__card reveal reveal-delay-2">
+        <span class="impact__number" data-target="1000">0</span>
+        <span class="impact__label">familias transformadas</span>
+      </div>
+      <div class="impact__card reveal reveal-delay-3">
+        <span class="impact__number" data-target="200">0</span>
+        <span class="impact__label">emprendimientos creados</span>
+      </div>
+      <div class="impact__card reveal reveal-delay-4">
+        <span class="impact__number" data-target="50">0</span>
+        <span class="impact__label">empresas aliadas</span>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- IMPACTO -->
-  <section class="impact" id="impacto">
-    <div class="container">
-      <h2 class="section-title section-title--center">Nuestro impacto</h2>
-      <div class="impact__grid">
-        <div class="impact__card">
-          <span class="impact__number" data-target="5">0</span>
-          <span class="impact__label">años de impacto social</span>
-        </div>
-        <div class="impact__card">
-          <span class="impact__number" data-target="1000">0</span>
-          <span class="impact__label">familias transformadas</span>
-        </div>
-        <div class="impact__card">
-          <span class="impact__number" data-target="200">0</span>
-          <span class="impact__label">emprendimientos creados</span>
-        </div>
-        <div class="impact__card">
-          <span class="impact__number" data-target="50">0</span>
-          <span class="impact__label">empresas aliadas</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- NOTICIAS -->
-  <section class="news" id="noticias">
-    <div class="container">
-      <h2 class="section-title">Noticias</h2>
+<!-- NOTICIAS -->
+<section class="news" id="noticias">
+  <div class="container">
+    <div class="reveal">
+      <h2 class="section-title"><span class="section-title__text">Noticias</span></h2>
       <p class="section-subtitle">Mantente al día con nuestras últimas novedades</p>
-      <div class="news__grid" id="news-grid">
-        <article class="news__card">
-          <div class="news__card-img">
-            <img src="../../assets/img/argentina/biblioteca_cordoba.jpg" alt="Noticia" />
-          </div>
-          <div class="news__card-body">
-            <span class="news__card-tag">Inspiración</span>
-            <h3>Historias que inspiran</h3>
-            <p>Casos de éxito y emprendedores que transforman sus comunidades.</p>
-          </div>
-        </article>
-        <article class="news__card">
-          <div class="news__card-img">
-            <img src="../../assets/img/argentina/huerto.jpg" alt="Noticia" />
-          </div>
-          <div class="news__card-body">
-            <span class="news__card-tag">Corporativo</span>
-            <h3>Nuevas alianzas regionales</h3>
-            <p>Nuevas alianzas y expansión regional en Latinoamérica.</p>
-          </div>
-        </article>
-        <article class="news__card">
-          <div class="news__card-img">
-            <img src="../../assets/img/argentina/becas.jpg" alt="Noticia" />
-          </div>
-          <div class="news__card-body">
-            <span class="news__card-tag">Eventos</span>
-            <h3>Eventos y conferencias</h3>
-            <p>Red que Transforma y Top Speakers en la región.</p>
-          </div>
-        </article>
+    </div>
+    <div class="news__grid">
+      <article class="news__card reveal reveal-delay-1">
+        <div class="news__card-img">
+          <img src="../../assets/img/argentina/biblioteca_cordoba.jpg" alt="Noticia" />
+        </div>
+        <div class="news__card-body">
+          <span class="news__card-tag">Inspiración</span>
+          <h3>Historias que inspiran</h3>
+          <p>Casos de éxito y emprendedores que transforman sus comunidades.</p>
+        </div>
+      </article>
+      <article class="news__card reveal reveal-delay-2">
+        <div class="news__card-img">
+          <img src="../../assets/img/argentina/huerto.jpg" alt="Noticia" />
+        </div>
+        <div class="news__card-body">
+          <span class="news__card-tag">Corporativo</span>
+          <h3>Nuevas alianzas regionales</h3>
+          <p>Nuevas alianzas y expansión regional en Latinoamérica.</p>
+        </div>
+      </article>
+      <article class="news__card reveal reveal-delay-3">
+        <div class="news__card-img">
+          <img src="../../assets/img/argentina/becas.jpg" alt="Noticia" />
+        </div>
+        <div class="news__card-body">
+          <span class="news__card-tag">Eventos</span>
+          <h3>Eventos y conferencias</h3>
+          <p>Red que Transforma y Top Speakers en la región.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contact" id="contacto">
+  <div class="container reveal">
+    <div class="contact__block">
+      <div class="contact__info">
+        <h2 class="section-title section-title--light">
+          <span class="section-title__text">Contáctanos</span>
+        </h2>
+        <p>Pronto uno de nuestros gerentes regionales se pondrá en contacto contigo.</p>
+        <div class="contact__detail">
+          <i class="bi bi-envelope-fill"></i>
+          <span>contacto@latinoamericacomparte.com</span>
+        </div>
+      </div>
+      <form class="contact__form" id="contact-form" novalidate>
+        <input type="text" placeholder="Nombre *" required />
+        <input type="text" placeholder="Apellido" />
+        <input type="tel" placeholder="Teléfono" />
+        <select>
+          <option value="">Selecciona tu país</option>
+          <option>Argentina</option>
+          <option>Chile</option>
+          <option>Ecuador</option>
+          <option>Colombia</option>
+          <option>Otro</option>
+        </select>
+        <input type="email" placeholder="Correo electrónico *" required />
+        <textarea rows="4" placeholder="¿En qué podemos ayudarte? *" required></textarea>
+        <button type="submit" class="contact__submit">Enviar mensaje</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer__content">
+    <div class="footer__brand">
+      <img src="../../assets/img/portales/argentina_logo.png" alt="Latinoamérica Comparte" height="50" />
+      <p>"Cuando un país comparte, Latinoamérica avanza."</p>
+    </div>
+    <div class="footer__links">
+      <h4>Enlaces</h4>
+      <a href="#hero">Inicio</a>
+      <a href="#quienes">Quiénes Somos</a>
+      <a href="#impacto">Impacto</a>
+      <a href="#noticias">Noticias</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+    <div class="footer__social">
+      <h4>Síguenos</h4>
+      <div class="footer__social-icons">
+        <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+        <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
       </div>
     </div>
-  </section>
-
-  <!-- CONTACTO -->
-  <section class="contact" id="contacto">
+  </div>
+  <div class="footer__bottom">
     <div class="container">
-      <div class="contact__block">
-        <div class="contact__info">
-          <h2 class="section-title section-title--light">Contáctanos</h2>
-          <p>Pronto uno de nuestros gerentes regionales se pondrá en contacto contigo.</p>
-          <div class="contact__detail">
-            <i class="bi bi-envelope-fill"></i>
-            <span>contacto@latinoamericacomparte.com</span>
-          </div>
-        </div>
-        <form class="contact__form" id="contact-form" novalidate>
-          <input type="text" placeholder="Nombre *" required />
-          <input type="text" placeholder="Apellido" />
-          <input type="tel" placeholder="Teléfono" />
-          <select>
-            <option value="">Selecciona tu país</option>
-            <option>Argentina</option>
-            <option>Chile</option>
-            <option>Ecuador</option>
-            <option>Colombia</option>
-            <option>Otro</option>
-          </select>
-          <input type="email" placeholder="Correo electrónico *" required />
-          <textarea rows="4" placeholder="¿En qué podemos ayudarte? *" required></textarea>
-          <button type="submit" class="contact__submit">Enviar mensaje</button>
-        </form>
-      </div>
+      <p>&copy; 2026 Latinoamérica Comparte. Todos los derechos reservados.</p>
     </div>
-  </section>
+  </div>
+</footer>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container footer__content">
-      <div class="footer__brand">
-        <img src="../../assets/img/portales/argentina_logo.png" alt="Latinoamérica Comparte" height="50" />
-        <p>"Cuando un país comparte, Latinoamérica avanza."</p>
-      </div>
-      <div class="footer__links">
-        <h4>Enlaces</h4>
-        <a href="#hero">Inicio</a>
-        <a href="#quienes">Quiénes Somos</a>
-        <a href="#impacto">Impacto</a>
-        <a href="#noticias">Noticias</a>
-        <a href="#contacto">Contacto</a>
-      </div>
-      <div class="footer__social">
-        <h4>Síguenos</h4>
-        <div class="footer__social-icons">
-          <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-          <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-          <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
-          <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
-        </div>
-      </div>
-    </div>
-    <div class="footer__bottom">
-      <div class="container">
-        <p>&copy; 2026 Latinoamérica Comparte. Todos los derechos reservados.</p>
-      </div>
-    </div>
-  </footer>
+<button id="back-to-top" aria-label="Volver arriba">
+  <i class="bi bi-arrow-up"></i>
+</button>
 
-  <script src="main.js"></script>
+<script src="main.js"></script>
 </body>
 </html>
