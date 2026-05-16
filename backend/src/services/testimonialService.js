@@ -188,7 +188,7 @@ const getTestimonialById = async (id, user) => {
 
 const updateTestimonialStatus = async (id, payload, user) => {
   const { estado } = payload;
-  if (!estado || !['borrador', 'publicado', 'archivado'].includes(estado)) {
+  if (!estado || !['borrador', 'publicado', 'despublicado'].includes(estado)) {
     throw new Error('Estado no válido');
   }
   const existing = await testimonialRepository.findTestimonialById(id);

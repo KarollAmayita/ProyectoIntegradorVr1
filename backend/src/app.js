@@ -17,6 +17,11 @@ const connectionLogRoutes = require('./routes/connectionLogRoutes');
 const archivosRoutes = require('./routes/archivosRoutes');
 const auditoriaRoutes = require('./routes/auditoriaRoutes');
 const publicRoutes = require('./routes/publicRoutes');
+const categoriaRoutes = require('./routes/categoriaRoutes');
+const estadisticaPaisRoutes = require('./routes/estadisticaPaisRoutes');
+const notificacionRoutes = require('./routes/notificacionRoutes');
+const historialNoticiaRoutes = require('./routes/historialNoticiaRoutes');
+const comentarioRoutes = require('./routes/comentarioRoutes');
 
 // Importar middlewares
 const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
@@ -26,6 +31,7 @@ const app = express();
 // Middlewares globales
 app.use(cors());
 app.use(express.json());
+app.use(require('express-fileupload')());
 
 // Servir archivos estáticos del frontend
 app.use(express.static(path.join(__dirname, '..', '..', 'frontend', 'portales', 'indice')));
@@ -99,13 +105,19 @@ app.use('/api/archivos', archivosRoutes);
 app.use('/api/auditoria', auditoriaRoutes);
 
 // Rutas con nombres en español (alias)
-app.use('/api/auth', authRoutes); // already in Spanish
 app.use('/api/perfil', profileRoutes);
 app.use('/api/paises', countryRoutes);
 app.use('/api/noticias', newsRoutes);
 app.use('/api/testimonios', testimonialRoutes);
 app.use('/api/solicitudes', contactRequestRoutes);
 app.use('/api/usuarios', userRoutes);
+
+// Nuevos módulos
+app.use('/api/categorias', categoriaRoutes);
+app.use('/api/estadisticas-pais', estadisticaPaisRoutes);
+app.use('/api/notificaciones', notificacionRoutes);
+app.use('/api/historial-noticias', historialNoticiaRoutes);
+app.use('/api/comentarios', comentarioRoutes);
 
 // Rutas públicas con nombres en español
 app.use('/api/public', publicRoutes);

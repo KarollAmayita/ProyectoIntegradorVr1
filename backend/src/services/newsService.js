@@ -1,4 +1,6 @@
 const newsRepository = require('../repositories/newsRepository');
+const historialNoticiaService = require('./historialNoticiaService');
+const { prepararVersion } = require('../utils/versionador');
 
 const generateSlug = (text) => {
   return text
@@ -133,6 +135,8 @@ const updateNews = async (id, payload, user) => {
 
   updatePayload.updated_at = new Date().toISOString();
 
+  await prepararVersion(existingNews, updatePayload, user.id, historialNoticiaService);
+
   return await newsRepository.updateNews(id, updatePayload);
 };
 
@@ -172,7 +176,7 @@ const getNewsById = async (id, user) => {
 
 const updateNewsStatus = async (id, payload, user) => {
   const { estado } = payload;
-  if (!estado || !['borrador', 'publicado', 'archivado'].includes(estado)) {
+  if (!estado || !['borrador', 'publicado', 'despublicado'].includes(estado)) {
     throw new Error('Estado no válido');
   }
   const existing = await newsRepository.findNewsById(id);

@@ -33,19 +33,19 @@ Sistema CMS multi-país que permite gestionar contenidos (noticias, testimonios,
 ├── backend/
 │   ├── src/
 │   │   ├── config/           → supabase.js
-│   │   ├── controllers/      → auth, profile, admin, user, country, news, testimonial, contactRequest
+│   │   ├── controllers/      → auth, profile, admin, user, country, news, testimonial, contactRequest, connectionLog, archivos, auditoria, categoria, estadisticaPais, notificacion, historialNoticia, comentario
 │   │   ├── db/               → cms-multipais.sql
 │   │   ├── middlewares/      → auth, role, errorHandler, validation
-│   │   ├── repositories/     → capa de datos
-│   │   ├── routes/           → definición de rutas
+│   │   ├── repositories/     → capa de datos (14 repositorios)
+│   │   ├── routes/           → definición de rutas (14 archivos)
 │   │   ├── scripts/          → createSuperAdmin.js
-│   │   ├── services/         → lógica de negocio
-│   │   ├── utils/errors.js
+│   │   ├── services/         → lógica de negocio (14 servicios)
+│   │   ├── utils/errors.js, versionador.js
 │   │   └── app.js
 │   ├── .env
 │   └── package.json
 ├── frontend/
-│   ├── admin/                → login, recuperar, dashboard, noticias, testimonios, solicitudes, usuarios
+│   ├── admin/                → login, recuperar, dashboard, noticias, testimonios, solicitudes, usuarios, conexiones
 │   │   ├── admin-styles.css
 │   │   ├── admin-shared.js
 │   │   └── *.html
@@ -418,6 +418,7 @@ Authorization: Bearer TOKEN
 | `/admin/testimonios` | Gestión de testimonios |
 | `/admin/solicitudes` | Gestión de solicitudes |
 | `/admin/usuarios` | Gestión de usuarios (superadmin) |
+| `/admin/conexiones` | Historial de conexiones |
 
 ### Rutas públicas
 
@@ -431,9 +432,9 @@ Authorization: Bearer TOKEN
 | Usuario | Password | Rol | País |
 |---------|----------|-----|------|
 | superadmin | 123456 | superadmin | Global |
+| adminarg | 123456 | admin_pais | Argentina |
 | admin_arg | 123456 | admin_pais | Argentina |
-| adminarg | admin123 | admin_pais | Argentina |
-| sistema | sistema123 | editor | Argentina |
+| sistema | 123456 | editor | Argentina |
 
 ---
 
@@ -441,69 +442,188 @@ Authorization: Bearer TOKEN
 
 ### Autenticación
 
-| Método | Ruta | Auth |
-|--------|------|------|
-| POST | /api/auth/login | No |
-| POST | /api/auth/register | No |
-| POST | /api/auth/refresh-token | No |
-| POST | /api/auth/logout | Sí |
-| POST | /api/auth/logout-all | Sí |
-| POST | /api/auth/forgot-password | No |
-| POST | /api/auth/reset-password | No |
-| PUT | /api/auth/change-password | Sí |
-| PATCH | /api/auth/security-question | Sí |
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| POST | /api/auth/login | No | Iniciar sesión |
+| POST | /api/auth/register | No | Registrar usuario |
+| POST | /api/auth/refresh-token | No | Renovar token |
+| POST | /api/auth/logout | Sí | Cerrar sesión |
+| POST | /api/auth/logout-all | Sí | Cerrar todas las sesiones |
+| POST | /api/auth/session-end | No | Cierre automático (sendBeacon) |
+| POST | /api/auth/security-question | No | Obtener pregunta de seguridad (público) |
+| POST | /api/auth/forgot-password | No | Obtener pregunta de seguridad |
+| POST | /api/auth/reset-password | No | Restaurar contraseña |
+| PUT | /api/auth/change-password | Sí | Cambiar contraseña |
+| PATCH | /api/auth/change-my-password | Sí | Cambiar contraseña (alias) |
+| PATCH | /api/auth/security-question | Sí | Actualizar pregunta de seguridad |
+| GET | /api/auth/security-question | Sí | Ver mi pregunta de seguridad |
+| GET | /api/auth/me | Sí | Ver mi perfil |
+| PATCH | /api/auth/me | Sí | Actualizar perfil propio |
 
 ### Países
 
-| Método | Ruta | Auth |
-|--------|------|------|
-| GET | /api/countries | Sí (superadmin) |
-| GET | /api/countries/active | No |
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | /api/countries | Sí | Listar (filtrado por rol) |
+| GET | /api/countries/active | No | Solo activos |
 
 ### Noticias
 
-| Método | Ruta | Auth |
-|--------|------|------|
-| GET | /api/news/public/:countrySlug | No |
-| GET | /api/news/public/:countrySlug/:slug | No |
-| GET | /api/news | Sí |
-| POST | /api/news | Sí |
-| PUT | /api/news/:id | Sí |
-| DELETE | /api/news/:id | Sí |
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | /api/news/public/:countrySlug | No | Noticias públicas por país |
+| GET | /api/news/public/:countrySlug/:slug | No | Detalle público |
+| GET | /api/news | Sí | Listar admin |
+| POST | /api/news | Sí | Crear |
+| GET | /api/news/:id | Sí | Obtener por ID |
+| PUT | /api/news/:id | Sí | Actualizar |
+| PATCH | /api/news/:id | Sí | Actualizar parcial |
+| PATCH | /api/news/:id/estado | Sí | Cambiar estado |
+| PATCH | /api/news/:id/imagen | Sí | Cambiar imagen |
+| DELETE | /api/news/:id | Sí | Eliminar |
 
 ### Testimonios
 
-| Método | Ruta | Auth |
-|--------|------|------|
-| GET | /api/testimonials/public/:countrySlug | No |
-| POST | /api/testimonials/public | No |
-| GET | /api/testimonials | Sí |
-| POST | /api/testimonials | Sí |
-| PUT | /api/testimonials/:id | Sí |
-| DELETE | /api/testimonials/:id | Sí |
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | /api/testimonials/public/:countrySlug | No | Testimonios públicos |
+| POST | /api/testimonials/public | No | Enviar testimonio (público) |
+| GET | /api/testimonials | Sí | Listar admin |
+| POST | /api/testimonials | Sí | Crear |
+| GET | /api/testimonials/:id | Sí | Obtener por ID |
+| PUT | /api/testimonials/:id | Sí | Actualizar |
+| PATCH | /api/testimonials/:id | Sí | Actualizar parcial |
+| PATCH | /api/testimonials/:id/estado | Sí | Cambiar estado |
+| PATCH | /api/testimonials/:id/foto | Sí | Cambiar foto |
+| DELETE | /api/testimonials/:id | Sí | Eliminar |
 
 ### Solicitudes de Contacto
 
-| Método | Ruta | Auth |
-|--------|------|------|
-| POST | /api/contact-requests/public | No |
-| GET | /api/contact-requests | Sí |
-| PUT | /api/contact-requests/:id/status | Sí |
-| DELETE | /api/contact-requests/:id | Sí |
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| POST | /api/contact-requests/public | No | Enviar solicitud |
+| GET | /api/contact-requests | Sí | Listar admin |
+| GET | /api/contact-requests/:id | Sí | Obtener por ID |
+| PUT | /api/contact-requests/:id | Sí | Actualizar |
+| PATCH | /api/contact-requests/:id | Sí | Actualizar parcial |
+| PUT | /api/contact-requests/:id/status | Sí | Cambiar estado |
+| DELETE | /api/contact-requests/:id | Sí | Eliminar |
 
 ### Usuarios
 
-| Método | Ruta | Auth |
-|--------|------|------|
-| GET | /api/users | Sí (superadmin) |
-| POST | /api/users | Sí (superadmin) |
-| PUT | /api/users/:id/password | Sí (superadmin) |
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | /api/users | Sí (superadmin) | Listar |
+| POST | /api/users | Sí (superadmin) | Crear |
+| PUT | /api/users/:id | Sí | Actualizar |
+| PATCH | /api/users/:id | Sí | Actualizar parcial |
+| PUT | /api/users/:id/password | Sí (superadmin) | Cambiar contraseña |
+| DELETE | /api/users/:id | Sí (superadmin) | Desactivar |
+| DELETE | /api/users/:id/permanent | Sí (superadmin) | Eliminar permanentemente |
 
 ### Perfil
 
-| Método | Ruta |
-|--------|------|
-| GET | /api/profile/me |
+| Método | Ruta | Auth |
+|--------|------|------|
+| GET | /api/profile/me | Sí |
+
+### Archivos
+
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | /api/archivos | Sí | Listar archivos |
+| GET | /api/archivos/:id | Sí | Obtener |
+| POST | /api/archivos | Sí | Registrar URL |
+| POST | /api/archivos/upload | Sí | Subir archivo |
+| PUT | /api/archivos/:id | Sí | Actualizar |
+| PATCH | /api/archivos/:id | Sí | Actualizar parcial |
+| DELETE | /api/archivos/:id | Sí | Eliminar |
+
+### Auditoría
+
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | /api/auditoria | Sí | Listar eventos (superadmin/admin_pais) |
+| GET | /api/auditoria/:id | Sí | Obtener evento |
+
+### Conexiones
+
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | /api/connection-logs | Sí | Listar historial |
+| GET | /api/connection-logs/summary | Sí | Resumen (totales, últimas) |
+| GET | /api/connection-logs/:id | Sí | Obtener registro |
+
+### Categorías
+
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | /api/categorias | Sí | Listar |
+| GET | /api/categorias/:id | Sí | Obtener |
+| POST | /api/categorias | Sí | Crear |
+| PUT | /api/categorias/:id | Sí | Actualizar |
+| PATCH | /api/categorias/:id | Sí | Actualizar parcial |
+| DELETE | /api/categorias/:id | Sí | Eliminar |
+
+### Estadísticas por País
+
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | /api/estadisticas-pais | Sí | Listar (filtro por ?pais_id=) |
+| GET | /api/estadisticas-pais/:id | Sí | Obtener |
+| POST | /api/estadisticas-pais | Sí | Crear |
+| PUT | /api/estadisticas-pais/:id | Sí | Actualizar |
+| PATCH | /api/estadisticas-pais/:id | Sí | Actualizar parcial |
+| DELETE | /api/estadisticas-pais/:id | Sí | Eliminar |
+
+### Notificaciones
+
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | /api/notificaciones | Sí | Listar mis notificaciones |
+| GET | /api/notificaciones/contar | Sí | Contar no leídas |
+| PATCH | /api/notificaciones/leer-todas | Sí | Marcar todas leídas |
+| PATCH | /api/notificaciones/:id/leer | Sí | Marcar una leída |
+
+### Historial de Noticias (versionado automático)
+
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | /api/historial-noticias/noticia/:noticiaId | Sí | Versiones de una noticia |
+| GET | /api/historial-noticias/:id | Sí | Obtener versión |
+
+### Comentarios
+
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | /api/comentarios/public/:noticiaId | No | Comentarios públicos (aprobados) |
+| POST | /api/comentarios/public | No | Enviar comentario (queda pendiente) |
+| GET | /api/comentarios | Sí | Listar admin (con filtros) |
+| GET | /api/comentarios/:id | Sí | Obtener |
+| PATCH | /api/comentarios/:id/moderar | Sí | Aprobar/rechazar |
+| DELETE | /api/comentarios/:id | Sí | Eliminar |
+
+### Rutas con nombres en español (alias)
+
+Todas las rutas anteriores también están disponibles con nombres en español:
+
+| Ruta | Alias |
+|------|-------|
+| /api/countries | /api/paises |
+| /api/news | /api/noticias |
+| /api/testimonials | /api/testimonios |
+| /api/contact-requests | /api/solicitudes |
+| /api/users | /api/usuarios |
+| /api/profile | /api/perfil |
+
+### Rutas públicas con nombres en español
+
+| Ruta | Descripción |
+|------|-------------|
+| GET /api/public/paises/:slug/noticias | Noticias públicas |
+| GET /api/public/paises/:slug/noticias/:slug | Detalle de noticia |
+| GET /api/public/paises/:slug/testimonios | Testimonios públicos |
+| POST /api/public/paises/:slug/solicitudes | Enviar solicitud |
 
 ---
 

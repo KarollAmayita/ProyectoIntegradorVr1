@@ -178,3 +178,85 @@ create table if not exists historial_conexiones (
   created_at timestamptz default now(),
   logout_at timestamptz
 );
+
+-- ============================================
+-- Tabla: categorias
+-- ============================================
+
+create table if not exists categorias (
+  id bigint generated always as identity primary key,
+  nombre text not null,
+  slug text not null unique,
+  descripcion text,
+  created_at timestamptz default now()
+);
+
+-- ============================================
+-- Tabla: noticia_categorias (M:M)
+-- ============================================
+
+create table if not exists noticia_categorias (
+  noticia_id bigint not null references noticias(id) on delete cascade,
+  categoria_id bigint not null references categorias(id) on delete cascade,
+  primary key (noticia_id, categoria_id)
+);
+
+-- ============================================
+-- Tabla: estadisticas_pais
+-- ============================================
+
+create table if not exists estadisticas_pais (
+  id bigint generated always as identity primary key,
+  pais_id bigint not null references paises(id) on delete cascade,
+  indicador text not null,
+  valor text not null,
+  unidad text,
+  periodo text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- ============================================
+-- Tabla: notificaciones
+-- ============================================
+
+create table if not exists notificaciones (
+  id bigint generated always as identity primary key,
+  usuario_id bigint references usuarios(id) on delete cascade,
+  titulo text not null,
+  mensaje text not null,
+  tipo text not null default 'info',
+  leida boolean not null default false,
+  created_at timestamptz default now(),
+  constraint notificaciones_tipo_check check (tipo in ('info', 'exito', 'advertencia', 'error'))
+);
+
+-- ============================================
+-- Tabla: historial_noticias
+-- ============================================
+
+create table if not exists historial_noticias (
+  id bigint generated always as identity primary key,
+  noticia_id bigint not null references noticias(id) on delete cascade,
+  usuario_id bigint references usuarios(id) on delete set null,
+  titulo_anterior text,
+  contenido_anterior text,
+  estado_anterior text,
+  cambios jsonb,
+  created_at timestamptz default now()
+);
+
+-- ============================================
+-- Tabla: comentarios
+-- ============================================
+
+create table if not exists comentarios (
+  id bigint generated always as identity primary key,
+  noticia_id bigint not null references noticias(id) on delete cascade,
+  nombre text not null,
+  email text,
+  contenido text not null,
+  estado text not null default 'pendiente',
+  created_at timestamptz default now(),
+  constraint comentarios_estado_check check (estado in ('pendiente', 'aprobado', 'rechazado'))
+);
