@@ -13,6 +13,10 @@ const countryRoutes = require('./routes/countryRoutes');
 const newsRoutes = require('./routes/newsRoutes');
 const testimonialRoutes = require('./routes/testimonialRoutes');
 const contactRequestRoutes = require('./routes/contactRequestRoutes');
+const connectionLogRoutes = require('./routes/connectionLogRoutes');
+const archivosRoutes = require('./routes/archivosRoutes');
+const auditoriaRoutes = require('./routes/auditoriaRoutes');
+const publicRoutes = require('./routes/publicRoutes');
 
 // Importar middlewares
 const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
@@ -66,6 +70,10 @@ app.get('/admin/usuarios', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'usuarios.html'));
 });
 
+app.get('/admin/conexiones', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'conexiones.html'));
+});
+
 app.get('/argentina', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'portales', 'argentina', 'index.html'));
 });
@@ -86,6 +94,21 @@ app.use('/api/countries', countryRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/contact-requests', contactRequestRoutes);
+app.use('/api/connection-logs', connectionLogRoutes);
+app.use('/api/archivos', archivosRoutes);
+app.use('/api/auditoria', auditoriaRoutes);
+
+// Rutas con nombres en español (alias)
+app.use('/api/auth', authRoutes); // already in Spanish
+app.use('/api/perfil', profileRoutes);
+app.use('/api/paises', countryRoutes);
+app.use('/api/noticias', newsRoutes);
+app.use('/api/testimonios', testimonialRoutes);
+app.use('/api/solicitudes', contactRequestRoutes);
+app.use('/api/usuarios', userRoutes);
+
+// Rutas públicas con nombres en español
+app.use('/api/public', publicRoutes);
 
 // Middleware de rutas no encontradas
 app.use(notFoundHandler);

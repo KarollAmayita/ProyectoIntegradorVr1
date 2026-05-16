@@ -161,11 +161,50 @@ const deleteNews = async (id, user) => {
   };
 };
 
+const getNewsById = async (id, user) => {
+  const news = await newsRepository.findNewsById(id);
+  if (!news) throw new Error('Noticia no encontrada');
+  if (user.rol !== 'superadmin' && Number(news.pais_id) !== Number(user.pais_id)) {
+    throw new Error('No tiene permisos para ver esta noticia');
+  }
+  return news;
+};
+
+const updateNewsStatus = async (id, payload, user) => {
+  const { estado } = payload;
+  if (!estado || !['borrador', 'publicado', 'archivado'].includes(estado)) {
+    throw new Error('Estado no válido');
+  }
+  const existing = await newsRepository.findNewsById(id);
+  if (!existing) throw new Error('Noticia no encontrada');
+  if (user.rol !== 'superadmin' && Number(existing.pais_id) !== Number(user.pais_id)) {
+    throw new Error('No tiene permisos para modificar esta noticia');
+  }
+  const updatePayload = { estado, updated_at: new Date().toISOString() };
+  if (estado === 'publicado' && existing.estado !== 'publicado') updatePayload.fecha_publicacion = new Date().toISOString();
+  if (estado !== 'publicado') updatePayload.fecha_publicacion = null;
+  return newsRepository.updateNews(id, updatePayload);
+};
+
+const updateNewsImage = async (id, payload, user) => {
+  const { imagen_principal_url } = payload;
+  if (!imagen_principal_url) throw new Error('URL de imagen requerida');
+  const existing = await newsRepository.findNewsById(id);
+  if (!existing) throw new Error('Noticia no encontrada');
+  if (user.rol !== 'superadmin' && Number(existing.pais_id) !== Number(user.pais_id)) {
+    throw new Error('No tiene permisos para modificar esta noticia');
+  }
+  return newsRepository.updateNews(id, { imagen_principal_url, updated_at: new Date().toISOString() });
+};
+
 module.exports = {
   getNews,
   getPublicNewsByCountry,
   getPublicNewsDetail,
+  getNewsById,
   createNews,
   updateNews,
+  updateNewsStatus,
+  updateNewsImage,
   deleteNews,
 };

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Argentina Comparte - Iniciar sesi\u00f3n</title>
+  <title>Argentina Comparte - Iniciar sesión</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -22,7 +22,7 @@
     </div>
 
     <h2 class="tarjeta-login__titulo">Bienvenido/a</h2>
-    <p class="tarjeta-login__bienvenida">Ingres\u00e1 con tus credenciales para administrar el portal.</p>
+    <p class="tarjeta-login__bienvenida">Ingresá con tus credenciales para administrar el portal.</p>
 
     <form id="formulario-login">
 
@@ -32,8 +32,8 @@
       </div>
 
       <div class="campo-formulario">
-        <label for="campo-contrasena">Contrase\u00f1a</label>
-        <input type="password" id="campo-contrasena" name="password" placeholder="Tu contrase\u00f1a" required />
+        <label for="campo-contrasena">Contraseña</label>
+        <input type="password" id="campo-contrasena" name="password" placeholder="Tu contraseña" required />
       </div>
 
       <button type="submit" class="boton boton--principal boton--bloque" id="boton-ingresar">
@@ -45,7 +45,7 @@
     </form>
 
     <p class="enlace-recuperar">
-      \u00bfOlvidaste tu contrase\u00f1a? <a href="recuperar.html">Recuperala ac\u00e1</a>
+      ¿Olvidaste tu contraseña? <a href="recuperar.html">Recuperala acá</a>
     </p>
   </div>
 
@@ -67,7 +67,7 @@
       const password  = document.getElementById('campo-contrasena').value;
 
       if (!usuario || !password) {
-        cajaError.textContent = 'Complet\u00e1 usuario y contrase\u00f1a.';
+        cajaError.textContent = 'Completá usuario y contraseña.';
         cajaError.hidden = false;
         return;
       }

@@ -19,7 +19,7 @@
     <section class="panel-contenido">
 
       <div class="panel-contenido__cabecera">
-        <h2 class="panel-contenido__titulo">Gesti\u00f3n de usuarios</h2>
+        <h2 class="panel-contenido__titulo">Gestión de usuarios</h2>
         <button class="boton boton--principal" id="boton-nuevo-usuario">
           <i class="bi bi-person-plus"></i>
           Nuevo usuario
@@ -38,7 +38,7 @@
               <th>Usuario</th>
               <th>Email</th>
               <th>Rol</th>
-              <th>Pa\u00eds</th>
+              <th>País</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
@@ -87,7 +87,7 @@
           </div>
 
           <div class="campo-formulario">
-            <label for="usuario-password">Contrase\u00f1a *</label>
+            <label for="usuario-password">Contraseña *</label>
             <input type="password" id="usuario-password" minlength="6" required />
           </div>
 
@@ -95,14 +95,14 @@
             <div class="campo-formulario">
               <label for="usuario-rol">Rol *</label>
               <select id="usuario-rol" required>
-                <option value="">Seleccion\u00e1 un rol</option>
+                <option value="">Seleccioná un rol</option>
                 <option value="1">Superadmin</option>
-                <option value="2">Admin de pa\u00eds</option>
+                <option value="2">Admin de país</option>
                 <option value="3">Editor</option>
               </select>
             </div>
             <div class="campo-formulario" id="contenedor-pais-usuario">
-              <label for="usuario-pais">Pa\u00eds</label>
+              <label for="usuario-pais">País</label>
               <select id="usuario-pais"></select>
             </div>
           </div>
@@ -111,12 +111,12 @@
 
           <p style="font-size:13px; color:#5A6C84; margin-bottom:14px;">
             <i class="bi bi-info-circle"></i>
-            La pregunta y respuesta de seguridad servir\u00e1n para recuperar la contrase\u00f1a si la olvida.
+            La pregunta y respuesta de seguridad servirán para recuperar la contraseña si la olvida.
           </p>
 
           <div class="campo-formulario">
             <label for="usuario-pregunta">Pregunta de seguridad *</label>
-            <input type="text" id="usuario-pregunta" placeholder="Ej: \u00bfCu\u00e1l es el c\u00f3digo inicial del sistema?" required />
+            <input type="text" id="usuario-pregunta" placeholder="Ej: ¿Cuál es el código inicial del sistema?" required />
           </div>
 
           <div class="campo-formulario">
@@ -136,22 +136,22 @@
   </div>
 
   <!-- ============================================================
-       MODAL: cambiar contrase\u00f1a (admin reseteando a otro usuario)
+       MODAL: cambiar contraseña (admin reseteando a otro usuario)
        ============================================================ -->
   <div class="fondo-modal" id="modal-password">
     <div class="modal">
       <div class="modal__cabecera">
-        <h3 class="modal__titulo">Cambiar contrase\u00f1a</h3>
+        <h3 class="modal__titulo">Cambiar contraseña</h3>
         <button class="modal__cerrar" onclick="cerrarModal('modal-password')">&times;</button>
       </div>
 
       <form id="formulario-password">
         <div class="modal__cuerpo">
           <input type="hidden" id="password-usuario-id" />
-          <p style="font-size:13px; color:#5A6C84; margin-bottom:14px;" id="texto-password-usuario">Asign\u00e1 una nueva contrase\u00f1a.</p>
+          <p style="font-size:13px; color:#5A6C84; margin-bottom:14px;" id="texto-password-usuario">Asigná una nueva contraseña.</p>
 
           <div class="campo-formulario">
-            <label for="password-nueva">Nueva contrase\u00f1a *</label>
+            <label for="password-nueva">Nueva contraseña *</label>
             <input type="password" id="password-nueva" minlength="6" required />
           </div>
 
@@ -160,7 +160,7 @@
 
         <div class="modal__pie">
           <button type="button" class="boton boton--secundario" onclick="cerrarModal('modal-password')">Cancelar</button>
-          <button type="submit" class="boton boton--principal" id="boton-guardar-password">Cambiar contrase\u00f1a</button>
+          <button type="submit" class="boton boton--principal" id="boton-guardar-password">Cambiar contraseña</button>
         </div>
       </form>
     </div>
@@ -200,10 +200,10 @@
       try {
         paisesActivos = await llamarApi('/countries/active');
         const selectorPais = document.getElementById('usuario-pais');
-        selectorPais.innerHTML = '<option value="">Sin pa\u00eds (solo para superadmin)</option>' +
+        selectorPais.innerHTML = '<option value="">Sin país (solo para superadmin)</option>' +
           paisesActivos.map(pais => `<option value="${pais.id}">${pais.nombre}</option>`).join('');
       } catch (error) {
-        console.error('Error cargando pa\u00edses:', error);
+        console.error('Error cargando países:', error);
       }
     }
 
@@ -224,7 +224,7 @@
       }
 
       tabla.innerHTML = filtrados.map(usuario => {
-        const rol = usuario.roles?.nombre || '\u2014';
+        const rol = usuario.roles?.nombre || '—';
         const pais = usuario.paises?.nombre || 'Todos';
         const estadoActivo = usuario.estado === 'activo';
 
@@ -242,7 +242,7 @@
             </td>
             <td>
               <div class="acciones-fila">
-                <button class="boton-icono-fila" onclick="abrirCambioPassword(${usuario.id}, '${usuario.username}')" title="Cambiar contrase\u00f1a">
+                <button class="boton-icono-fila" onclick="abrirCambioPassword(${usuario.id}, '${usuario.username}')" title="Cambiar contraseña">
                   <i class="bi bi-key"></i>
                 </button>
               </div>
@@ -270,9 +270,9 @@
       const rolId = Number(document.getElementById('usuario-rol').value);
       const paisId = document.getElementById('usuario-pais').value;
 
-      // Si el rol no es superadmin, el pa\u00eds es obligatorio
+      // Si el rol no es superadmin, el país es obligatorio
       if (rolId !== 1 && !paisId) {
-        cajaError.textContent = 'El pa\u00eds es obligatorio para roles distintos a superadmin.';
+        cajaError.textContent = 'El país es obligatorio para roles distintos a superadmin.';
         cajaError.hidden = false;
         return;
       }
@@ -304,13 +304,13 @@
     });
 
     /* ----------------------------------------------------------
-       Cambiar contrase\u00f1a de un usuario existente
+       Cambiar contraseña de un usuario existente
        ---------------------------------------------------------- */
     function abrirCambioPassword(idUsuario, nombreUsuario) {
       formularioPassword.reset();
       document.getElementById('password-usuario-id').value = idUsuario;
       document.getElementById('texto-password-usuario').textContent =
-        `Asign\u00e1 una nueva contrase\u00f1a para ${nombreUsuario}.`;
+        `Asigná una nueva contraseña para ${nombreUsuario}.`;
       cajaErrorPassword.hidden = true;
       abrirModal('modal-password');
     }

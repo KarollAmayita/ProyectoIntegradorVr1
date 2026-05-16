@@ -86,11 +86,41 @@ const deleteNews = async (req, res) => {
   }
 };
 
+const getNewsById = async (req, res) => {
+  try {
+    const news = await newsService.getNewsById(req.params.id, req.user);
+    return res.status(200).json(news);
+  } catch (error) {
+    return res.status(404).json({ message: error.message });
+  }
+};
+
+const updateNewsStatus = async (req, res) => {
+  try {
+    const news = await newsService.updateNewsStatus(req.params.id, req.body, req.user);
+    return res.status(200).json({ message: 'Estado actualizado correctamente', data: news });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+const updateNewsImage = async (req, res) => {
+  try {
+    const news = await newsService.updateNewsImage(req.params.id, req.body, req.user);
+    return res.status(200).json({ message: 'Imagen actualizada correctamente', data: news });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
 module.exports = {
   listNews,
   listPublicNews,
   getPublicNewsDetail,
+  getNewsById,
   createNews,
   updateNews,
+  updateNewsStatus,
+  updateNewsImage,
   deleteNews,
 };

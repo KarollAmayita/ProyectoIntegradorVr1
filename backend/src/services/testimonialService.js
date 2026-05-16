@@ -177,11 +177,50 @@ const createPublicTestimonial = async (payload) => {
   });
 };
 
+const getTestimonialById = async (id, user) => {
+  const testimonial = await testimonialRepository.findTestimonialById(id);
+  if (!testimonial) throw new Error('Testimonio no encontrado');
+  if (user.rol !== 'superadmin' && Number(testimonial.pais_id) !== Number(user.pais_id)) {
+    throw new Error('No tiene permisos para ver este testimonio');
+  }
+  return testimonial;
+};
+
+const updateTestimonialStatus = async (id, payload, user) => {
+  const { estado } = payload;
+  if (!estado || !['borrador', 'publicado', 'archivado'].includes(estado)) {
+    throw new Error('Estado no válido');
+  }
+  const existing = await testimonialRepository.findTestimonialById(id);
+  if (!existing) throw new Error('Testimonio no encontrado');
+  if (user.rol !== 'superadmin' && Number(existing.pais_id) !== Number(user.pais_id)) {
+    throw new Error('No tiene permisos para modificar este testimonio');
+  }
+  const updatePayload = { estado, updated_at: new Date().toISOString() };
+  if (estado === 'publicado' && existing.estado !== 'publicado') updatePayload.fecha_publicacion = new Date().toISOString();
+  if (estado !== 'publicado') updatePayload.fecha_publicacion = null;
+  return testimonialRepository.updateTestimonial(id, updatePayload);
+};
+
+const updateTestimonialPhoto = async (id, payload, user) => {
+  const { foto_url } = payload;
+  if (!foto_url) throw new Error('URL de foto requerida');
+  const existing = await testimonialRepository.findTestimonialById(id);
+  if (!existing) throw new Error('Testimonio no encontrado');
+  if (user.rol !== 'superadmin' && Number(existing.pais_id) !== Number(user.pais_id)) {
+    throw new Error('No tiene permisos para modificar este testimonio');
+  }
+  return testimonialRepository.updateTestimonial(id, { foto_url, updated_at: new Date().toISOString() });
+};
+
 module.exports = {
   getTestimonials,
   getPublicTestimonialsByCountry,
   createTestimonial,
   createPublicTestimonial,
+  getTestimonialById,
   updateTestimonial,
+  updateTestimonialStatus,
+  updateTestimonialPhoto,
   deleteTestimonial,
 };

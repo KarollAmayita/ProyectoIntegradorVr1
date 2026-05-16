@@ -1,0 +1,194 @@
+================================================================================
+DOCUMENTO MVP - CMS MULTIPAIS
+================================================================================
+Proyecto: Latinoamerica Comparte - Sistema de Gestion de Contenidos Multipais
+Version del documento: 1.0
+Fecha: Mayo 2026
+
+================================================================================
+1. RESUMEN EJECUTIVO
+================================================================================
+
+Sistema CMS web que permite a una organizacion gestionar y publicar contenido
+(noticias, testimonios, solicitudes de contacto) para multiples paises desde
+un solo panel de administracion. El publico puede acceder a portales
+informativos por pais.
+
+================================================================================
+2. OBJETIVOS DEL MVP
+================================================================================
+
+OV-01  Proveer portales publicos de informacion por pais (noticias + testimonios)
+OV-02  Permitir la gestion centralizada de contenido desde un panel
+       administrativo con control de acceso por roles
+OV-03  Recibir y gestionar solicitudes de contacto del publico
+OV-04  Implementar autenticacion segura con recuperacion de contrasena
+OV-05  Desplegar el sistema en produccion mediante Docker + CI/CD
+
+================================================================================
+3. ALCANCE - FUNCIONALIDADES INCLUIDAS (MVP)
+================================================================================
+
+3.1 Portales Publicos
+
+F-01  Pagina principal multipais con seccion hero, impacto, noticias
+      destacadas y formulario de contacto global                          Alta
+F-02  Portal publico por pais (ruta /{pais}) con noticias y testimonios
+      propios de ese pais                                                 Alta
+F-03  Visualizacion de detalle de noticia individual                      Alta
+F-04  Formulario publico de solicitud de contacto (global y por pais)     Alta
+F-05  Formulario publico de registro de testimonio por pais               Alta
+
+3.2 Autenticacion y Seguridad
+
+F-06  Inicio de sesion con JWT (access token 2h + refresh token 7d)       Alta
+F-07  Recuperacion de contrasena mediante pregunta de seguridad           Alta
+F-08  Cierre de sesion (individual y todas las sesiones)                  Alta
+F-09  Middleware de autenticacion y autorizacion por roles                Alta
+
+3.3 Panel de Administracion
+
+F-10  Dashboard con resumen de estadisticas (noticias, testimonios,
+      solicitudes)                                                        Alta
+F-11  CRUD completo de noticias (crear, leer, editar, eliminar)           Alta
+F-12  CRUD completo de testimonios (crear, leer, editar, eliminar)        Alta
+F-13  Gestion de solicitudes de contacto (listar, cambiar estado,
+      eliminar)                                                           Alta
+F-14  Gestion de usuarios (solo superadmin: listar, crear, cambiar
+      contrasena)                                                         Alta
+
+3.4 Infraestructura
+
+F-15  Despliegue con Docker y docker-compose                              Alta
+F-16  CI/CD automatizado mediante GitHub Actions                          Media
+F-17  Base de datos PostgreSQL en Supabase                                Alta
+F-18  Variables de entorno para configuracion                             Alta
+
+================================================================================
+4. FUERA DE ALCANCE (POST-MVP)
+================================================================================
+
+Funcionalidad                                          Iteracion futura
+----------------------------------------------------   --------------------
+Modulo de galeria de imagenes / videos                 Post-MVP
+Internacionalizacion (i18n) / soporte multilingue      Post-MVP
+Notificaciones por correo electronico                  Post-MVP
+Editor de contenido WYSIWYG avanzado                   Post-MVP
+Estadisticas y graficos avanzados en dashboard         Post-MVP
+Versionado de contenido (historial de cambios)         Post-MVP
+SEO avanzado (meta tags dinamicos, sitemap.xml)        Post-MVP
+App movil o PWA                                        Post-MVP
+Comentarios en noticias                                Post-MVP
+Integracion con redes sociales                         Post-MVP
+
+================================================================================
+5. ROLES DE USUARIO
+================================================================================
+
+Superadmin
+  Acceso completo a todos los paises. Puede gestionar usuarios y todo el
+  contenido.
+
+Admin Pais
+  Gestiona contenido (noticias, testimonios, solicitudes) unicamente de su
+  pais asignado. No puede crear/editar usuarios.
+
+Editor
+  Crea y edita noticias y testimonios de su pais. No puede eliminar ni
+  gestionar solicitudes de contacto.
+
+Visitante
+  Acceso solo a portales publicos. No requiere autenticacion.
+
+================================================================================
+6. ARQUITECTURA TECNICA
+================================================================================
+
+Cliente (Navegador)
+  HTML + CSS + JS vanilla -> Puerto 3001
+       |
+       v
+Express API (backend/)
+  Routes -> Controllers -> Services -> Repositories
+  Middlewares: auth, roles, validation, error handler
+       |
+       v
+Supabase (PostgreSQL)
+  Tablas: paises, roles, usuarios, noticias,
+          testimonios, solicitudes_contacto, refresh_tokens
+
+Stack tecnico:
+  Backend:   Node.js v20, Express 5
+  Base de datos: PostgreSQL (Supabase)
+  Frontend:  HTML5, CSS3, JavaScript vanilla
+  Autenticacion: JWT + bcryptjs
+  Infraestructura: Docker, docker-compose, Oracle Cloud
+  CI/CD:     GitHub Actions
+
+================================================================================
+7. CRITERIOS DE EXITO
+================================================================================
+
+Criterio                                                Metrica
+-----------------------------------------------------   --------------------
+Los portales publicos cargan noticias y testimonios     Verificado
+El panel administrativo permite CRUD completo           Verificado
+El control de acceso por roles funciona correctamente   Verificado
+La recuperacion de contrasena permite restablecer       Verificado
+El sistema se despliega con docker compose up           Verificado
+Los formularios publicos envian datos correctamente     Verificado
+
+================================================================================
+8. FLUJO DE USUARIO - MVP
+================================================================================
+
+Visitante:
+  Landing -> Explora noticias destacadas -> Accede a portal de pais
+          -> Lee noticias / testimonios -> Envia contacto o testimonio
+
+Administrador:
+  Login -> Dashboard -> Gestiona noticias / testimonios / solicitudes
+         -> Cierra sesion
+
+Superadmin:
+  Login -> Dashboard -> Gestiona contenido (todos los paises)
+         -> Gestiona usuarios -> Cierra sesion
+
+================================================================================
+9. ESTRUCTURA DE DATOS (MVP)
+================================================================================
+
+Tabla                    Proposito
+----------------------   --------------------------------------------
+paises                   Catalogo de paises (Colombia, Chile,
+                         Argentina, Ecuador)
+roles                    Roles del sistema (superadmin, admin_pais,
+                         editor)
+usuarios                 Usuarios del sistema con hash de contrasena
+                         y pregunta de seguridad
+noticias                 Noticias por pais con slug, estado, imagen
+                         y autor
+testimonios              Testimonios por pais con estado y campo
+                         destacado
+solicitudes_contacto     Solicitudes de contacto con estado y
+                         seguimiento
+refresh_tokens           Tokens de refresco JWT
+
+================================================================================
+10. PROXIMOS PASOS (INMEDIATOS)
+================================================================================
+
+1. Finalizar portales publicos para Chile, Colombia y Ecuador
+   (actualmente solo Argentina)
+2. Agregar paginacion en listados del panel admin
+3. Implementar busqueda/filtros en listados de contenido
+4. Agregar carga de imagenes optimizada
+5. Pruebas de seguridad (penetration testing basico)
+
+================================================================================
+11. HISTORIAL DEL DOCUMENTO
+================================================================================
+
+Version   Fecha       Cambios
+--------  ----------  ------------------------------------------------
+1.0       Mayo 2026   Version inicial del documento MVP

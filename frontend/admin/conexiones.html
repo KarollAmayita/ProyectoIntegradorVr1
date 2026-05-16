@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Argentina Comparte - Historial de conexiones</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin-styles.css" />
+</head>
+<body>
+  <div id="zona-sidebar"></div>
+
+  <main class="contenido-principal">
+    <div id="zona-topbar"></div>
+
+    <section class="panel-contenido">
+      <div class="panel-contenido__cabecera">
+        <h2 class="panel-contenido__titulo">Historial de conexiones</h2>
+        <span style="font-size:13px; color:#5A6C84;">
+          <i class="bi bi-info-circle"></i> Registro de inicios de sesi&oacute;n
+        </span>
+      </div>
+
+      <div class="barra-filtros">
+        <input type="text" id="filtro-busqueda" placeholder="Buscar por usuario..." />
+        <button class="boton boton--principal" id="boton-refrescar">
+          <i class="bi bi-arrow-clockwise"></i> Refrescar
+        </button>
+      </div>
+
+      <div class="tabla-contenedor">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>IP</th>
+              <th>Ubicaci&oacute;n</th>
+              <th>Navegador</th>
+              <th>Hora de inicio</th>
+              <th>Hora de cierre</th>
+              <th>JWT</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-conexiones">
+            <tr><td colspan="7" class="tabla__sin-datos">Cargando historial...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="admin-shared.js"></script>
+  <script>
+    exigirSesion();
+    pintarSidebar('conexiones');
+    pintarTopbar('Conexiones');
+
+    const tabla = document.getElementById('tabla-conexiones');
+    const filtro = document.getElementById('filtro-busqueda');
+
+    async function cargarConexiones() {
+      try {
+        const username = filtro.value.trim();
+        const url = username ? `/connection-logs?username=${encodeURIComponent(username)}` : '/connection-logs';
+        const res = await llamarApi(url);
+        const logs = res.data || [];
+
+        if (logs.length === 0) {
+          tabla.innerHTML = '<tr><td colspan="7" class="tabla__sin-datos">No hay registros de conexi&oacute;n.</td></tr>';
+          return;
+        }
+
+        tabla.innerHTML = logs.map(log => {
+          const jwtCorto = log.jwt_token
+            ? log.jwt_token.substring(0, 30) + '...'
+            : 'â€”';
+
+          const userAgent = log.user_agent
+            ? log.user_agent.substring(0, 40) + (log.user_agent.length > 40 ? '...' : '')
+            : 'â€”';
+
+          const salida = log.logout_at
+            ? formatearFecha(log.logout_at, true)
+            : '<span style="color:#10B981;">✓ Activo</span>';
+
+          return `
+            <tr>
+              <td><strong>${log.username}</strong></td>
+              <td>${log.ip_address || 'â€”'}</td>
+              <td>${log.lugar || 'â€”'}</td>
+              <td style="font-size:11px; color:#5A6C84;" title="${(log.user_agent || '').replace(/"/g, '&quot;')}">${userAgent}</td>
+              <td>${formatearFecha(log.created_at, true)}</td>
+              <td>${salida}</td>
+              <td style="font-size:11px; color:#5A6C84; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${(log.jwt_token || '').replace(/"/g, '&quot;')}">${jwtCorto}</td>
+            </tr>
+          `;
+        }).join('');
+      } catch (error) {
+        tabla.innerHTML = `<tr><td colspan="6" class="tabla__sin-datos">Error: ${error.message}</td></tr>`;
+      }
+    }
+
+    filtro.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') cargarConexiones();
+    });
+    document.getElementById('boton-refrescar').addEventListener('click', cargarConexiones);
+
+    cargarConexiones();
+  </script>
+</body>
+</html>

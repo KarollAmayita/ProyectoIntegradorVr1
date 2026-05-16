@@ -91,11 +91,41 @@ const createPublicTestimonial = async (req, res) => {
   }
 };
 
+const getTestimonialById = async (req, res) => {
+  try {
+    const testimonial = await testimonialService.getTestimonialById(req.params.id, req.user);
+    return res.status(200).json(testimonial);
+  } catch (error) {
+    return res.status(404).json({ message: error.message });
+  }
+};
+
+const updateTestimonialStatus = async (req, res) => {
+  try {
+    const testimonial = await testimonialService.updateTestimonialStatus(req.params.id, req.body, req.user);
+    return res.status(200).json({ message: 'Estado actualizado correctamente', data: testimonial });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+const updateTestimonialPhoto = async (req, res) => {
+  try {
+    const testimonial = await testimonialService.updateTestimonialPhoto(req.params.id, req.body, req.user);
+    return res.status(200).json({ message: 'Foto actualizada correctamente', data: testimonial });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
 module.exports = {
   listTestimonials,
   listPublicTestimonials,
   createTestimonial,
   createPublicTestimonial,
+  getTestimonialById,
   updateTestimonial,
+  updateTestimonialStatus,
+  updateTestimonialPhoto,
   deleteTestimonial,
 };

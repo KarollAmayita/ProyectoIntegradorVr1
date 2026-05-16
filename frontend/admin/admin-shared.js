@@ -1,17 +1,17 @@
 /* ============================================================
-   PANEL ADMIN - C\u00f3digo compartido por todas las pantallas
-   - Configuraci\u00f3n del backend
-   - Lectura/escritura de sesi\u00f3n (token y usuario)
+   PANEL ADMIN - Código compartido por todas las pantallas
+   - Configuración del backend
+   - Lectura/escritura de sesión (token y usuario)
    - Helper para llamar al API con JWT
-   - Sidebar din\u00e1mica seg\u00fan el rol
-   - Cerrar sesi\u00f3n
+   - Sidebar dinámica según el rol
+   - Cerrar sesión
    - Apertura/cierre de modales
    ============================================================ */
 
 const URL_BACKEND = '/api';
 
 /* ------------------------------------------------------------
-   SESI\u00d3N: leer/guardar/limpiar token y usuario
+   SESIÓN: leer/guardar/limpiar token y usuario
    ------------------------------------------------------------ */
 function obtenerToken() {
   return localStorage.getItem('token');
@@ -37,8 +37,8 @@ function limpiarSesion() {
 }
 
 /* ------------------------------------------------------------
-   AUTENTICACI\u00d3N: si no hay token, redirige al login
-   Se llama al cargar cualquier p\u00e1gina del admin (excepto login).
+   AUTENTICACIÓN: si no hay token, redirige al login
+   Se llama al cargar cualquier página del admin (excepto login).
    ------------------------------------------------------------ */
 const BASE_ADMIN = '/admin';
 
@@ -51,8 +51,8 @@ function exigirSesion() {
 
 /* ------------------------------------------------------------
    HELPER PARA LLAMAR AL BACKEND
-   - Agrega Authorization: Bearer <token> autom\u00e1ticamente
-   - Si la respuesta es 401, cierra sesi\u00f3n y manda a login
+   - Agrega Authorization: Bearer <token> automáticamente
+   - Si la respuesta es 401, cierra sesión y manda a login
    - Devuelve directamente el JSON parseado
    ------------------------------------------------------------ */
 async function llamarApi(ruta, opciones = {}) {
@@ -73,10 +73,10 @@ async function llamarApi(ruta, opciones = {}) {
   if (respuesta.status === 401) {
     limpiarSesion();
     window.location.href = `${BASE_ADMIN}/login`;
-    throw new Error('Sesi\u00f3n expirada');
+    throw new Error('Sesión expirada');
   }
 
-  // Algunas respuestas (DELETE) pueden venir vac\u00edas
+  // Algunas respuestas (DELETE) pueden venir vacías
   let datos = null;
   const tipoContenido = respuesta.headers.get('content-type') || '';
   if (tipoContenido.includes('application/json')) {
@@ -92,9 +92,9 @@ async function llamarApi(ruta, opciones = {}) {
 }
 
 /* ------------------------------------------------------------
-   SIDEBAR Y TOPBAR: pintar la marca, los enlaces seg\u00fan rol y
+   SIDEBAR Y TOPBAR: pintar la marca, los enlaces según rol y
    el distintivo del usuario logueado.
-   Para usarlo cada p\u00e1gina admin debe tener:
+   Para usarlo cada página admin debe tener:
      <aside id="zona-sidebar"></aside>
      <header id="zona-topbar"></header>
    ------------------------------------------------------------ */
@@ -104,14 +104,15 @@ function pintarSidebar(paginaActiva) {
 
   const rol = usuario.rol;
 
-  // Definici\u00f3n de los enlaces del men\u00fa
-  // Cada uno marca para qu\u00e9 roles est\u00e1 disponible
+  // Definición de los enlaces del menú
+  // Cada uno marca para qué roles está disponible
   const enlaces = [
     { id: 'dashboard',   archivo: 'dashboard.html',   icono: 'speedometer2', etiqueta: 'Dashboard',   roles: ['superadmin', 'admin_pais', 'editor'] },
     { id: 'noticias',    archivo: 'noticias.html',    icono: 'newspaper',    etiqueta: 'Noticias',    roles: ['superadmin', 'admin_pais', 'editor'] },
     { id: 'testimonios', archivo: 'testimonios.html', icono: 'chat-quote',   etiqueta: 'Testimonios', roles: ['superadmin', 'admin_pais', 'editor'] },
     { id: 'solicitudes', archivo: 'solicitudes.html', icono: 'envelope',     etiqueta: 'Solicitudes', roles: ['superadmin', 'admin_pais', 'editor'] },
-    { id: 'usuarios',    archivo: 'usuarios.html',    icono: 'people',       etiqueta: 'Usuarios',    roles: ['superadmin'] }
+    { id: 'usuarios',    archivo: 'usuarios.html',    icono: 'people',       etiqueta: 'Usuarios',    roles: ['superadmin'] },
+    { id: 'conexiones',  archivo: 'conexiones.html',  icono: 'clock-history', etiqueta: 'Conexiones',  roles: ['superadmin', 'admin_pais'] }
   ];
 
   const enlacesPermitidos = enlaces.filter(enlace => enlace.roles.includes(rol));
@@ -138,7 +139,7 @@ function pintarSidebar(paginaActiva) {
           <p class="barra-lateral__subtitulo">Panel administrativo</p>
         </div>
 
-        <p class="barra-lateral__seccion-titulo">Men\u00fa</p>
+        <p class="barra-lateral__seccion-titulo">Menú</p>
         <nav class="barra-lateral__menu">
           ${htmlEnlaces}
         </nav>
@@ -151,7 +152,7 @@ function pintarTopbar(tituloPagina) {
   const usuario = obtenerUsuario();
   if (!usuario) return;
 
-  const nombrePais = usuario.pais?.nombre || 'Todos los pa\u00edses';
+  const nombrePais = usuario.pais?.nombre || 'Todos los países';
 
   const zona = document.getElementById('zona-topbar');
   if (zona) {
@@ -169,7 +170,7 @@ function pintarTopbar(tituloPagina) {
           </span>
           <button class="boton-cerrar-sesion" id="boton-cerrar-sesion">
             <i class="bi bi-box-arrow-right"></i>
-            Cerrar sesi\u00f3n
+            Cerrar sesión
           </button>
         </div>
       </header>
@@ -180,7 +181,7 @@ function pintarTopbar(tituloPagina) {
 }
 
 /* ------------------------------------------------------------
-   CERRAR SESI\u00d3N
+   CERRAR SESIÓN (explícito + cierre de navegador)
    ------------------------------------------------------------ */
 function cerrarSesion() {
   const refreshToken = localStorage.getItem('refreshToken');
@@ -196,6 +197,15 @@ function cerrarSesion() {
   limpiarSesion();
   window.location.href = `${BASE_ADMIN}/login`;
 }
+
+// Cierre automático al cerrar la pestaña/navegador
+window.addEventListener('beforeunload', function () {
+  const refreshToken = localStorage.getItem('refreshToken');
+  if (refreshToken) {
+    const data = JSON.stringify({ refreshToken });
+    navigator.sendBeacon(`${URL_BACKEND}/auth/session-end`, new Blob([data], { type: 'application/json' }));
+  }
+});
 
 /* ------------------------------------------------------------
    MODALES: abrir y cerrar
@@ -214,14 +224,19 @@ function cerrarModal(idModal) {
 /* ------------------------------------------------------------
    FORMATEAR FECHAS para mostrar bonito en tablas
    ------------------------------------------------------------ */
-function formatearFecha(fechaIso) {
-  if (!fechaIso) return '\u2014';
+function formatearFecha(fechaIso, conHora = false) {
+  if (!fechaIso) return '—';
   const fecha = new Date(fechaIso);
-  return fecha.toLocaleDateString('es-AR', {
+  const opts = {
     day: '2-digit',
     month: 'short',
-    year: 'numeric'
-  });
+    year: 'numeric',
+  };
+  if (conHora) {
+    opts.hour = '2-digit';
+    opts.minute = '2-digit';
+  }
+  return fecha.toLocaleDateString('es-AR', opts);
 }
 
 /* ------------------------------------------------------------

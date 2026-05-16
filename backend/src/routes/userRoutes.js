@@ -26,4 +26,32 @@ router.put(
   userController.updatePassword
 );
 
+router.put(
+  '/:id',
+  verifyToken,
+  authorizeRoles('superadmin', 'admin_pais', 'editor'),
+  userController.updateUser
+);
+
+router.patch(
+  '/:id',
+  verifyToken,
+  authorizeRoles('superadmin', 'admin_pais', 'editor'),
+  userController.updateUser
+);
+
+router.delete(
+  '/:id',
+  verifyToken,
+  authorizeRoles('superadmin'),
+  userController.deactivateUser
+);
+
+router.delete(
+  '/:id/permanent',
+  verifyToken,
+  authorizeRoles('superadmin'),
+  userController.deleteUserPermanent
+);
+
 module.exports = router;

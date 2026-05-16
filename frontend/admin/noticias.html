@@ -19,7 +19,7 @@
     <section class="panel-contenido">
 
       <div class="panel-contenido__cabecera">
-        <h2 class="panel-contenido__titulo">Gesti\u00f3n de noticias</h2>
+        <h2 class="panel-contenido__titulo">Gestión de noticias</h2>
         <button class="boton boton--principal" id="boton-nueva-noticia">
           <i class="bi bi-plus-circle"></i>
           Nueva noticia
@@ -27,7 +27,7 @@
       </div>
 
       <div class="barra-filtros">
-        <input type="text" id="filtro-busqueda" placeholder="Buscar por t\u00edtulo..." />
+        <input type="text" id="filtro-busqueda" placeholder="Buscar por título..." />
         <select id="filtro-estado">
           <option value="">Todos los estados</option>
           <option value="borrador">Borrador</option>
@@ -41,8 +41,8 @@
           <thead>
             <tr>
               <th>Imagen</th>
-              <th>T\u00edtulo</th>
-              <th>Pa\u00eds</th>
+              <th>Título</th>
+              <th>País</th>
               <th>Autor</th>
               <th>Estado</th>
               <th>Creada</th>
@@ -74,12 +74,12 @@
           <input type="hidden" id="noticia-id" />
 
           <div class="campo-formulario">
-            <label for="noticia-titulo">T\u00edtulo *</label>
+            <label for="noticia-titulo">Título *</label>
             <input type="text" id="noticia-titulo" required />
           </div>
 
           <div class="campo-formulario" id="contenedor-pais-noticia">
-            <label for="noticia-pais">Pa\u00eds *</label>
+            <label for="noticia-pais">País *</label>
             <select id="noticia-pais"></select>
           </div>
 
@@ -118,19 +118,19 @@
     </div>
   </div>
 
-  <!-- Modal de confirmaci\u00f3n para eliminar -->
+  <!-- Modal de confirmación para eliminar -->
   <div class="fondo-modal" id="modal-confirmar-eliminar">
     <div class="modal">
       <div class="modal__cuerpo">
         <div class="confirmacion">
           <i class="bi bi-exclamation-triangle confirmacion__icono"></i>
-          <p class="confirmacion__pregunta">\u00bfElimin\u00e1s esta noticia?</p>
-          <p class="confirmacion__texto" id="texto-confirmar-eliminar">Esta acci\u00f3n no se puede deshacer.</p>
+          <p class="confirmacion__pregunta">¿Eliminás esta noticia?</p>
+          <p class="confirmacion__texto" id="texto-confirmar-eliminar">Esta acción no se puede deshacer.</p>
         </div>
       </div>
       <div class="modal__pie">
         <button class="boton boton--secundario" onclick="cerrarModal('modal-confirmar-eliminar')">Cancelar</button>
-        <button class="boton boton--peligro" id="boton-confirmar-eliminar">S\u00ed, eliminar</button>
+        <button class="boton boton--peligro" id="boton-confirmar-eliminar">Sí, eliminar</button>
       </div>
     </div>
   </div>
@@ -171,15 +171,15 @@
         paisesActivos = await llamarApi('/countries/active');
 
         const selectorPais = document.getElementById('noticia-pais');
-        selectorPais.innerHTML = '<option value="">Seleccion\u00e1 un pa\u00eds</option>' +
+        selectorPais.innerHTML = '<option value="">Seleccioná un país</option>' +
           paisesActivos.map(pais => `<option value="${pais.id}">${pais.nombre}</option>`).join('');
 
-        // El selector de pa\u00eds solo se muestra para superadmin
+        // El selector de país solo se muestra para superadmin
         if (!usuarioEs('superadmin')) {
           document.getElementById('contenedor-pais-noticia').style.display = 'none';
         }
       } catch (error) {
-        console.error('Error cargando pa\u00edses:', error);
+        console.error('Error cargando países:', error);
       }
     }
 
@@ -208,9 +208,9 @@
 
         const autor = noticia.usuarios
           ? `${noticia.usuarios.nombre} ${noticia.usuarios.apellido}`
-          : '\u2014';
+          : '—';
 
-        const pais = noticia.paises?.nombre || '\u2014';
+        const pais = noticia.paises?.nombre || '—';
 
         // Solo superadmin y admin_pais pueden eliminar (los editores no)
         const botonEliminar = usuarioEs('superadmin', 'admin_pais')
@@ -313,12 +313,12 @@
     });
 
     /* ----------------------------------------------------------
-       ELIMINAR noticia (con confirmaci\u00f3n)
+       ELIMINAR noticia (con confirmación)
        ---------------------------------------------------------- */
     function confirmarEliminar(idNoticia, tituloNoticia) {
       idNoticiaAEliminar = idNoticia;
       document.getElementById('texto-confirmar-eliminar').textContent =
-        `La noticia "${tituloNoticia}" se eliminar\u00e1 definitivamente.`;
+        `La noticia "${tituloNoticia}" se eliminará definitivamente.`;
       abrirModal('modal-confirmar-eliminar');
     }
 

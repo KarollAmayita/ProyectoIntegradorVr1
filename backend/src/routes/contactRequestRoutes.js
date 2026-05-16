@@ -25,6 +25,27 @@ router.get(
   contactRequestController.listRequests
 );
 
+router.get(
+  '/:id',
+  verifyToken,
+  authorizeRoles('superadmin', 'admin_pais', 'editor'),
+  contactRequestController.getRequestById
+);
+
+router.put(
+  '/:id',
+  verifyToken,
+  authorizeRoles('superadmin', 'admin_pais'),
+  contactRequestController.updateRequest
+);
+
+router.patch(
+  '/:id',
+  verifyToken,
+  authorizeRoles('superadmin', 'admin_pais'),
+  contactRequestController.updateRequest
+);
+
 router.put(
   '/:id/status',
   verifyToken,

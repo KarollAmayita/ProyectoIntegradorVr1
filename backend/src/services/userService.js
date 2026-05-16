@@ -65,8 +65,45 @@ const updatePassword = async (id, nueva_password) => {
   return await userRepository.updateUserPassword(id, password_hash);
 };
 
+const updateUser = async (id, payload, requestingUser) => {
+  const target = await userRepository.findUserById(id);
+  if (!target) throw new Error('Usuario no encontrado');
+
+  if (requestingUser.rol !== 'superadmin' && Number(id) === Number(requestingUser.id)) {
+    const allowedFields = ['nombre', 'apellido', 'email'];
+    const restricted = {};
+    for (const key of Object.keys(payload)) {
+      if (!allowedFields.includes(key)) throw new Error('No tienes permiso para modificar este campo');
+      restricted[key] = payload[key];
+    }
+    return userRepository.updateUser(id, { ...restricted, updated_at: new Date().toISOString() });
+  }
+
+  if (requestingUser.rol !== 'superadmin') throw new Error('No tienes permisos para modificar este usuario');
+
+  return userRepository.updateUser(id, { ...payload, updated_at: new Date().toISOString() });
+};
+
+const deactivateUser = async (id, requestingUser) => {
+  if (Number(id) === Number(requestingUser.id)) throw new Error('No puedes desactivarte a ti mismo');
+  const target = await userRepository.findUserById(id);
+  if (!target) throw new Error('Usuario no encontrado');
+  return userRepository.updateUser(id, { estado: 'inactivo', updated_at: new Date().toISOString() });
+};
+
+const deleteUserPermanent = async (id, requestingUser) => {
+  if (Number(id) === Number(requestingUser.id)) throw new Error('No puedes eliminarte a ti mismo');
+  const target = await userRepository.findUserById(id);
+  if (!target) throw new Error('Usuario no encontrado');
+  await userRepository.deleteUserPermanent(id);
+  return { message: 'Usuario eliminado permanentemente' };
+};
+
 module.exports = {
   getUsers,
   createUser,
   updatePassword,
+  updateUser,
+  deactivateUser,
+  deleteUserPermanent,
 };

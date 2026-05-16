@@ -62,9 +62,29 @@ const deleteRequest = async (req, res) => {
   }
 };
 
+const getRequestById = async (req, res) => {
+  try {
+    const request = await contactRequestService.getRequestById(req.params.id, req.user);
+    return res.status(200).json(request);
+  } catch (error) {
+    return res.status(404).json({ message: error.message });
+  }
+};
+
+const updateRequest = async (req, res) => {
+  try {
+    const request = await contactRequestService.updateRequestGeneral(req.params.id, req.body, req.user);
+    return res.status(200).json({ message: 'Solicitud actualizada correctamente', data: request });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
 module.exports = {
   listRequests,
   createPublicRequest,
   updateRequestStatus,
   deleteRequest,
+  getRequestById,
+  updateRequest,
 };

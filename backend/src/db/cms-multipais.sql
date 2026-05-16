@@ -121,6 +121,40 @@ insert into roles (nombre, descripcion) values
 ('editor', 'Usuario editor de contenidos');
 
 -- ============================================
+-- Tabla: archivos (centraliza imagenes/recursos)
+-- ============================================
+
+create table if not exists archivos (
+  id bigint generated always as identity primary key,
+  noticia_id bigint references noticias(id) on delete set null,
+  testimonio_id bigint references testimonios(id) on delete set null,
+  url text not null,
+  nombre text not null,
+  tipo text not null default 'imagen',
+  peso_bytes bigint,
+  storage_path text,
+  subido_por bigint references usuarios(id),
+  created_at timestamptz default now(),
+  updated_at timestamptz default now(),
+  constraint archivos_tipo_check check (tipo in ('imagen', 'pdf', 'video', 'documento', 'otro'))
+);
+
+-- ============================================
+-- Tabla: auditoria (bitacora de eventos)
+-- ============================================
+
+create table if not exists auditoria (
+  id bigint generated always as identity primary key,
+  usuario_id bigint references usuarios(id) on delete set null,
+  username text,
+  accion text not null,
+  modulo text not null,
+  detalle jsonb,
+  ip_address text,
+  created_at timestamptz default now()
+);
+
+-- ============================================
 -- Migración: Recuperación de contraseña
 -- ============================================
 
@@ -128,3 +162,19 @@ alter table usuarios
 add column if not exists pregunta_seguridad text,
 add column if not exists respuesta_seguridad_hash text,
 add column if not exists password_updated_at timestamptz;
+
+-- ============================================
+-- Tabla: historial_conexiones
+-- ============================================
+
+create table if not exists historial_conexiones (
+  id bigint generated always as identity primary key,
+  usuario_id bigint not null references usuarios(id) on delete cascade,
+  username text not null,
+  ip_address text,
+  lugar text,
+  jwt_token text,
+  user_agent text,
+  created_at timestamptz default now(),
+  logout_at timestamptz
+);

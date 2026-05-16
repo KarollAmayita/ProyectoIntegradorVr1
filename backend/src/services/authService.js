@@ -2,9 +2,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const authRepository = require('../repositories/authRepository');
 const userService = require('./userService');
+const connectionLogService = require('./connectionLogService');
 const { AuthenticationError, ConflictError, NotFoundError, ValidationError } = require('../utils/errors');
 
-const login = async ({ username, password }) => {
+const login = async ({ username, password, ipAddress, userAgent }) => {
   if (!username || !password) {
     throw new AuthenticationError('El usuario y la contraseña son obligatorios');
   }
@@ -35,6 +36,14 @@ const login = async ({ username, password }) => {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
   await authRepository.createRefreshToken(user.id, refreshToken, expiresAt);
+
+  connectionLogService.logConnection({
+    usuario_id: user.id,
+    username: user.username,
+    ip_address: ipAddress || null,
+    jwt_token: token,
+    user_agent: userAgent || null,
+  }).catch(() => {});
 
   return {
     message: 'Inicio de sesión exitoso',
@@ -107,20 +116,28 @@ const refreshToken = async (token) => {
   };
 };
 
-const logout = async (token) => {
-  if (!token) {
-    throw new AuthenticationError('Token no proporcionado');
+const logout = async (refreshToken, userId, accessToken) => {
+  if (!refreshToken) {
+    throw new AuthenticationError('Refresh token no proporcionado');
   }
 
-  await authRepository.deleteRefreshToken(token);
+  await authRepository.deleteRefreshToken(refreshToken);
+
+  if (userId && accessToken) {
+    connectionLogService.recordLogout({ usuario_id: userId, jwt_token: accessToken }).catch(() => {});
+  }
 
   return {
     message: 'Sesión cerrada exitosamente',
   };
 };
 
-const logoutAll = async (userId) => {
+const logoutAll = async (userId, accessToken) => {
   await authRepository.deleteAllUserRefreshTokens(userId);
+
+  if (userId && accessToken) {
+    connectionLogService.recordLogout({ usuario_id: userId, jwt_token: accessToken }).catch(() => {});
+  }
 
   return {
     message: 'Todas las sesiones han sido cerradas',
@@ -246,6 +263,53 @@ const generateRefreshToken = (userId) => {
   );
 };
 
+const getMyProfile = async (userId) => {
+  const user = await authRepository.findUserById(userId);
+  if (!user) throw new NotFoundError('Usuario no encontrado');
+  const rol = user.roles?.nombre;
+  const pais = user.paises || null;
+  return {
+    id: user.id,
+    nombre: user.nombre,
+    apellido: user.apellido,
+    email: user.email,
+    username: user.username,
+    estado: user.estado,
+    pais_id: user.pais_id,
+    rol,
+    pais,
+    pregunta_seguridad: user.pregunta_seguridad,
+  };
+};
+
+const getMySecurityQuestion = async (userId) => {
+  const user = await authRepository.findUserById(userId);
+  if (!user) throw new NotFoundError('Usuario no encontrado');
+  return {
+    pregunta_seguridad: user.pregunta_seguridad || null,
+  };
+};
+
+const getPublicSecurityQuestion = async (identifier) => {
+  if (!identifier) throw new ValidationError('Usuario o correo es obligatorio');
+  const user = await authRepository.findUserSecurityQuestion(identifier);
+  if (!user) throw new NotFoundError('Usuario no encontrado');
+  if (!user.pregunta_seguridad) throw new ValidationError('Este usuario no tiene configurada una pregunta de seguridad');
+  return {
+    username: user.username,
+    pregunta_seguridad: user.pregunta_seguridad,
+  };
+};
+
+const endSession = async (refreshToken) => {
+  const stored = await authRepository.findRefreshToken(refreshToken).catch(() => null);
+  if (!stored) return;
+  await authRepository.deleteRefreshToken(refreshToken);
+  if (stored.usuario_id) {
+    connectionLogService.recordLogout({ usuario_id: stored.usuario_id, jwt_token: null }).catch(() => {});
+  }
+};
+
 module.exports = {
   login,
   register,
@@ -256,4 +320,8 @@ module.exports = {
   resetPassword,
   changePassword,
   updateSecurityQuestion,
+  getMyProfile,
+  getMySecurityQuestion,
+  getPublicSecurityQuestion,
+  endSession,
 };

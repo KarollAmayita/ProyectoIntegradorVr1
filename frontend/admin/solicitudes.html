@@ -21,7 +21,7 @@
       <div class="panel-contenido__cabecera">
         <h2 class="panel-contenido__titulo">Solicitudes de contacto</h2>
         <span style="font-size:13px; color:#5A6C84;">
-          <i class="bi bi-info-circle"></i> Las solicitudes llegan desde el formulario p\u00fablico del portal.
+          <i class="bi bi-info-circle"></i> Las solicitudes llegan desde el formulario público del portal.
         </span>
       </div>
 
@@ -42,9 +42,9 @@
             <tr>
               <th>Nombre</th>
               <th>Correo</th>
-              <th>Tel\u00e9fono</th>
+              <th>Teléfono</th>
               <th>Motivo</th>
-              <th>Pa\u00eds</th>
+              <th>País</th>
               <th>Estado</th>
               <th>Recibida</th>
               <th>Acciones</th>
@@ -86,11 +86,11 @@
 
           <div class="campos-en-fila">
             <div class="campo-formulario">
-              <label>Tel\u00e9fono</label>
+              <label>Teléfono</label>
               <input type="text" id="ver-telefono" readonly />
             </div>
             <div class="campo-formulario">
-              <label>Pa\u00eds</label>
+              <label>País</label>
               <input type="text" id="ver-pais" readonly />
             </div>
           </div>
@@ -127,7 +127,7 @@
 
             <div class="campo-formulario">
               <label for="solicitud-observaciones">Observaciones del administrador</label>
-              <textarea id="solicitud-observaciones" rows="3" placeholder="Notas internas sobre la gesti\u00f3n..."></textarea>
+              <textarea id="solicitud-observaciones" rows="3" placeholder="Notas internas sobre la gestión..."></textarea>
             </div>
 
             <div id="mensaje-error-solicitud" class="mensaje mensaje--error" hidden></div>
@@ -142,19 +142,19 @@
     </div>
   </div>
 
-  <!-- Modal de confirmaci\u00f3n para eliminar -->
+  <!-- Modal de confirmación para eliminar -->
   <div class="fondo-modal" id="modal-confirmar-eliminar">
     <div class="modal">
       <div class="modal__cuerpo">
         <div class="confirmacion">
           <i class="bi bi-exclamation-triangle confirmacion__icono"></i>
-          <p class="confirmacion__pregunta">\u00bfElimin\u00e1s esta solicitud?</p>
-          <p class="confirmacion__texto" id="texto-confirmar-eliminar">Esta acci\u00f3n no se puede deshacer.</p>
+          <p class="confirmacion__pregunta">¿Eliminás esta solicitud?</p>
+          <p class="confirmacion__texto" id="texto-confirmar-eliminar">Esta acción no se puede deshacer.</p>
         </div>
       </div>
       <div class="modal__pie">
         <button class="boton boton--secundario" onclick="cerrarModal('modal-confirmar-eliminar')">Cancelar</button>
-        <button class="boton boton--peligro" id="boton-confirmar-eliminar">S\u00ed, eliminar</button>
+        <button class="boton boton--peligro" id="boton-confirmar-eliminar">Sí, eliminar</button>
       </div>
     </div>
   </div>
@@ -202,7 +202,7 @@
       }
 
       tabla.innerHTML = filtradas.map(solicitud => {
-        const pais = solicitud.paises?.nombre || '\u2014';
+        const pais = solicitud.paises?.nombre || '—';
 
         const botonEliminar = usuarioEs('superadmin', 'admin_pais')
           ? `<button class="boton-icono-fila boton-icono-fila--peligro" onclick="confirmarEliminar(${solicitud.id}, '${solicitud.nombre.replace(/'/g, "\\'")}')" title="Eliminar"><i class="bi bi-trash"></i></button>`
@@ -242,7 +242,7 @@
       document.getElementById('ver-nombre').value = solicitud.nombre;
       document.getElementById('ver-correo').value = solicitud.correo;
       document.getElementById('ver-telefono').value = solicitud.telefono;
-      document.getElementById('ver-pais').value = solicitud.paises?.nombre || '\u2014';
+      document.getElementById('ver-pais').value = solicitud.paises?.nombre || '—';
       document.getElementById('ver-motivo').value = solicitud.finalidad;
       document.getElementById('ver-mensaje').value = solicitud.mensaje || '(sin mensaje)';
       document.getElementById('ver-fecha').value = formatearFecha(solicitud.created_at);
@@ -295,7 +295,7 @@
     function confirmarEliminar(idSolicitud, nombreSolicitante) {
       idSolicitudAEliminar = idSolicitud;
       document.getElementById('texto-confirmar-eliminar').textContent =
-        `La solicitud de "${nombreSolicitante}" se eliminar\u00e1 definitivamente.`;
+        `La solicitud de "${nombreSolicitante}" se eliminará definitivamente.`;
       abrirModal('modal-confirmar-eliminar');
     }
 

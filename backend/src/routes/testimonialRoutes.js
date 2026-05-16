@@ -37,11 +37,39 @@ router.post(
   testimonialController.createTestimonial
 );
 
+router.get(
+  '/:id',
+  verifyToken,
+  authorizeRoles('superadmin', 'admin_pais', 'editor'),
+  testimonialController.getTestimonialById
+);
+
 router.put(
   '/:id',
   verifyToken,
   authorizeRoles('superadmin', 'admin_pais', 'editor'),
   testimonialController.updateTestimonial
+);
+
+router.patch(
+  '/:id',
+  verifyToken,
+  authorizeRoles('superadmin', 'admin_pais', 'editor'),
+  testimonialController.updateTestimonial
+);
+
+router.patch(
+  '/:id/estado',
+  verifyToken,
+  authorizeRoles('superadmin', 'admin_pais', 'editor'),
+  testimonialController.updateTestimonialStatus
+);
+
+router.patch(
+  '/:id/foto',
+  verifyToken,
+  authorizeRoles('superadmin', 'admin_pais', 'editor'),
+  testimonialController.updateTestimonialPhoto
 );
 
 router.delete(

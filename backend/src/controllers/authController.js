@@ -12,7 +12,10 @@ const login = async (req, res, next) => {
       });
     }
 
-    const result = await authService.login({ username, password });
+    const ipAddress = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+    const userAgent = req.headers['user-agent'] || null;
+
+    const result = await authService.login({ username, password, ipAddress, userAgent });
     return res.status(200).json({
       success: true,
       ...result
@@ -94,6 +97,8 @@ const refreshToken = async (req, res, next) => {
 const logout = async (req, res, next) => {
   try {
     const { refreshToken } = req.body;
+    const accessToken = req.headers.authorization?.split(' ')[1];
+    const userId = req.user?.id;
 
     if (!refreshToken) {
       return res.status(400).json({ 
@@ -102,7 +107,7 @@ const logout = async (req, res, next) => {
       });
     }
 
-    const result = await authService.logout(refreshToken);
+    const result = await authService.logout(refreshToken, userId, accessToken);
     return res.status(200).json({
       success: true,
       ...result
@@ -124,7 +129,8 @@ const logout = async (req, res, next) => {
 const logoutAll = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const result = await authService.logoutAll(userId);
+    const accessToken = req.headers.authorization?.split(' ')[1];
+    const result = await authService.logoutAll(userId, accessToken);
     return res.status(200).json({
       success: true,
       ...result
@@ -217,6 +223,49 @@ const updateSecurityQuestion = async (req, res) => {
   }
 };
 
+const getMyProfile = async (req, res, next) => {
+  try {
+    const user = await authService.getMyProfile(req.user.id);
+    return res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    if (error instanceof AppError) return res.status(error.statusCode).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+  }
+};
+
+const getMySecurityQuestion = async (req, res, next) => {
+  try {
+    const result = await authService.getMySecurityQuestion(req.user.id);
+    return res.status(200).json({ success: true, ...result });
+  } catch (error) {
+    if (error instanceof AppError) return res.status(error.statusCode).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+  }
+};
+
+const endSession = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) return res.status(400).json({ success: false, message: 'Refresh token requerido' });
+    await authService.endSession(refreshToken);
+    return res.status(200).json({ success: true, message: 'Sesión finalizada' });
+  } catch (error) {
+    if (error instanceof AppError) return res.status(error.statusCode).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+  }
+};
+
+const getPublicSecurityQuestion = async (req, res, next) => {
+  try {
+    const { identifier } = req.body;
+    const result = await authService.getPublicSecurityQuestion(identifier);
+    return res.status(200).json({ success: true, ...result });
+  } catch (error) {
+    if (error instanceof AppError) return res.status(error.statusCode).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+  }
+};
+
 module.exports = {
   login,
   register,
@@ -227,4 +276,8 @@ module.exports = {
   resetPassword,
   changePassword,
   updateSecurityQuestion,
+  getMyProfile,
+  getMySecurityQuestion,
+  getPublicSecurityQuestion,
+  endSession,
 };

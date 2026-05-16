@@ -19,7 +19,7 @@
     <section class="panel-contenido">
 
       <div class="panel-contenido__cabecera">
-        <h2 class="panel-contenido__titulo">Gesti\u00f3n de testimonios</h2>
+        <h2 class="panel-contenido__titulo">Gestión de testimonios</h2>
         <button class="boton boton--principal" id="boton-nuevo-testimonio">
           <i class="bi bi-plus-circle"></i>
           Nuevo testimonio
@@ -43,7 +43,7 @@
               <th>Foto</th>
               <th>Nombre</th>
               <th>Cargo / Empresa</th>
-              <th>Pa\u00eds</th>
+              <th>País</th>
               <th>Estado</th>
               <th>Destacado</th>
               <th>Acciones</th>
@@ -78,7 +78,7 @@
               <input type="text" id="testimonio-nombre" required />
             </div>
             <div class="campo-formulario" id="contenedor-pais-testimonio">
-              <label for="testimonio-pais">Pa\u00eds *</label>
+              <label for="testimonio-pais">País *</label>
               <select id="testimonio-pais"></select>
             </div>
           </div>
@@ -125,10 +125,10 @@
               </select>
             </div>
             <div class="campo-formulario">
-              <label for="testimonio-destacado">\u00bfDestacado?</label>
+              <label for="testimonio-destacado">¿Destacado?</label>
               <select id="testimonio-destacado">
                 <option value="false">No</option>
-                <option value="true">S\u00ed</option>
+                <option value="true">Sí</option>
               </select>
             </div>
           </div>
@@ -144,19 +144,19 @@
     </div>
   </div>
 
-  <!-- Modal de confirmaci\u00f3n para eliminar -->
+  <!-- Modal de confirmación para eliminar -->
   <div class="fondo-modal" id="modal-confirmar-eliminar">
     <div class="modal">
       <div class="modal__cuerpo">
         <div class="confirmacion">
           <i class="bi bi-exclamation-triangle confirmacion__icono"></i>
-          <p class="confirmacion__pregunta">\u00bfElimin\u00e1s este testimonio?</p>
-          <p class="confirmacion__texto" id="texto-confirmar-eliminar">Esta acci\u00f3n no se puede deshacer.</p>
+          <p class="confirmacion__pregunta">¿Eliminás este testimonio?</p>
+          <p class="confirmacion__texto" id="texto-confirmar-eliminar">Esta acción no se puede deshacer.</p>
         </div>
       </div>
       <div class="modal__pie">
         <button class="boton boton--secundario" onclick="cerrarModal('modal-confirmar-eliminar')">Cancelar</button>
-        <button class="boton boton--peligro" id="boton-confirmar-eliminar">S\u00ed, eliminar</button>
+        <button class="boton boton--peligro" id="boton-confirmar-eliminar">Sí, eliminar</button>
       </div>
     </div>
   </div>
@@ -191,14 +191,14 @@
       try {
         paisesActivos = await llamarApi('/countries/active');
         const selectorPais = document.getElementById('testimonio-pais');
-        selectorPais.innerHTML = '<option value="">Seleccion\u00e1 un pa\u00eds</option>' +
+        selectorPais.innerHTML = '<option value="">Seleccioná un país</option>' +
           paisesActivos.map(pais => `<option value="${pais.id}">${pais.nombre}</option>`).join('');
 
         if (!usuarioEs('superadmin')) {
           document.getElementById('contenedor-pais-testimonio').style.display = 'none';
         }
       } catch (error) {
-        console.error('Error cargando pa\u00edses:', error);
+        console.error('Error cargando países:', error);
       }
     }
 
@@ -222,8 +222,8 @@
           ? `<img class="tabla__miniatura" style="border-radius:50%;" src="${testimonio.foto_url}" alt="" />`
           : `<div class="tabla__miniatura" style="border-radius:50%;display:flex;align-items:center;justify-content:center;color:#5A6C84;"><i class="bi bi-person"></i></div>`;
 
-        const cargoEmpresa = [testimonio.cargo, testimonio.empresa].filter(Boolean).join(' \u2022 ') || '\u2014';
-        const pais = testimonio.paises?.nombre || '\u2014';
+        const cargoEmpresa = [testimonio.cargo, testimonio.empresa].filter(Boolean).join(' • ') || '—';
+        const pais = testimonio.paises?.nombre || '—';
         const destacado = testimonio.destacado
           ? '<i class="bi bi-star-fill" style="color:#FCBF49;"></i>'
           : '<i class="bi bi-star" style="color:#E1E8F0;"></i>';
@@ -330,7 +330,7 @@
     function confirmarEliminar(idTestimonio, nombreTestimonio) {
       idTestimonioAEliminar = idTestimonio;
       document.getElementById('texto-confirmar-eliminar').textContent =
-        `El testimonio de "${nombreTestimonio}" se eliminar\u00e1 definitivamente.`;
+        `El testimonio de "${nombreTestimonio}" se eliminará definitivamente.`;
       abrirModal('modal-confirmar-eliminar');
     }
 

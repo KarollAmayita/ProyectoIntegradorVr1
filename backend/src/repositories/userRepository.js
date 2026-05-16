@@ -78,9 +78,69 @@ const updateUserPassword = async (id, password_hash) => {
   return data;
 };
 
+const findUserById = async (id) => {
+  const { data, error } = await supabase
+    .from('usuarios')
+    .select(`
+      id,
+      nombre,
+      apellido,
+      email,
+      username,
+      estado,
+      pais_id,
+      created_at,
+      ultimo_acceso,
+      roles (
+        id,
+        nombre
+      ),
+      paises (
+        id,
+        nombre,
+        codigo,
+        slug
+      )
+    `)
+    .eq('id', id)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  return data;
+};
+
+const updateUser = async (id, payload) => {
+  const { data, error } = await supabase
+    .from('usuarios')
+    .update(payload)
+    .eq('id', id)
+    .select(`
+      id,
+      nombre,
+      apellido,
+      email,
+      username,
+      estado,
+      pais_id,
+      created_at
+    `)
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
+};
+
+const deleteUserPermanent = async (id) => {
+  const { error } = await supabase.from('usuarios').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+};
+
 module.exports = {
   findAllUsers,
   findUserByUsernameOrEmail,
+  findUserById,
   createUser,
   updateUserPassword,
+  updateUser,
+  deleteUserPermanent,
 };

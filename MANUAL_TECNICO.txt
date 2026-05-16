@@ -1,0 +1,645 @@
+================================================================================
+MANUAL TECNICO - CMS MULTIPAIS
+================================================================================
+Proyecto: Latinoamerica Comparte - Sistema de Gestion de Contenidos Multipais
+Version: 1.0
+Fecha: Mayo 2026
+
+================================================================================
+INDICE
+================================================================================
+
+1.  Introduccion
+2.  Requisitos del Sistema
+3.  Instalacion y Configuracion
+4.  Estructura del Proyecto
+5.  Arquitectura del Backend
+6.  Base de Datos
+7.  API REST - Endpoints
+8.  Autenticacion y Seguridad
+9.  Frontend
+10. Despliegue con Docker
+11. CI/CD
+12. Solucion de Problemas
+
+================================================================================
+1. INTRODUCCION
+================================================================================
+
+CMS Multipais es una aplicacion web construida con Node.js + Express 5 y
+Supabase (PostgreSQL) que permite gestionar contenido (noticias, testimonios,
+solicitudes de contacto) para multiples paises. El frontend es HTML/CSS/JS
+vanilla servido desde el mismo servidor Express.
+
+================================================================================
+2. REQUISITOS DEL SISTEMA
+================================================================================
+
+Desarrollo:
+  - Node.js v20 o superior
+  - npm
+  - Cuenta en Supabase (gratuita)
+  - Git
+
+Produccion:
+  - Docker y docker-compose
+  - Servidor Linux (testeado en Oracle Cloud ARM64)
+  - Cuenta en Supabase
+
+================================================================================
+3. INSTALACION Y CONFIGURACION
+================================================================================
+
+3.1 Instalacion local
+
+  1. Clonar el repositorio:
+     git clone https://github.com/KarollAmayita/ProyectoIntegradorVr1.git
+     cd ProyectoIntegradorVr1
+
+  2. Instalar dependencias:
+     cd backend
+     npm install
+
+  3. Configurar variables de entorno:
+     cp .env.example .env
+     Editar .env con los valores de Supabase
+
+  4. Configurar base de datos:
+     - Ir a Supabase Dashboard -> SQL Editor
+     - Ejecutar el contenido de backend/src/db/cms-multipais.sql
+
+  5. Crear usuario superadmin:
+     node src/scripts/createSuperAdmin.js
+
+  6. (Opcional) Crear datos de prueba:
+     node src/scripts/createTestUser.js
+     node src/scripts/createCountries.js
+
+  7. Iniciar servidor de desarrollo:
+     npm run dev
+
+  8. Abrir en navegador:
+     http://localhost:3001
+
+3.2 Variables de Entorno (.env)
+
+  PORT=3001
+  SUPABASE_URL=https://your-project.supabase.co
+  SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+  JWT_SECRET=your-secret-key
+
+  Donde:
+  - SUPABASE_URL: Project settings -> Data API -> API URL
+  - SUPABASE_SERVICE_ROLE_KEY: Project settings -> API keys ->
+    service_role secret
+  - JWT_SECRET: Clave secreta para firmar tokens JWT
+
+================================================================================
+4. ESTRUCTURA DEL PROYECTO
+================================================================================
+
+  ProyectoIntegradorVr1/
+  |-- backend/
+  |   |-- .env.example
+  |   |-- package.json
+  |   |-- src/
+  |   |   |-- app.js                    # Punto de entrada Express
+  |   |   |-- config/
+  |   |   |   |-- supabase.js           # Cliente Supabase
+  |   |   |-- controllers/             # Controladores por modulo
+  |   |   |   |-- authController.js
+  |   |   |   |-- adminController.js
+  |   |   |   |-- userController.js
+  |   |   |   |-- countryController.js
+  |   |   |   |-- newsController.js
+  |   |   |   |-- testimonialController.js
+  |   |   |   |-- contactRequestController.js
+  |   |   |   |-- profileController.js
+  |   |   |-- services/                # Logica de negocio
+  |   |   |   |-- authService.js
+  |   |   |   |-- userService.js
+  |   |   |   |-- countryService.js
+  |   |   |   |-- newsService.js
+  |   |   |   |-- testimonialService.js
+  |   |   |   |-- contactRequestService.js
+  |   |   |-- repositories/            # Capa de datos (queries SQL)
+  |   |   |   |-- authRepository.js
+  |   |   |   |-- userRepository.js
+  |   |   |   |-- rolRepository.js
+  |   |   |   |-- countryRepository.js
+  |   |   |   |-- newsRepository.js
+  |   |   |   |-- testimonialRepository.js
+  |   |   |   |-- contactRequestRepository.js
+  |   |   |-- middlewares/             # Middleware Express
+  |   |   |   |-- authMiddleware.js
+  |   |   |   |-- roleMiddleware.js
+  |   |   |   |-- validationMiddleware.js
+  |   |   |   |-- errorHandler.js
+  |   |   |-- routes/                  # Definicion de rutas
+  |   |   |   |-- authRoutes.js
+  |   |   |   |-- profileRoutes.js
+  |   |   |   |-- adminRoutes.js
+  |   |   |   |-- userRoutes.js
+  |   |   |   |-- countryRoutes.js
+  |   |   |   |-- newsRoutes.js
+  |   |   |   |-- testimonialRoutes.js
+  |   |   |   |-- contactRequestRoutes.js
+  |   |   |-- utils/
+  |   |   |   |-- errors.js            # Clases de error personalizadas
+  |   |   |-- db/
+  |   |   |   |-- cms-multipais.sql    # Schema completo + seed data
+  |   |   |-- scripts/
+  |   |       |-- setupDatabase.js
+  |   |       |-- createSuperAdmin.js
+  |   |       |-- createTestUser.js
+  |   |       |-- createCountries.js
+  |   |       |-- createRefreshTokensTable.js
+  |-- frontend/
+  |   |-- admin/                       # Panel administrativo
+  |   |   |-- admin-styles.css
+  |   |   |-- admin-shared.js
+  |   |   |-- login.html
+  |   |   |-- recuperar.html
+  |   |   |-- dashboard.html
+  |   |   |-- noticias.html
+  |   |   |-- testimonios.html
+  |   |   |-- solicitudes.html
+  |   |   |-- usuarios.html
+  |   |-- portales/
+  |   |   |-- indice/                  # Landing page multipais
+  |   |   |   |-- index.html
+  |   |   |   |-- styles.css
+  |   |   |   |-- main.js
+  |   |   |-- argentina/               # Portal de Argentina
+  |   |       |-- index.html
+  |   |       |-- styles.css
+  |   |       |-- main.js
+  |   |-- assets/
+  |       |-- img/
+  |           |-- argentina/
+  |           |-- portales/
+  |-- Dockerfile
+  |-- docker-compose.yml
+  |-- .github/workflows/deploy.yml
+  |-- README.md
+
+================================================================================
+5. ARQUITECTURA DEL BACKEND
+================================================================================
+
+5.1 Patron por capas
+
+  Routes        -> Define rutas HTTP y asigna controladores
+  Controllers   -> Recibe request, valida, llama al servicio, responde
+  Services      -> Logica de negocio, reglas de autorizacion
+  Repositories  -> Queries a la base de datos via Supabase
+  Middlewares   -> Auth, roles, validacion, errores
+
+5.2 Flujo de una solicitud
+
+  Request HTTP
+    -> Express Router (routes/)
+    -> Middleware de autenticacion (authMiddleware)
+    -> Middleware de rol (roleMiddleware)
+    -> Controller (controllers/)
+    -> Service (services/)
+    -> Repository (repositories/)
+    -> Supabase (PostgreSQL)
+    -> Respuesta JSON
+
+5.3 app.js - Punto de entrada
+
+  Ubicacion: backend/src/app.js
+
+  Configura:
+  - CORS
+  - Parseo JSON
+  - Archivos estaticos del frontend
+  - Rutas del frontend con URLs limpias
+  - Rutas API (prefijadas con /api/)
+  - Middleware 404
+  - Middleware global de errores
+
+  Archivos estaticos servidos:
+  - /                    -> frontend/portales/indice/
+  - /assets/             -> frontend/assets/
+  - /admin/              -> frontend/admin/
+  - /argentina/          -> frontend/portales/argentina/
+
+================================================================================
+6. BASE DE DATOS
+================================================================================
+
+6.1 Esquema
+
+  Tablas:
+  - paises:               Catalogo de paises
+  - roles:                Roles del sistema (superadmin, admin_pais, editor)
+  - usuarios:             Usuarios con credenciales y pregunta de seguridad
+  - noticias:             Noticias por pais
+  - testimonios:          Testimonios por pais
+  - solicitudes_contacto: Solicitudes de contacto
+  - refresh_tokens:       Tokens JWT de refresco
+
+6.2 Tabla: paises
+
+  id          bigint (PK)
+  nombre      text NOT NULL
+  codigo      text NOT NULL UNIQUE (ej: AR, CL, CO, EC)
+  slug        text NOT NULL UNIQUE (ej: argentina, chile)
+  estado      text DEFAULT 'activo'
+  created_at  timestamptz DEFAULT now()
+  updated_at  timestamptz DEFAULT now()
+
+6.3 Tabla: roles
+
+  id          bigint (PK)
+  nombre      text NOT NULL UNIQUE
+  descripcion text
+  created_at  timestamptz DEFAULT now()
+
+6.4 Tabla: usuarios
+
+  id                      bigint (PK)
+  nombre                  text NOT NULL
+  apellido                text NOT NULL
+  email                   text NOT NULL UNIQUE
+  username                text NOT NULL UNIQUE
+  password_hash           text NOT NULL
+  pregunta_seguridad      text
+  respuesta_seguridad_hash text
+  password_updated_at     timestamptz
+  rol_id                  bigint NOT NULL REFERENCES roles(id)
+  pais_id                 bigint REFERENCES paises(id)
+  estado                  text DEFAULT 'activo'
+  ultimo_acceso           timestamptz
+  created_at              timestamptz DEFAULT now()
+  updated_at              timestamptz DEFAULT now()
+
+6.5 Tabla: noticias
+
+  id                  bigint (PK)
+  pais_id             bigint NOT NULL REFERENCES paises(id) ON DELETE CASCADE
+  titulo              text NOT NULL
+  slug                text NOT NULL
+  resumen             text NOT NULL
+  contenido           text NOT NULL
+  imagen_principal_url text
+  autor_id            bigint NOT NULL REFERENCES usuarios(id)
+  estado              text DEFAULT 'borrador'
+                      CHECK IN ('borrador', 'publicado', 'despublicado')
+  fecha_publicacion   timestamptz
+  created_at          timestamptz DEFAULT now()
+  updated_at          timestamptz DEFAULT now()
+  UNIQUE (pais_id, slug)
+
+6.6 Tabla: testimonios
+
+  id                bigint (PK)
+  pais_id           bigint NOT NULL REFERENCES paises(id) ON DELETE CASCADE
+  nombre            text NOT NULL
+  cargo             text
+  empresa           text
+  contenido         text NOT NULL
+  foto_url          text
+  instagram_url     text
+  facebook_url      text
+  estado            text DEFAULT 'borrador'
+                    CHECK IN ('borrador', 'publicado', 'despublicado')
+  destacado         boolean DEFAULT false
+  autor_id          bigint REFERENCES usuarios(id)
+  fecha_publicacion timestamptz
+  created_at        timestamptz DEFAULT now()
+  updated_at        timestamptz DEFAULT now()
+
+6.7 Tabla: solicitudes_contacto
+
+  id                  bigint (PK)
+  pais_id             bigint NOT NULL REFERENCES paises(id) ON DELETE CASCADE
+  nombre              text NOT NULL
+  correo              text NOT NULL
+  telefono            text NOT NULL
+  finalidad           text NOT NULL
+                      CHECK IN ('Servicio', 'Programa EDIFICA',
+                                'Shows y conferencias')
+  mensaje             text
+  estado              text DEFAULT 'pendiente'
+                      CHECK IN ('pendiente', 'en_proceso', 'gestionada',
+                                'cerrada')
+  observaciones_admin text
+  fecha_gestion       timestamptz
+  gestionado_por      bigint REFERENCES usuarios(id)
+  created_at          timestamptz DEFAULT now()
+  updated_at          timestamptz DEFAULT now()
+
+6.8 Tabla: refresh_tokens
+
+  id          bigint (PK)
+  usuario_id  bigint NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE
+  token       text NOT NULL UNIQUE
+  expires_at  timestamptz NOT NULL
+  created_at  timestamptz DEFAULT now()
+
+6.9 Datos iniciales
+
+  Paises:
+    - Chile (CL, chile)
+    - Argentina (AR, argentina)
+    - Ecuador (EC, ecuador)
+    - Colombia (CO, colombia) - agregado manualmente en la BD
+
+  Roles:
+    - superadmin: Administrador general del sistema
+    - admin_pais: Administrador de un pais especifico
+    - editor: Usuario editor de contenidos
+
+================================================================================
+7. API REST - ENDPOINTS
+================================================================================
+
+7.1 Autenticacion (/api/auth)
+
+  POST   /login                  Login con username + password
+  POST   /register               Registro de nuevo usuario
+  POST   /refresh-token          Refrescar token JWT
+  POST   /logout                 Cerrar sesion (invalida refresh token)
+  POST   /logout-all             Cerrar todas las sesiones
+  POST   /forgot-password        Obtener pregunta de seguridad
+  POST   /reset-password         Restaurar contrasena
+  PUT    /change-password        Cambiar contrasena propia (auth)
+  PATCH  /security-question      Cambiar pregunta de seguridad (auth)
+
+7.2 Perfil (/api/profile)
+
+  GET    /me                     Obtener perfil del usuario autenticado (auth)
+
+7.3 Admin (/api/admin)
+
+  GET    /panel                  Verificar acceso al panel (auth)
+
+7.4 Usuarios (/api/users)
+
+  GET    /                       Listar usuarios (superadmin)
+  POST   /                       Crear usuario (superadmin)
+  PUT    /:id/password           Cambiar contrasena de otro usuario (superadmin)
+
+7.5 Paises (/api/countries)
+
+  GET    /                       Listar todos los paises (superadmin)
+  GET    /active                 Listar paises activos (publico)
+
+7.6 Noticias (/api/news)
+
+  Publicos:
+  GET    /public/:countrySlug          Noticias publicas por pais
+  GET    /public/:countrySlug/:slug    Detalle de noticia
+
+  Autenticados:
+  GET    /                       Listar noticias (filtradas por rol/pais)
+  POST   /                       Crear noticia
+  PUT    /:id                    Editar noticia
+  DELETE /:id                    Eliminar noticia
+
+7.7 Testimonios (/api/testimonials)
+
+  Publicos:
+  GET    /public/:countrySlug    Testimonios publicos por pais
+  POST   /public                 Enviar testimonio desde formulario publico
+
+  Autenticados:
+  GET    /                       Listar testimonios
+  POST   /                       Crear testimonio
+  PUT    /:id                    Editar testimonio
+  DELETE /:id                    Eliminar testimonio
+
+7.8 Solicitudes de Contacto (/api/contact-requests)
+
+  Publicos:
+  POST   /public                 Enviar solicitud de contacto
+
+  Autenticados:
+  GET    /                       Listar solicitudes
+  PUT    /:id/status             Cambiar estado y observaciones
+  DELETE /:id                    Eliminar solicitud
+
+================================================================================
+8. AUTENTICACION Y SEGURIDAD
+================================================================================
+
+8.1 JWT (JSON Web Tokens)
+
+  - Access token: expira en 2 horas
+  - Refresh token: expira en 7 dias
+  - Los tokens se generan con jsonwebtoken usando JWT_SECRET del .env
+
+8.2 Flujo de autenticacion
+
+  Login:
+    1. POST /api/auth/login con username + password
+    2. Servidor verifica credenciales con bcryptjs
+    3. Responde con: { token, refreshToken, user }
+
+  Acceso a rutas protegidas:
+    1. Cliente envia header: Authorization: Bearer <token>
+    2. authMiddleware verifica token
+    3. Agrega req.usuario con datos del usuario
+
+  Refresco de token:
+    1. POST /api/auth/refresh-token con { refreshToken }
+    2. Servidor valida refresh token en BD
+    3. Responde con nuevo access token y refresh token
+
+  Logout:
+    - Invalida el refresh token en BD
+    - logout-all invalida TODOS los refresh tokens del usuario
+
+8.3 Control de acceso por roles (RBAC)
+
+  roleMiddleware.js verifica:
+  - superadmin: acceso a todo
+  - admin_pais: solo datos de su pais
+  - editor: no puede eliminar, solo crear/editar
+
+  El middleware de rol acepta roles permitidos como parametro:
+    requireRole('superadmin', 'admin_pais')
+
+8.4 Contrasenas
+
+  - Hash con bcryptjs (salt rounds: 10)
+  - Recuperacion mediante pregunta de seguridad
+  - La respuesta de seguridad tambien se almacena hasheada
+
+8.5 Manejo de errores
+
+  Clases de error personalizadas en utils/errors.js:
+  - AppError (base)
+  - AuthError (401)
+  - ForbiddenError (403)
+  - NotFoundError (404)
+  - ValidationError (400)
+
+  errorHandler.js captura errores y responde con JSON:
+  {
+    "message": "Descripcion del error",
+    "error": "Tipo de error"
+  }
+
+================================================================================
+9. FRONTEND
+================================================================================
+
+9.1 Tecnologia
+
+  HTML5, CSS3, JavaScript vanilla. Sin frameworks.
+  Iconos: Bootstrap Icons (CDN)
+  Fuente: Google Fonts - Poppins (CDN)
+
+9.2 Panel Administrativo
+
+  Archivo compartido: admin-shared.js
+  - URL_BACKEND = '/api'
+  - Manej de sesion via localStorage (token, user, refreshToken)
+  - Funcion llamarApi() con Authorization automatico
+  - Sidebar dinamica segun rol del usuario
+  - Funciones de modal (abrir/cerrar)
+  - Formateo de fechas
+  - Verificacion de roles
+
+  Paginas:
+  /admin/login              Inicio de sesion
+  /admin/recuperar          Recuperacion de contrasena (3 pasos)
+  /admin/dashboard          Dashboard con estadisticas
+  /admin/noticias           CRUD de noticias
+  /admin/testimonios        CRUD de testimonios
+  /admin/solicitudes        Gestion de solicitudes
+  /admin/usuarios           Gestion de usuarios (solo superadmin)
+
+9.3 Portales Publicos
+
+  /                          Landing page multipais
+  /argentina                 Portal de Argentina
+
+  Los portales cargan datos desde:
+  - /api/news/public/:slug
+  - /api/testimonials/public/:slug
+
+================================================================================
+10. DESPLIEGUE CON DOCKER
+================================================================================
+
+10.1 Dockerfile
+
+  FROM node:20-alpine
+  WORKDIR /app
+  COPY backend/package*.json ./
+  RUN npm ci --only=production && npm cache clean --force
+  COPY backend/ .
+  COPY frontend/ ../frontend/
+  EXPOSE 3001
+  CMD ["node", "--max-old-space-size=128", "src/app.js"]
+
+  Nota: --max-old-space-size=128 limita la memoria del proceso Node a 128MB.
+
+10.2 docker-compose.yml
+
+  services:
+    app:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      container_name: cms-multipais
+      restart: unless-stopped
+      ports:
+        - "3001:3001"
+      volumes:
+        - ./backend/.env:/app/.env:ro
+      deploy:
+        resources:
+          limits:
+            memory: 256M
+          reservations:
+            memory: 128M
+
+10.3 Comandos
+
+  Construir y levantar:
+    docker compose up -d --build
+
+  Ver logs:
+    docker compose logs -f
+
+  Detener:
+    docker compose down
+
+  Nota: El archivo .env debe existir en backend/ antes de construir.
+
+================================================================================
+11. CI/CD
+================================================================================
+
+11.1 GitHub Actions
+
+  Archivo: .github/workflows/deploy.yml
+
+  Trigger: push a la rama main
+
+  Pasos:
+    1. Checkout del repositorio
+    2. Conexion SSH al servidor de produccion (Oracle Cloud)
+    3. git fetch && git reset --hard origin/main
+    4. docker compose build --no-cache
+    5. docker compose up -d
+
+  Secretos requeridos en GitHub:
+    SSH_KEY: Clave privada SSH para acceder al servidor
+
+11.2 Servidor de produccion
+
+  IP: 149.130.163.194
+  Puerto: 3001
+  URL: http://149.130.163.194:3001/
+
+================================================================================
+12. SOLUCION DE PROBLEMAS
+================================================================================
+
+12.1 Error: No se puede conectar a Supabase
+
+  Verificar:
+  - SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY en .env
+  - Que el proyecto de Supabase este activo
+  - Que las tablas esten creadas (ejecutar cms-multipais.sql)
+
+12.2 Error: 401 Unauthorized en rutas protegidas
+
+  Verificar:
+  - Token en header Authorization: Bearer <token>
+  - Token no expirado (2 horas)
+  - Refresh token valido (7 dias)
+
+12.3 Error: puerto 3001 en uso
+
+  Cambiar PORT en .env o detener el proceso que ocupa el puerto:
+    netstat -ano | findstr :3001
+
+12.4 Error: Docker build falla
+
+  Verificar:
+  - Docker corriendo
+  - backend/package.json existe
+  - backend/.env existe
+
+12.5 Error: 404 al acceder a rutas del frontend
+
+  Verificar que los archivos HTML existan en frontend/admin/ y
+  frontend/portales/. Las rutas en app.js deben coincidir.
+
+12.6 Error: bcryptjs falla en instalacion
+
+  En Windows, asegurar que build tools de node esten instalados:
+    npm install --global windows-build-tools
+  En Docker, no hay problema porque se usa node:20-alpine.
+
+================================================================================
+FIN DEL MANUAL TECNICO
+================================================================================

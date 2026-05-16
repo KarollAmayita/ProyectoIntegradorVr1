@@ -123,6 +123,7 @@ const findUserById = async (id) => {
     .select(`
       id,
       nombre,
+      apellido,
       username,
       email,
       password_hash,
@@ -134,6 +135,12 @@ const findUserById = async (id) => {
       roles (
         id,
         nombre
+      ),
+      paises (
+        id,
+        nombre,
+        codigo,
+        slug
       )
     `)
     .eq('id', id)

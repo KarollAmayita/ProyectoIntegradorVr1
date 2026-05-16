@@ -40,11 +40,39 @@ router.post(
   newsController.createNews
 );
 
+router.get(
+  '/:id',
+  verifyToken,
+  authorizeRoles('superadmin', 'admin_pais', 'editor'),
+  newsController.getNewsById
+);
+
 router.put(
   '/:id',
   verifyToken,
   authorizeRoles('superadmin', 'admin_pais', 'editor'),
   newsController.updateNews
+);
+
+router.patch(
+  '/:id',
+  verifyToken,
+  authorizeRoles('superadmin', 'admin_pais', 'editor'),
+  newsController.updateNews
+);
+
+router.patch(
+  '/:id/estado',
+  verifyToken,
+  authorizeRoles('superadmin', 'admin_pais', 'editor'),
+  newsController.updateNewsStatus
+);
+
+router.patch(
+  '/:id/imagen',
+  verifyToken,
+  authorizeRoles('superadmin', 'admin_pais', 'editor'),
+  newsController.updateNewsImage
 );
 
 router.delete(

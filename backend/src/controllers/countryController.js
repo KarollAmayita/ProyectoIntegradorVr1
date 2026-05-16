@@ -2,7 +2,7 @@ const countryService = require('../services/countryService');
 
 const listCountries = async (req, res) => {
   try {
-    const countries = await countryService.getCountries();
+    const countries = await countryService.getCountries(req.user);
 
     return res.status(200).json(countries);
   } catch (error) {

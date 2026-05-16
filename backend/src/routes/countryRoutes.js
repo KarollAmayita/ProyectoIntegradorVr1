@@ -8,7 +8,7 @@ const { authorizeRoles } = require('../middlewares/roleMiddleware');
 router.get(
   '/',
   verifyToken,
-  authorizeRoles('superadmin'),
+  authorizeRoles('superadmin', 'admin_pais', 'editor'),
   countryController.listCountries
 );
 

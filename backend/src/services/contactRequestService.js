@@ -102,9 +102,37 @@ const deleteRequest = async (id, user) => {
   };
 };
 
+const getRequestById = async (id, user) => {
+  const request = await contactRequestRepository.findRequestById(id);
+  if (!request) throw new Error('Solicitud no encontrada');
+  if (user.rol !== 'superadmin' && Number(request.pais_id) !== Number(user.pais_id)) {
+    throw new Error('No tiene permisos para ver esta solicitud');
+  }
+  return request;
+};
+
+const updateRequestGeneral = async (id, payload, user) => {
+  const existing = await contactRequestRepository.findRequestById(id);
+  if (!existing) throw new Error('Solicitud no encontrada');
+  if (user.rol !== 'superadmin' && Number(existing.pais_id) !== Number(user.pais_id)) {
+    throw new Error('No tiene permisos para modificar esta solicitud');
+  }
+  const allowedFields = ['nombre', 'correo', 'telefono', 'finalidad', 'mensaje', 'estado', 'observaciones_admin'];
+  const updatePayload = {};
+  allowedFields.forEach(f => { if (payload[f] !== undefined) updatePayload[f] = payload[f]; });
+  updatePayload.gestionado_por = user.id;
+  updatePayload.updated_at = new Date().toISOString();
+  if (updatePayload.estado === 'gestionada' || updatePayload.estado === 'cerrada') {
+    updatePayload.fecha_gestion = new Date().toISOString();
+  }
+  return contactRequestRepository.updateRequest(id, updatePayload);
+};
+
 module.exports = {
   getRequests,
   createPublicRequest,
   updateRequestStatus,
   deleteRequest,
+  getRequestById,
+  updateRequestGeneral,
 };

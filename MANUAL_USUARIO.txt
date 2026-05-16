@@ -1,0 +1,385 @@
+================================================================================
+MANUAL DE USUARIO - CMS MULTIPAIS
+================================================================================
+Proyecto: Latinoamerica Comparte - Sistema de Gestion de Contenidos Multipais
+Version: 1.0
+Fecha: Mayo 2026
+
+================================================================================
+INDICE
+================================================================================
+
+1.  Introduccion
+2.  Acceso al Sistema
+3.  Recuperacion de Contrasena
+4.  Dashboard
+5.  Gestion de Noticias
+6.  Gestion de Testimonios
+7.  Gestion de Solicitudes de Contacto
+8.  Gestion de Usuarios (Superadmin)
+9.  Portales Publicos
+10. Roles y Permisos
+11. Preguntas Frecuentes
+
+================================================================================
+1. INTRODUCCION
+================================================================================
+
+Bienvenido al CMS Multipais de Latinoamerica Comparte. Este sistema permite
+gestionar el contenido digital de la organizacion para multiples paises desde
+un solo lugar.
+
+El sistema esta disponible en:
+  http://149.130.163.194:3001/
+
+Roles de usuario disponibles:
+  - Superadmin: Acceso completo a todos los paises y usuarios
+  - Admin de pais: Gestiona contenido de su pais asignado
+  - Editor: Crea y edita contenido de su pais (no elimina)
+
+================================================================================
+2. ACCESO AL SISTEMA
+================================================================================
+
+2.1 Inicio de sesion
+
+  1. Abrir el navegador y dirigirse a:
+     http://149.130.163.194:3001/admin/login
+
+  2. Ingresar credenciales:
+     - Usuario: tu nombre de usuario
+     - Contrasena: tu contrasena
+
+  3. Hacer clic en "Ingresar"
+
+  4. Si los datos son correctos, accederas al Dashboard.
+
+2.2 Usuarios predefinidos
+
+  Usuario       Contrasena     Rol              Pais
+  -----------   -----------    -------------    ------------
+  superadmin    123456         superadmin       Global
+  admin_arg     123456         admin_pais       Argentina
+  adminarg      admin123       admin_pais       Argentina
+  sistema       sistema123     editor           Argentina
+
+2.3 Cierre de sesion
+
+  Hacer clic en "Cerrar sesion" en la esquina superior derecha del panel.
+
+================================================================================
+3. RECUPERACION DE CONTRASENA
+================================================================================
+
+Si olvidaste tu contrasena, sigue estos pasos:
+
+Paso 1 - Identificacion:
+  1. En la pantalla de login, hacer clic en "Recuperala aca"
+  2. Ingresar tu nombre de usuario o correo electronico
+  3. Hacer clic en "Verificar"
+
+Paso 2 - Pregunta de seguridad:
+  1. Leer la pregunta de seguridad que aparece en pantalla
+  2. Escribir tu respuesta
+  3. Ingresar una nueva contrasena (minimo 6 caracteres)
+  4. Hacer clic en "Restaurar contrasena"
+
+Paso 3 - Confirmacion:
+  1. La pantalla mostrara un mensaje de exito
+  2. Hacer clic en "Volver al inicio de sesion"
+  3. Ingresar con la nueva contrasena
+
+================================================================================
+4. DASHBOARD
+================================================================================
+
+El Dashboard es la pantalla principal del panel administrativo. Muestra un
+resumen de la actividad del sistema:
+
+  - Total de noticias
+  - Noticias publicadas
+  - Total de testimonios
+  - Solicitudes de contacto pendientes
+  - Ultimas 5 solicitudes recibidas
+
+Desde el menu lateral se puede acceder a las diferentes secciones:
+  - Dashboard
+  - Noticias
+  - Testimonios
+  - Solicitudes
+  - Usuarios (solo para superadmin)
+
+================================================================================
+5. GESTION DE NOTICIAS
+================================================================================
+
+5.1 Listado de noticias
+
+  Para ver todas las noticias, ir a "Noticias" en el menu lateral.
+  La tabla muestra:
+  - Imagen
+  - Titulo
+  - Pais
+  - Autor
+  - Estado (borrador, publicado, despublicado)
+  - Fecha de creacion
+  - Acciones (editar, eliminar)
+
+  Se puede filtrar por:
+  - Busqueda por titulo (campo de texto)
+  - Estado (selector desplegable)
+
+5.2 Crear una noticia
+
+  1. Hacer clic en "Nueva noticia"
+  2. Completar los campos:
+     - Titulo: Obligatorio
+     - Pais: Solo visible para superadmin
+     - Resumen: Breve descripcion
+     - Contenido completo: Cuerpo de la noticia
+     - URL de la imagen: Enlace a la imagen principal
+     - Estado: Borrador, Publicado o Despublicado
+  3. Hacer clic en "Guardar"
+
+5.3 Editar una noticia
+
+  1. Hacer clic en el icono de lapiz en la fila de la noticia
+  2. Modificar los campos deseados
+  3. Hacer clic en "Guardar"
+
+5.4 Eliminar una noticia
+
+  1. Hacer clic en el icono de papelera
+     (solo disponible para superadmin y admin_pais)
+  2. Confirmar la eliminacion en el modal de confirmacion
+  3. La noticia se eliminara permanentemente
+
+================================================================================
+6. GESTION DE TESTIMONIOS
+================================================================================
+
+6.1 Listado de testimonios
+
+  Para ver todos los testimonios, ir a "Testimonios" en el menu lateral.
+  La tabla muestra:
+  - Foto
+  - Nombre
+  - Cargo / Empresa
+  - Pais
+  - Estado
+  - Destacado (estrella)
+  - Acciones (editar, eliminar)
+
+  Se puede filtrar por:
+  - Busqueda por nombre
+  - Estado
+
+6.2 Crear un testimonio
+
+  1. Hacer clic en "Nuevo testimonio"
+  2. Completar los campos:
+     - Nombre: Obligatorio
+     - Pais: Solo visible para superadmin
+     - Cargo: Opcional
+     - Empresa: Opcional
+     - Contenido: Texto del testimonio
+     - URL de la foto: Obligatorio
+     - Instagram: Opcional
+     - Facebook: Opcional
+     - Estado: Borrador, Publicado, Despublicado
+     - Destacado: Si o No
+  3. Hacer clic en "Guardar"
+
+6.3 Editar un testimonio
+
+  1. Hacer clic en el icono de lapiz
+  2. Modificar los campos deseados
+  3. Hacer clic en "Guardar"
+
+6.4 Eliminar un testimonio
+
+  1. Hacer clic en el icono de papelera
+     (solo superadmin y admin_pais)
+  2. Confirmar la eliminacion
+
+================================================================================
+7. GESTION DE SOLICITUDES DE CONTACTO
+================================================================================
+
+7.1 Listado de solicitudes
+
+  Las solicitudes llegan automaticamente desde los formularios publicos.
+  Ir a "Solicitudes" en el menu lateral.
+  La tabla muestra:
+  - Nombre
+  - Correo
+  - Telefono
+  - Motivo (Servicio, Programa EDIFICA, Shows y conferencias)
+  - Pais
+  - Estado (pendiente, en_proceso, gestionada, cerrada)
+  - Fecha de recepcion
+  - Acciones (ver detalle, eliminar)
+
+  Se puede filtrar por:
+  - Busqueda por nombre o correo
+  - Estado
+
+7.2 Ver detalle y gestionar solicitud
+
+  1. Hacer clic en el icono de ojo para ver el detalle
+  2. Se mostrara toda la informacion de la solicitud
+  3. Si eres superadmin o admin_pais, puedes:
+     - Cambiar el estado (pendiente -> en_proceso -> gestionada -> cerrada)
+     - Agregar observaciones internas
+  4. Hacer clic en "Guardar cambios"
+
+7.3 Eliminar solicitud
+
+  1. Hacer clic en el icono de papelera
+     (solo superadmin y admin_pais)
+  2. Confirmar la eliminacion
+
+================================================================================
+8. GESTION DE USUARIOS (SUPERADMIN)
+================================================================================
+
+Nota: Esta seccion solo esta disponible para usuarios con rol superadmin.
+
+8.1 Listado de usuarios
+
+  Ir a "Usuarios" en el menu lateral.
+  La tabla muestra:
+  - Nombre y apellido
+  - Nombre de usuario
+  - Email
+  - Rol
+  - Pais asignado
+  - Estado
+  - Accion (cambiar contrasena)
+
+8.2 Crear un nuevo usuario
+
+  1. Hacer clic en "Nuevo usuario"
+  2. Completar los campos:
+     - Nombre y apellido: Obligatorio
+     - Email: Obligatorio
+     - Nombre de usuario: Obligatorio
+     - Contrasena: Minimo 6 caracteres
+     - Rol: Superadmin, Admin de pais o Editor
+     - Pais: Obligatorio si no es superadmin
+     - Pregunta de seguridad: Para recuperacion de contrasena
+     - Respuesta de seguridad: Obligatorio
+  3. Hacer clic en "Crear usuario"
+
+8.3 Cambiar contrasena de un usuario
+
+  1. Hacer clic en el icono de llave en la fila del usuario
+  2. Ingresar la nueva contrasena
+  3. Hacer clic en "Cambiar contrasena"
+
+================================================================================
+9. PORTALES PUBLICOS
+================================================================================
+
+9.1 Landing page multipais
+
+  URL: http://149.130.163.194:3001/
+
+  Secciones:
+  - Hero: Presentacion de Latinoamerica Comparte
+  - Paises: Acceso a portales por pais
+  - Quienes somos: Historia y mision
+  - Impacto: Metricas y resultados
+  - Noticias: Ultimas novedades
+  - Contacto: Formulario de contacto global
+
+9.2 Portal de Argentina
+
+  URL: http://149.130.163.194:3001/argentina
+
+  Secciones:
+  - Hero: Presentacion de Argentina Comparte
+  - Voces de Cambio: Testimonios destacados
+  - Actualidad y Accion: Noticias de Argentina
+  - Formulario de testimonio: Para compartir experiencias
+
+9.3 Portales de otros paises
+
+  Actualmente solo Argentina tiene portal implementado. Los portales de
+  Colombia, Chile y Ecuador estan en desarrollo.
+
+  Las tarjetas de paises en la landing redirigen a sitios externos:
+  - Colombia: https://colombiacomparte.com
+  - Ecuador: https://ecuadorcomparte.com.co
+  - Chile: https://chilecomparte.com.co
+
+================================================================================
+10. ROLES Y PERMISOS
+================================================================================
+
+Accion                        Superadmin   Admin Pais   Editor
+---------------------------   ----------   ----------   ------
+Ver dashboard                 SI           SI           SI
+Crear noticias                SI           SI           SI
+Editar noticias               SI           SI           SI
+Eliminar noticias             SI           SI           NO
+Crear testimonios             SI           SI           SI
+Editar testimonios            SI           SI           SI
+Eliminar testimonios          SI           SI           NO
+Ver solicitudes               SI           SI           SI
+Gestionar solicitudes         SI           SI           NO
+Eliminar solicitudes          SI           SI           NO
+Crear usuarios                SI           NO           NO
+Cambiar contrasena usuarios   SI           NO           NO
+Ver contenido de todo pais    SI           SOLO SU     SOLO SU
+                                             PAIS         PAIS
+
+================================================================================
+11. PREGUNTAS FRECUENTES
+================================================================================
+
+11.1 No recuerdo mi contrasena
+
+  Usar la opcion "Recuperala aca" en la pantalla de login. Necesitaras
+  responder tu pregunta de seguridad.
+
+11.2 No veo el boton de eliminar
+
+  Solo los usuarios con rol superadmin y admin_pais pueden eliminar
+  contenido. Si eres editor, no veras el boton de eliminar.
+
+11.3 No veo la opcion "Usuarios" en el menu
+
+  La gestion de usuarios solo esta disponible para superadmin.
+
+11.4 Las noticias no aparecen en el portal publico
+
+  Verificar que el estado de la noticia sea "publicado". Las noticias en
+  estado "borrador" o "despublicado" no se muestran al publico.
+
+11.5 No puedo seleccionar un pais al crear contenido
+
+  Si no eres superadmin, el pais se asigna automaticamente segun tu perfil.
+  Solo el superadmin puede elegir el pais al crear contenido.
+
+11.6 Como cambiar mi propia contrasena?
+
+  Actualmente el cambio de contrasena propio se realiza via la API:
+  PUT /api/auth/change-password. Consulta con el superadmin para asistencia.
+
+11.7 Que significan los estados de las solicitudes?
+
+  - Pendiente: Recien recibida, sin gestionar
+  - En proceso: Estamos trabajando en ella
+  - Gestionada: Se ha dado respuesta al solicitante
+  - Cerrada: Caso finalizado
+
+11.8 Como agrego una imagen a una noticia o testimonio?
+
+  Las imagenes se agregan mediante URL. Debes tener la imagen alojada en
+  un servicio externo (ej: Imgur, Google Drive con enlace publico, tu
+  propio servidor) y pegar el enlace en el campo correspondiente.
+
+================================================================================
+FIN DEL MANUAL DE USUARIO
+================================================================================

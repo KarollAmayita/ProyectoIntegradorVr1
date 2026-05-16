@@ -23,7 +23,7 @@
           <i class="bi bi-newspaper"></i>
           Total noticias
         </p>
-        <p class="tarjeta-estadistica__numero" id="conteo-noticias">\u2014</p>
+        <p class="tarjeta-estadistica__numero" id="conteo-noticias">—</p>
       </div>
 
       <div class="tarjeta-estadistica tarjeta-estadistica--verde">
@@ -31,7 +31,7 @@
           <i class="bi bi-check-circle"></i>
           Noticias publicadas
         </p>
-        <p class="tarjeta-estadistica__numero" id="conteo-noticias-publicadas">\u2014</p>
+        <p class="tarjeta-estadistica__numero" id="conteo-noticias-publicadas">—</p>
       </div>
 
       <div class="tarjeta-estadistica tarjeta-estadistica--amarilla">
@@ -39,7 +39,7 @@
           <i class="bi bi-chat-quote"></i>
           Testimonios
         </p>
-        <p class="tarjeta-estadistica__numero" id="conteo-testimonios">\u2014</p>
+        <p class="tarjeta-estadistica__numero" id="conteo-testimonios">—</p>
       </div>
 
       <div class="tarjeta-estadistica tarjeta-estadistica--naranja">
@@ -47,7 +47,23 @@
           <i class="bi bi-envelope-exclamation"></i>
           Solicitudes pendientes
         </p>
-        <p class="tarjeta-estadistica__numero" id="conteo-solicitudes-pendientes">\u2014</p>
+        <p class="tarjeta-estadistica__numero" id="conteo-solicitudes-pendientes">—</p>
+      </div>
+
+      <div class="tarjeta-estadistica" style="border-left-color: #7C3AED;">
+        <p class="tarjeta-estadistica__etiqueta">
+          <i class="bi bi-people" style="color:#7C3AED;"></i>
+          Conexiones hoy
+        </p>
+        <p class="tarjeta-estadistica__numero" id="conteo-conexiones-hoy">—</p>
+      </div>
+
+      <div class="tarjeta-estadistica" style="border-left-color: #0891B2;">
+        <p class="tarjeta-estadistica__etiqueta">
+          <i class="bi bi-clock-history" style="color:#0891B2;"></i>
+          Total conexiones
+        </p>
+        <p class="tarjeta-estadistica__numero" id="conteo-conexiones-total">—</p>
       </div>
     </section>
 
@@ -55,15 +71,15 @@
     <section class="panel-contenido">
       <h2 class="panel-contenido__titulo">Hola, <span id="saludo-nombre">administrador</span></h2>
       <p style="color:#5A6C84; font-size:14px; margin-top:8px;">
-        Desde ac\u00e1 pod\u00e9s gestionar las noticias, los testimonios y las solicitudes
-        del portal Argentina Comparte. Tus permisos est\u00e1n definidos por tu rol.
+        Desde acá podés gestionar las noticias, los testimonios y las solicitudes
+        del portal Argentina Comparte. Tus permisos están definidos por tu rol.
       </p>
     </section>
 
-    <!-- \u00daltimas solicitudes -->
+    <!-- Últimas solicitudes -->
     <section class="panel-contenido">
       <div class="panel-contenido__cabecera">
-        <h2 class="panel-contenido__titulo">\u00daltimas solicitudes recibidas</h2>
+        <h2 class="panel-contenido__titulo">Últimas solicitudes recibidas</h2>
         <a href="/admin/solicitudes" class="boton boton--secundario">Ver todas</a>
       </div>
       <div class="tabla-contenedor">
@@ -84,6 +100,33 @@
       </div>
     </section>
 
+    <!-- Últimas conexiones -->
+    <section class="panel-contenido">
+      <div class="panel-contenido__cabecera">
+        <h2 class="panel-contenido__titulo">Últimas conexiones</h2>
+        <a href="/admin/conexiones" class="boton boton--secundario">Ver todas</a>
+      </div>
+      <div class="tabla-contenedor">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>IP</th>
+              <th>Ubicaci&oacute;n</th>
+              <th>Ingreso</th>
+              <th>Salida</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-ultimas-conexiones">
+            <tr><td colspan="5" class="tabla__sin-datos">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+        </table>
+      </div>
+    </section>
+
   </main>
 
   <script src="admin-shared.js"></script>
@@ -97,10 +140,11 @@
     // Cargar conteos en paralelo
     async function cargarResumen() {
       try {
-        const [noticias, testimonios, solicitudes] = await Promise.all([
+        const [noticias, testimonios, solicitudes, conexiones] = await Promise.all([
           llamarApi('/news'),
           llamarApi('/testimonials'),
-          llamarApi('/contact-requests')
+          llamarApi('/contact-requests'),
+          llamarApi('/connection-logs/summary')
         ]);
 
         document.getElementById('conteo-noticias').textContent = noticias.length;
@@ -110,24 +154,44 @@
         document.getElementById('conteo-solicitudes-pendientes').textContent =
           solicitudes.filter(solicitud => solicitud.estado === 'pendiente').length;
 
-        // Pintar las \u00faltimas 5 solicitudes
+        // Pintar las últimas 5 solicitudes
         const ultimas = solicitudes.slice(0, 5);
         const tbody = document.getElementById('tabla-ultimas-solicitudes');
 
         if (ultimas.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" class="tabla__sin-datos">Todav\u00eda no hay solicitudes registradas.</td></tr>`;
-          return;
+          tbody.innerHTML = `<tr><td colspan="5" class="tabla__sin-datos">Todavía no hay solicitudes registradas.</td></tr>`;
+        } else {
+          tbody.innerHTML = ultimas.map(solicitud => `
+            <tr>
+              <td>${solicitud.nombre}</td>
+              <td>${solicitud.correo}</td>
+              <td>${solicitud.finalidad}</td>
+              <td><span class="etiqueta-estado etiqueta-estado--${solicitud.estado}">${solicitud.estado}</span></td>
+              <td>${formatearFecha(solicitud.created_at)}</td>
+            </tr>
+          `).join('');
         }
 
-        tbody.innerHTML = ultimas.map(solicitud => `
-          <tr>
-            <td>${solicitud.nombre}</td>
-            <td>${solicitud.correo}</td>
-            <td>${solicitud.finalidad}</td>
-            <td><span class="etiqueta-estado etiqueta-estado--${solicitud.estado}">${solicitud.estado}</span></td>
-            <td>${formatearFecha(solicitud.created_at)}</td>
-          </tr>
-        `).join('');
+        // Conexiones
+        document.getElementById('conteo-conexiones-hoy').textContent = conexiones.data?.total_hoy ?? '—';
+        document.getElementById('conteo-conexiones-total').textContent = conexiones.data?.total ?? '—';
+
+        const tbodyConexiones = document.getElementById('tabla-ultimas-conexiones');
+        const ultimasConexiones = conexiones.data?.ultimas || [];
+
+        if (ultimasConexiones.length === 0) {
+          tbodyConexiones.innerHTML = `<tr><td colspan="5" class="tabla__sin-datos">No hay conexiones registradas.</td></tr>`;
+        } else {
+          tbodyConexiones.innerHTML = ultimasConexiones.map(log => `
+            <tr>
+              <td><strong>${log.username}</strong></td>
+              <td>${log.ip_address || '—'}</td>
+              <td>${log.lugar || '—'}</td>
+              <td>${formatearFecha(log.created_at)}</td>
+              <td>${log.logout_at ? formatearFecha(log.logout_at) : '<span style="color:#10B981;">✓ Activo</span>'}</td>
+            </tr>
+          `).join('');
+        }
       } catch (error) {
         console.error('Error cargando el dashboard:', error);
       }
