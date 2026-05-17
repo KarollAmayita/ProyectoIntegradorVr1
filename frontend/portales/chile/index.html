@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chile Comparte - Portal de Voluntariado</title>
+
+  <!-- Bootstrap y fuentes -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Estilos del portal Chile -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVBAR (barra superior con logo, menú y botones)
+       ============================================================ -->
+  <header class="top-bar">
+    <div class="container top-bar__content">
+
+      <a href="index.html" class="top-bar__brand">
+        <img src="../../../assets/img/portales/chile_logo.png"
+          alt="Logo de Chile Comparte" width="75" height="75" />
+      </a>
+
+      <nav class="main-menu">
+        <a href="#about-us" class="main-menu__link main-menu__link--active">Sobre nosotros</a>
+        <a href="#news" class="main-menu__link">Actualidad</a>
+        <a href="#contact" class="main-menu__link">Contacto</a>
+      </nav>
+
+      <div class="top-actions">
+        <button class="icon-button" aria-label="Buscar">
+          <i class="bi bi-search"></i>
+        </button>
+        <button class="icon-button" aria-label="Compartir">
+          <i class="bi bi-share"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================
+       BARRA DE BÚSQUEDA (se muestra al hacer clic en la lupa)
+       ============================================================ -->
+  <div class="search-bar" id="search-bar" hidden>
+    <div class="container search-bar__content">
+      <input type="text" id="search-input" class="search-bar__input"
+        placeholder="Busca noticias, testimonios..." />
+      <button class="search-bar__close" id="search-close" aria-label="Cerrar búsqueda">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div id="search-results" class="search-bar__results" hidden></div>
+  </div>
+
+  <!-- ============================================================
+       HERO (presentación principal con imagen de Chile)
+       ============================================================ -->
+  <section class="hero" id="about-us">
+    <div class="container hero__content">
+
+      <div class="hero__text">
+        <span class="hero__tag">CHILE COMPARTE</span>
+        <h1 class="hero__title">
+          Conectados por
+          <span class="hero__title--highlight">nuestro Chile</span>
+        </h1>
+        <p class="hero__subtitle">
+          Desde Arica hasta la Patagonia, Chile Comparte impulsa el voluntariado
+          y la transformación social en cada rincón del país.
+        </p>
+        <div class="hero__buttons">
+          <a href="#news" class="red-button">Nuestra Misión</a>
+          <a href="#voices" class="outline-button">Ver impacto</a>
+        </div>
+      </div>
+
+      <div class="hero__image">
+        <img
+          src="../../../assets/img/chile/santiagoDeChile.jpg"
+          alt="Vista de Santiago de Chile"
+          onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #0032A0 0%, #D52B1E 100%)'; this.parentElement.innerHTML += '<div style=\'display:flex;align-items:center;justify-content:center;height:360px;color:white;font-size:48px\'><i class=\'bi bi-mountains\'></i></div>'"
+        />
+        <span class="hero__photo-tag">
+          <i class="bi bi-geo-alt-fill"></i>
+          Santiago, Chile
+        </span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       VOCES DE CAMBIO (testimonios)
+       ============================================================ -->
+  <section class="voices-section" id="voices">
+    <div class="container">
+
+      <div class="section-header">
+        <h2 class="section-header__title">Voces de Cambio</h2>
+        <p class="section-header__description">
+          Líderes que en Chile Comparte están transformando el futuro en cada región del país.
+        </p>
+      </div>
+
+      <!-- Aquí se inyectan los testimonios desde main.js -->
+      <div class="testimonials-grid" id="testimonials-container"></div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ACTUALIDAD Y ACCIÓN (noticias)
+       ============================================================ -->
+  <section class="news-section" id="news">
+    <div class="container">
+
+      <div class="section-header section-header--with-link">
+        <div>
+          <h2 class="section-header__title">Actualidad y Acción</h2>
+          <p class="section-header__description">
+            Crónicas del trabajo solidario de Chile Comparte a lo largo del país.
+          </p>
+        </div>
+        <a href="#" class="see-all-link">Ver todas las noticias <i class="bi bi-arrow-right"></i></a>
+      </div>
+
+      <!-- Aquí se inyectan las noticias desde main.js -->
+      <div class="news-grid" id="news-container"></div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SUMATE (formulario de contacto)
+       ============================================================ -->
+  <section class="join-section" id="contact">
+    <div class="container">
+      <div class="join-block">
+
+        <!-- Lado izquierdo: título y datos de contacto -->
+        <div class="join-block__left">
+          <h2 class="join-block__title">
+            Comparte tu<br />
+            historia<br />
+            con nosotros.
+          </h2>
+          <p class="join-block__description">
+            ¿Participaste en alguna actividad de Chile Comparte?
+            Cuéntanos tu experiencia y sé parte de nuestras Voces de Cambio.
+          </p>
+
+          <div class="contact-info">
+            <div class="contact-info__icon"><i class="bi bi-geo-alt-fill"></i></div>
+            <div>
+              <p class="contact-info__label">Av. Providencia 1234, Santiago</p>
+            </div>
+          </div>
+          <div class="contact-info">
+            <div class="contact-info__icon"><i class="bi bi-envelope-fill"></i></div>
+            <div>
+              <p class="contact-info__label">contacto@chilecomparte.cl</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lado derecho: formulario de testimonio -->
+        <div class="join-block__right">
+          <form id="testimonial-form" class="contact-form" novalidate>
+
+            <div class="contact-form__row">
+              <div class="contact-form__field">
+                <label for="field-name">Nombre</label>
+                <input type="text" id="field-name" name="userName" placeholder="Tu nombre" required />
+              </div>
+              <div class="contact-form__field">
+                <label for="field-role">Cargo</label>
+                <input type="text" id="field-role" name="role" placeholder="Ej: Voluntario" />
+              </div>
+            </div>
+
+            <div class="contact-form__field">
+              <label for="field-company">Empresa / Organización</label>
+              <input type="text" id="field-company" name="company" placeholder="Ej: Fundación Techo" />
+            </div>
+
+            <div class="contact-form__field">
+              <label for="field-content">Tu testimonio</label>
+              <textarea id="field-content" name="content" rows="4" placeholder="Cuéntanos tu experiencia con Chile Comparte..." required></textarea>
+            </div>
+
+            <div class="contact-form__field">
+              <label for="field-photo">URL de tu foto</label>
+              <input type="url" id="field-photo" name="photoUrl" placeholder="https://ejemplo.com/mi-foto.jpg" />
+            </div>
+
+            <div class="contact-form__row">
+              <div class="contact-form__field">
+                <label for="field-instagram">Instagram</label>
+                <input type="url" id="field-instagram" name="instagram" placeholder="https://instagram.com/tuPerfil" />
+              </div>
+              <div class="contact-form__field">
+                <label for="field-facebook">Facebook</label>
+                <input type="url" id="field-facebook" name="facebook" placeholder="https://facebook.com/tuPerfil" />
+              </div>
+            </div>
+
+            <button type="submit" class="send-button" id="send-button">
+              ENVIAR TESTIMONIO
+            </button>
+
+            <!-- Mensajes de éxito o error -->
+            <div id="success-message" class="message message--success" hidden></div>
+            <div id="error-message" class="message message--error" hidden></div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="footer">
+    <div class="container footer__columns">
+
+      <div class="footer__block">
+        <h3 class="footer__brand-title">
+          <span class="brand-chile">Chile</span>
+          <span class="brand-comparte"> Comparte</span>
+        </h3>
+        <p class="footer__text">
+          Somos una red de voluntarios y líderes sociales transformando comunidades
+          a través del trabajo solidario en todo Chile.
+        </p>
+        <img src="../../../assets/img/portales/chile_logo.png"
+          alt="Logo de Chile Comparte" width="100" height="100"
+          style="margin-top: 16px;" />
+      </div>
+
+      <div class="footer__block">
+        <h4 class="footer__title">Chile</h4>
+        <ul class="footer__list">
+          <li><a href="#">Santiago</a></li>
+          <li><a href="#">Valparaíso</a></li>
+          <li><a href="#">Concepción</a></li>
+          <li><a href="#">Punta Arenas</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__block">
+        <h4 class="footer__title">Organización</h4>
+        <ul class="footer__list">
+          <li><a href="#">Sobre Nosotros</a></li>
+          <li><a href="#">Transparencia</a></li>
+          <li><a href="#">Comunidad</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__block">
+        <h4 class="footer__title">Suscríbete</h4>
+        <p class="footer__text">Recibe nuestras novedades en tu correo.</p>
+        <form class="footer__newsletter" onsubmit="event.preventDefault();">
+          <input type="email" placeholder="tu@email.com" />
+          <button type="submit" aria-label="Suscribirse">
+            <i class="bi bi-arrow-right"></i>
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+    <div class="footer__bottom-bar">
+      <div class="container footer__bottom-content">
+        <div class="footer__social">
+          <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+        </div>
+        <p class="footer__copyright">
+          © 2026 Chile Comparte.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lógica del portal: noticias, testimonios y formulario -->
+  <script src="main.js"></script>
+
+</body>
+</html>
