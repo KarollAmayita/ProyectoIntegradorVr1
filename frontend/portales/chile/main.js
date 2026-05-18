@@ -34,7 +34,7 @@ const newsMock = [
     title: 'Nueva biblioteca comunitaria en Concepción abre sus puertas',
     summary: 'El proyecto conecta a más de 800 familias con el acceso al conocimiento y la lectura.',
     date: '12 de Mayo, 2026',
-    image: '../../../assets/img/chile/biblioteca.jpg'
+    image: '../../../assets/img/chile/bibliotecaChile.jpg'
   },
   {
     category: 'MEDIOAMBIENTE',
