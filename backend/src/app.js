@@ -38,6 +38,9 @@ app.use(express.static(path.join(__dirname, '..', '..', 'frontend', 'portales', 
 app.use('/assets', express.static(path.join(__dirname, '..', '..', 'frontend', 'assets')));
 app.use('/admin', express.static(path.join(__dirname, '..', '..', 'frontend', 'admin'), { redirect: false }));
 app.use('/argentina', express.static(path.join(__dirname, '..', '..', 'frontend', 'portales', 'argentina')));
+app.use('/chile', express.static(path.join(__dirname, '..', '..', 'frontend', 'portales', 'chile')));
+app.use('/ecuador', express.static(path.join(__dirname, '..', '..', 'frontend', 'portales', 'ecuador')));
+app.use('/colombia', express.static(path.join(__dirname, '..', '..', 'frontend', 'portales', 'colombia')));
 
 // Rutas del frontend con URLs limpias
 app.get('/', (req, res) => {
@@ -82,6 +85,18 @@ app.get('/admin/conexiones', (req, res) => {
 
 app.get('/argentina', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'portales', 'argentina', 'index.html'));
+});
+
+app.get('/chile', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'portales', 'chile', 'index.html'));
+});
+
+app.get('/ecuador', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'portales', 'ecuador', 'index.html'));
+});
+
+app.get('/colombia', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'portales', 'colombia', 'index.html'));
 });
 
 // Ruta base API

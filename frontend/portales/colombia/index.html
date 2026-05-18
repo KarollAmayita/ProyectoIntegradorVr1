@@ -3,27 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chile Comparte - Portal de Voluntariado</title>
+  <title>Colombia Comparte - Portal de Voluntariado</title>
 
   <!-- Bootstrap y fuentes -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <!-- Estilos del portal Chile -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <!-- ============================================================
-       NAVBAR (barra superior con logo, menú y botones)
-       ============================================================ -->
+  <!-- NAVBAR -->
   <header class="top-bar">
     <div class="container top-bar__content">
 
       <a href="index.html" class="top-bar__brand">
-        <img src="../../../assets/img/portales/chile_logo.png"
-          alt="Logo de Chile Comparte" width="75" height="75" />
+        <img src="../../assets/img/portales/colombia_logo1.png"
+          alt="Logo Colombia Comparte" width="75" height="75"
+          onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'brand-colombia\'>Colombia</span><span class=\'brand-comparte\'> Comparte</span>'" />
       </a>
 
       <nav class="main-menu">
@@ -44,9 +42,7 @@
     </div>
   </header>
 
-  <!-- ============================================================
-       BARRA DE BÚSQUEDA (se muestra al hacer clic en la lupa)
-       ============================================================ -->
+  <!-- BARRA DE BÚSQUEDA -->
   <div class="search-bar" id="search-bar" hidden>
     <div class="container search-bar__content">
       <input type="text" id="search-input" class="search-bar__input"
@@ -58,92 +54,75 @@
     <div id="search-results" class="search-bar__results" hidden></div>
   </div>
 
-  <!-- ============================================================
-       HERO (presentación principal con imagen de Chile)
-       ============================================================ -->
+  <!-- HERO -->
   <section class="hero" id="about-us">
     <div class="container hero__content">
 
       <div class="hero__text">
-        <span class="hero__tag">CHILE COMPARTE</span>
+        <span class="hero__tag">COLOMBIA COMPARTE</span>
         <h1 class="hero__title">
-          Conectados por
-          <span class="hero__title--highlight">nuestro Chile</span>
+          El corazón de
+          <span class="hero__title--highlight">Latinoamérica</span>
         </h1>
         <p class="hero__subtitle">
-          Desde Arica hasta la Patagonia, Chile Comparte impulsa el voluntariado
-          y la transformación social en cada rincón del país.
+          De la Sierra Nevada al Amazonas, Colombia Comparte une voluntarios
+          para construir un país más justo, solidario y lleno de esperanza.
         </p>
         <div class="hero__buttons">
-          <a href="#news" class="red-button">Nuestra Misión</a>
+          <a href="#news" class="green-button">Nuestra Misión</a>
           <a href="#voices" class="outline-button">Ver impacto</a>
         </div>
       </div>
 
       <div class="hero__image">
         <img
-          src="../../../assets/img/chile/santiagoDeChile.jpg"
-          alt="Vista de Santiago de Chile"
-          onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #0032A0 0%, #D52B1E 100%)'; this.parentElement.innerHTML += '<div style=\'display:flex;align-items:center;justify-content:center;height:360px;color:white;font-size:48px\'><i class=\'bi bi-mountains\'></i></div>'"
+          src="../../assets/img/colombia/bogota.webp"
+          alt="Vista de Bogotá, Colombia"
+          onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #FCD116 0%, #003087 50%, #CE1126 100%)'; this.parentElement.innerHTML += '<div style=\'display:flex;align-items:center;justify-content:center;height:360px;color:white;font-size:48px\'><i class=\'bi bi-flower1\'></i></div>'"
         />
         <span class="hero__photo-tag">
           <i class="bi bi-geo-alt-fill"></i>
-          Santiago, Chile
+          Bogotá, Colombia
         </span>
       </div>
 
     </div>
   </section>
 
-  <!-- ============================================================
-       VOCES DE CAMBIO (testimonios)
-       ============================================================ -->
+  <!-- VOCES DE CAMBIO -->
   <section class="voices-section" id="voices">
     <div class="container">
-
       <div class="section-header">
         <h2 class="section-header__title">Voces de Cambio</h2>
         <p class="section-header__description">
-          Líderes que en Chile Comparte están transformando el futuro en cada región del país.
+          Líderes que en Colombia Comparte están transformando el futuro en cada departamento del país.
         </p>
       </div>
-
-      <!-- Aquí se inyectan los testimonios desde main.js -->
       <div class="testimonials-grid" id="testimonials-container"></div>
-
     </div>
   </section>
 
-  <!-- ============================================================
-       ACTUALIDAD Y ACCIÓN (noticias)
-       ============================================================ -->
+  <!-- ACTUALIDAD Y ACCIÓN -->
   <section class="news-section" id="news">
     <div class="container">
-
       <div class="section-header section-header--with-link">
         <div>
           <h2 class="section-header__title">Actualidad y Acción</h2>
           <p class="section-header__description">
-            Crónicas del trabajo solidario de Chile Comparte a lo largo del país.
+            Historias del impacto solidario de Colombia Comparte en todo el territorio nacional.
           </p>
         </div>
         <a href="#" class="see-all-link">Ver todas las noticias <i class="bi bi-arrow-right"></i></a>
       </div>
-
-      <!-- Aquí se inyectan las noticias desde main.js -->
       <div class="news-grid" id="news-container"></div>
-
     </div>
   </section>
 
-  <!-- ============================================================
-       SUMATE (formulario de contacto)
-       ============================================================ -->
+  <!-- CONTACTO -->
   <section class="join-section" id="contact">
     <div class="container">
       <div class="join-block">
 
-        <!-- Lado izquierdo: título y datos de contacto -->
         <div class="join-block__left">
           <h2 class="join-block__title">
             Comparte tu<br />
@@ -151,25 +130,19 @@
             con nosotros.
           </h2>
           <p class="join-block__description">
-            ¿Participaste en alguna actividad de Chile Comparte?
+            ¿Participaste en alguna actividad de Colombia Comparte?
             Cuéntanos tu experiencia y sé parte de nuestras Voces de Cambio.
           </p>
-
           <div class="contact-info">
             <div class="contact-info__icon"><i class="bi bi-geo-alt-fill"></i></div>
-            <div>
-              <p class="contact-info__label">Av. Providencia 1234, Santiago</p>
-            </div>
+            <div><p class="contact-info__label">Cra. 7 #32-16, Bogotá D.C.</p></div>
           </div>
           <div class="contact-info">
             <div class="contact-info__icon"><i class="bi bi-envelope-fill"></i></div>
-            <div>
-              <p class="contact-info__label">contacto@chilecomparte.cl</p>
-            </div>
+            <div><p class="contact-info__label">contacto@colombiacomparte.co</p></div>
           </div>
         </div>
 
-        <!-- Lado derecho: formulario de testimonio -->
         <div class="join-block__right">
           <form id="testimonial-form" class="contact-form" novalidate>
 
@@ -186,12 +159,13 @@
 
             <div class="contact-form__field">
               <label for="field-company">Empresa / Organización</label>
-              <input type="text" id="field-company" name="company" placeholder="Ej: Fundación Techo" />
+              <input type="text" id="field-company" name="company" placeholder="Ej: Fundación Sembrando Paz" />
             </div>
 
             <div class="contact-form__field">
               <label for="field-content">Tu testimonio</label>
-              <textarea id="field-content" name="content" rows="4" placeholder="Cuéntanos tu experiencia con Chile Comparte..." required></textarea>
+              <textarea id="field-content" name="content" rows="4"
+                placeholder="Cuéntanos tu experiencia con Colombia Comparte..." required></textarea>
             </div>
 
             <div class="contact-form__field">
@@ -214,7 +188,6 @@
               ENVIAR TESTIMONIO
             </button>
 
-            <!-- Mensajes de éxito o error -->
             <div id="success-message" class="message message--success" hidden></div>
             <div id="error-message" class="message message--error" hidden></div>
           </form>
@@ -224,33 +197,32 @@
     </div>
   </section>
 
-  <!-- ============================================================
-       FOOTER
-       ============================================================ -->
+  <!-- FOOTER -->
   <footer class="footer">
     <div class="container footer__columns">
 
       <div class="footer__block">
         <h3 class="footer__brand-title">
-          <span class="brand-chile">Chile</span>
+          <span class="brand-colombia">Colombia</span>
           <span class="brand-comparte"> Comparte</span>
         </h3>
         <p class="footer__text">
           Somos una red de voluntarios y líderes sociales transformando comunidades
-          a través del trabajo solidario en todo Chile.
+          a través del trabajo solidario en toda Colombia.
         </p>
-        <img src="../../../assets/img/portales/chile_logo.png"
-          alt="Logo de Chile Comparte" width="100" height="100"
-          style="margin-top: 16px;" />
+        <img src="../../assets/img/portales/colombia_logo.png"
+          alt="Logo Colombia Comparte" width="100" height="100"
+          style="margin-top: 16px;"
+          onerror="this.style.display='none'" />
       </div>
 
       <div class="footer__block">
-        <h4 class="footer__title">Chile</h4>
+        <h4 class="footer__title">Colombia</h4>
         <ul class="footer__list">
-          <li><a href="#">Santiago</a></li>
-          <li><a href="#">Valparaíso</a></li>
-          <li><a href="#">Concepción</a></li>
-          <li><a href="#">Punta Arenas</a></li>
+          <li><a href="#">Bogotá</a></li>
+          <li><a href="#">Medellín</a></li>
+          <li><a href="#">Cali</a></li>
+          <li><a href="#">Cartagena</a></li>
         </ul>
       </div>
 
@@ -283,15 +255,11 @@
           <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
           <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
         </div>
-        <p class="footer__copyright">
-          © 2026 Chile Comparte.
-        </p>
+        <p class="footer__copyright">© 2026 Colombia Comparte.</p>
       </div>
     </div>
   </footer>
 
-  <!-- Lógica del portal: noticias, testimonios y formulario -->
   <script src="main.js"></script>
-
 </body>
 </html>
