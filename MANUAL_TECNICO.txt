@@ -171,9 +171,13 @@ Produccion:
   |   |   |   |-- styles.css
   |   |   |   |-- main.js
   |   |   |-- argentina/               # Portal de Argentina
-  |   |       |-- index.html
-  |   |       |-- styles.css
-  |   |       |-- main.js
+  |   |   |   |-- index.html
+  |   |   |   |-- styles.css
+  |   |   |   |-- main.js
+  |   |   |-- chile/                   # Portal de Chile
+  |   |   |   |-- index.html
+  |   |   |   |-- style.css
+  |   |   |   |-- main.js
   |   |-- assets/
   |       |-- img/
   |           |-- argentina/
