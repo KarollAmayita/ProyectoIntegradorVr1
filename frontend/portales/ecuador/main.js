@@ -1,54 +1,54 @@
 // ============================================================
-//  PORTAL CHILE COMPARTE - main.js
+//  PORTAL ECUADOR COMPARTE - main.js
 //  Lógica: testimonios, noticias, búsqueda, formulario
 // ============================================================
 
 const BACKEND_URL = '/api';
-const CHILE_COUNTRY_ID = 1;       // Chile es el primer país insertado en la BD
-const COUNTRY_SLUG = 'chile';
+const ECUADOR_COUNTRY_ID = 3;     // Ecuador es el tercer país en la BD
+const COUNTRY_SLUG = 'ecuador';
 
 // ------------------------------------------------------------
 //  DATOS DE PRUEBA (mock)
 //  Se usan si el backend no está disponible.
-//  Reemplaza las imágenes en assets/img/chile/ con fotos reales.
+//  Agrega tus imágenes en: assets/img/ecuador/
 // ------------------------------------------------------------
 const testimonialsMock = [
   {
-    quote: '"En Valparaíso aprendimos que compartir es reconstruir. Chile Comparte nos dio las herramientas para levantar nuestra comunidad."',
-    authorName: 'Camila Torres',
-    authorRole: 'Valparaíso',
-    avatar: '../../../assets/img/chile/testimonioMujer.jpg'
+    quote: '"En Guayaquil aprendimos que el cambio empieza por compartir..."',
+    authorName: 'Valeria Moreno',
+    authorRole: 'Guayaquil',
+    avatar: '../../assets/img/ecuador/testimujer2.jpeg'        
   },
   {
-    quote: '"Llevamos talleres de tecnología a escuelas rurales de La Araucanía. La distancia ya no es un obstáculo cuando hay voluntad de compartir."',
-    authorName: 'Rodrigo Muñoz',
-    authorRole: 'Proyecto Digital Sur',
-    avatar: '../../../assets/img/chile/testimoniohombre.jpg',
-    sideImage: '../../../assets/img/chile/escuela.jpg'   // ← esto hace que aparezca la imagen lateral
+    quote: '"Llevamos kits escolares a comunidades amazónicas de Napo..."',
+    authorName: 'Diego Salazar',
+    authorRole: 'Proyecto Amazonía Viva',
+    avatar: '../../assets/img/ecuador/testimonioHombre.png',  
+    sideImage: '../../assets/img/ecuador/recursos.jpg'         
   }
 ];
 
 const newsMock = [
   {
-    category: 'CULTURA',
-    title: 'Nueva biblioteca comunitaria en Concepción abre sus puertas',
-    summary: 'El proyecto conecta a más de 800 familias con el acceso al conocimiento y la lectura.',
-    date: '12 de Mayo, 2026',
-    image: '../../../assets/img/chile/bibliotecaChile.jpg'
-  },
-  {
-    category: 'MEDIOAMBIENTE',
-    title: 'Reforestación en la región del Maule suma 1.000 árboles',
-    summary: 'Voluntarios de Chile Comparte trabajan en la recuperación de zonas afectadas por incendios forestales.',
-    date: '05 de Mayo, 2026',
-    image: '../../../assets/img/chile/reforestacion.jpg'
+    category: 'MEDIO AMBIENTE',
+    title: 'Reforestación en la reserva Cayambe-Coca suma 2.000 árboles',
+    summary: 'Voluntarios de Ecuador Comparte recuperan zonas afectadas por la deforestación en la sierra norte.',
+    date: '10 de Mayo, 2026',
+    image: '../../assets/img/ecuador/reforestacion.jpg'    
   },
   {
     category: 'EDUCACIÓN',
-    title: 'Becas de programación para jóvenes de Antofagasta',
-    summary: 'Chile Comparte lanza 40 becas para jóvenes de regiones con menor acceso a formación tecnológica.',
-    date: '28 de Abril, 2026',
-    image: '../../../assets/img/chile/becas.jpg'
+    title: 'Talleres de robótica llegan a escuelas rurales de Loja',
+    summary: 'Ecuador Comparte capacita a 300 estudiantes en tecnología y pensamiento computacional.',
+    date: '03 de Mayo, 2026',
+    image: '../../assets/img/ecuador/tallerrobotica.png'      
+  },
+  {
+    category: 'CULTURA',
+    title: 'Festival de arte comunitario en Cuenca reúne a 500 familias',
+    summary: 'La iniciativa promueve la identidad cultural y el trabajo colectivo en el centro histórico.',
+    date: '25 de Abril, 2026',
+    image: '../../assets/img/ecuador/cuenca.jpg'            
   }
 ];
 
@@ -68,7 +68,7 @@ async function loadTestimonials() {
       quote: `"${t.contenido}"`,
       authorName: t.nombre,
       authorRole: t.cargo || t.empresa || '',
-      avatar: t.foto_url || '../../../assets/img/chile/mujer.png',
+      avatar: t.foto_url || '../../../assets/img/ecuador/testimonioMujer.jpg',
       sideImage: null
     })));
   } catch {
@@ -115,7 +115,7 @@ function renderTestimonials(list) {
             </div>
           </div>
           <img class="testimonial-card__image" src="${testimonial.sideImage}" alt="Imagen del testimonio"
-            onerror="this.style.background='var(--chile-blue-light)'; this.src=''" />
+            onerror="this.style.background='var(--ec-blue-light)'; this.src=''" />
         </article>`;
     }
   });
@@ -140,7 +140,7 @@ async function loadNews() {
       title: n.titulo,
       summary: n.resumen,
       date: formatDate(n.fecha_publicacion),
-      image: n.imagen_principal_url || '../../../assets/img/chile/biblioteca.jpg',
+      image: n.imagen_principal_url || '../../../assets/img/ecuador/reforestacion.jpg',
       slug: n.slug
     })));
   } catch {
@@ -151,19 +151,18 @@ async function loadNews() {
 function formatDate(iso) {
   if (!iso) return '';
   const d = new Date(iso);
-  return d.toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' });
+  return d.toLocaleDateString('es-EC', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 function renderNews(list) {
   const container = document.getElementById('news-container');
-
-  const placeholderColors = ['#D6E4FF', '#FCEAEA', '#E0F4E5'];
+  const placeholderColors = ['#E0E9FF', '#FFFBDD', '#FDECEA'];
 
   const html = list.map((news, i) => `
     <article class="news-card">
       <img class="news-card__image" src="${news.image}" alt="${news.title}" loading="lazy"
         onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('afterbegin',
-          '<div style=\'height:180px;background:${placeholderColors[i % 3]};display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--chile-blue)\'><i class=\'bi bi-newspaper\'></i></div>')" />
+          '<div style=\'height:180px;background:${placeholderColors[i % 3]};display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--ec-blue)\'><i class=\'bi bi-newspaper\'></i></div>')" />
       <div class="news-card__body">
         ${news.category ? `<span class="news-card__category">${news.category}</span>` : ''}
         <h3 class="news-card__title">${news.title}</h3>
@@ -187,16 +186,16 @@ async function sendTestimonialForm(event) {
   const form = event.target;
   const sendButton = document.getElementById('send-button');
   const successBox = document.getElementById('success-message');
-  const errorBox = document.getElementById('error-message');
+  const errorBox   = document.getElementById('error-message');
 
   successBox.hidden = true;
-  errorBox.hidden = true;
+  errorBox.hidden   = true;
 
-  const userName = form.userName.value.trim();
-  const role     = form.role.value.trim() || null;
-  const company  = form.company.value.trim() || null;
-  const content  = form.content.value.trim();
-  const photoUrl = form.photoUrl.value.trim() || null;
+  const userName  = form.userName.value.trim();
+  const role      = form.role.value.trim() || null;
+  const company   = form.company.value.trim() || null;
+  const content   = form.content.value.trim();
+  const photoUrl  = form.photoUrl.value.trim() || null;
   const instagram = form.instagram.value.trim() || null;
   const facebook  = form.facebook.value.trim() || null;
 
@@ -206,7 +205,7 @@ async function sendTestimonialForm(event) {
   }
 
   const payload = {
-    pais_id:       CHILE_COUNTRY_ID,
+    pais_id:       ECUADOR_COUNTRY_ID,
     nombre:        userName,
     cargo:         role,
     empresa:       company,
@@ -216,7 +215,7 @@ async function sendTestimonialForm(event) {
     facebook_url:  facebook
   };
 
-  sendButton.disabled = true;
+  sendButton.disabled    = true;
   sendButton.textContent = 'ENVIANDO...';
 
   try {
@@ -227,18 +226,15 @@ async function sendTestimonialForm(event) {
     });
 
     const responseJson = await response.json();
-
-    if (!response.ok) {
-      throw new Error(responseJson.message || 'No se pudo enviar el testimonio');
-    }
+    if (!response.ok) throw new Error(responseJson.message || 'No se pudo enviar el testimonio');
 
     form.reset();
-    successBox.textContent = '¡Testimonio enviado! Gracias por compartir tu experiencia con Chile Comparte.';
+    successBox.textContent = '¡Testimonio enviado! Gracias por compartir tu experiencia con Ecuador Comparte.';
     successBox.hidden = false;
   } catch (error) {
     showError(error.message);
   } finally {
-    sendButton.disabled = false;
+    sendButton.disabled    = false;
     sendButton.textContent = 'ENVIAR TESTIMONIO';
   }
 }
@@ -285,21 +281,13 @@ function initSeeAllNews() {
 function initFooterLinks() {
   document.querySelectorAll('.footer__social a').forEach(link => {
     const label = link.getAttribute('aria-label');
-    const urls = {
-      Facebook: 'https://facebook.com',
-      Instagram: 'https://instagram.com',
-      Twitter: 'https://x.com'
-    };
+    const urls = { Facebook: 'https://facebook.com', Instagram: 'https://instagram.com', Twitter: 'https://x.com' };
     if (urls[label]) link.href = urls[label];
     link.target = '_blank';
     link.rel = 'noopener';
   });
-
   document.querySelectorAll('.footer__list a').forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    link.addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
   });
 }
 
@@ -309,24 +297,19 @@ function initNewsletter() {
   form.addEventListener('submit', e => {
     e.preventDefault();
     const input = form.querySelector('input');
-    const email = input.value.trim();
-    if (!email) return;
+    if (!input.value.trim()) return;
     const btn = form.querySelector('button');
     const original = btn.innerHTML;
     btn.innerHTML = '<i class="bi bi-check-lg"></i>';
     input.value = '';
     input.placeholder = '¡Gracias por suscribirte!';
-    setTimeout(() => {
-      input.placeholder = 'tu@email.com';
-      btn.innerHTML = original;
-    }, 3000);
+    setTimeout(() => { input.placeholder = 'tu@email.com'; btn.innerHTML = original; }, 3000);
   });
 }
 
 function sharePage() {
   const url = window.location.href;
   const title = document.title;
-
   if (navigator.share) {
     navigator.share({ title, url }).catch(() => {});
   } else {
@@ -355,10 +338,7 @@ function performSearch() {
   const query = document.getElementById('search-input').value.trim().toLowerCase();
   const resultsContainer = document.getElementById('search-results');
 
-  if (!query) {
-    resultsContainer.hidden = true;
-    return;
-  }
+  if (!query) { resultsContainer.hidden = true; return; }
 
   const allContent = [
     ...newsMock.map(n => ({ type: 'noticia', title: n.title, text: n.summary, category: n.category })),
@@ -377,10 +357,7 @@ function performSearch() {
     return;
   }
 
-  const highlight = (text, term) => {
-    const regex = new RegExp(`(${term})`, 'gi');
-    return text.replace(regex, '<mark>$1</mark>');
-  };
+  const highlight = (text, term) => text.replace(new RegExp(`(${term})`, 'gi'), '<mark>$1</mark>');
 
   resultsContainer.innerHTML = matches.map(item => `
     <div class="search-bar__result-item">
