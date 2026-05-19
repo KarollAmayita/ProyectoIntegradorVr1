@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Admin País</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin-styles.css" />
+</head>
+<body>
+  <div id="zona-sidebar"></div>
+  <main class="contenido-principal">
+    <div id="zona-topbar"></div>
+
+    <section class="grilla-estadisticas">
+      <div class="tarjeta-estadistica">
+        <p class="tarjeta-estadistica__etiqueta"><i class="bi bi-newspaper"></i> Total noticias</p>
+        <p class="tarjeta-estadistica__numero" id="conteo-noticias">—</p>
+      </div>
+      <div class="tarjeta-estadistica tarjeta-estadistica--verde">
+        <p class="tarjeta-estadistica__etiqueta"><i class="bi bi-check-circle"></i> Publicadas</p>
+        <p class="tarjeta-estadistica__numero" id="conteo-noticias-publicadas">—</p>
+      </div>
+      <div class="tarjeta-estadistica tarjeta-estadistica--amarilla">
+        <p class="tarjeta-estadistica__etiqueta"><i class="bi bi-chat-quote"></i> Testimonios</p>
+        <p class="tarjeta-estadistica__numero" id="conteo-testimonios">—</p>
+      </div>
+      <div class="tarjeta-estadistica tarjeta-estadistica--naranja">
+        <p class="tarjeta-estadistica__etiqueta"><i class="bi bi-envelope-exclamation"></i> Solicitudes pendientes</p>
+        <p class="tarjeta-estadistica__numero" id="conteo-solicitudes-pendientes">—</p>
+      </div>
+    </section>
+
+    <section class="panel-contenido">
+      <h2 class="panel-contenido__titulo">Hola, <span id="saludo-nombre">administrador</span></h2>
+      <p class="panel-contenido__texto" id="texto-bienvenida-pais">Panel de administración de tu país.</p>
+    </section>
+
+    <section class="panel-contenido">
+      <div class="panel-contenido__cabecera">
+        <h2 class="panel-contenido__titulo">Últimas solicitudes de contacto</h2>
+        <a href="/admin/solicitudes" class="boton boton--secundario">Ver todas</a>
+      </div>
+      <div class="tabla-contenedor">
+        <table class="tabla">
+          <thead>
+            <tr><th>Nombre</th><th>Correo</th><th>Motivo</th><th>Estado</th><th>Fecha</th></tr>
+          </thead>
+          <tbody id="tabla-ultimas-solicitudes">
+            <tr><td colspan="5" class="tabla__sin-datos">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel-contenido">
+      <div class="panel-contenido__cabecera">
+        <h2 class="panel-contenido__titulo">Última actividad (auditoría)</h2>
+        <a href="/admin/auditoria" class="boton boton--secundario">Ver bitácora</a>
+      </div>
+      <div class="tabla-contenedor">
+        <table class="tabla">
+          <thead>
+            <tr><th>Usuario</th><th>Acción</th><th>Módulo</th><th>IP</th><th>Fecha</th></tr>
+          </thead>
+          <tbody id="tabla-auditoria">
+            <tr><td colspan="5" class="tabla__sin-datos">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="admin-shared.js"></script>
+  <script>
+    if (!exigirRol('admin_pais')) throw new Error('Sin permiso');
+
+    const usuario = obtenerUsuario();
+    pintarSidebar('dashboard-admin');
+    pintarTopbar('Dashboard Admin País');
+    document.getElementById('saludo-nombre').textContent = usuario?.nombre || 'administrador';
+    document.getElementById('texto-bienvenida-pais').textContent =
+      `Gestioná el portal de ${usuario?.pais?.nombre || 'tu país'}.`;
+
+    async function cargarResumen() {
+      try {
+        const [noticias, testimonios, solicitudes, auditoriaRes] = await Promise.all([
+          llamarApi('/noticias'),
+          llamarApi('/testimonios'),
+          llamarApi('/solicitudes'),
+          llamarApi('/auditoria?limit=5')
+        ]);
+
+        const listaNoticias = normalizarListaApi(noticias);
+        const listaTestimonios = normalizarListaApi(testimonios);
+        const listaSolicitudes = normalizarListaApi(solicitudes);
+        const listaAuditoria = normalizarListaApi(auditoriaRes);
+
+        document.getElementById('conteo-noticias').textContent = listaNoticias.length;
+        document.getElementById('conteo-noticias-publicadas').textContent =
+          listaNoticias.filter((n) => n.estado === 'publicado').length;
+        document.getElementById('conteo-testimonios').textContent = listaTestimonios.length;
+        document.getElementById('conteo-solicitudes-pendientes').textContent =
+          listaSolicitudes.filter((s) => s.estado === 'pendiente').length;
+
+        const ultimasSol = listaSolicitudes.slice(0, 5);
+        document.getElementById('tabla-ultimas-solicitudes').innerHTML = ultimasSol.length === 0
+          ? '<tr><td colspan="5" class="tabla__sin-datos">Sin solicitudes.</td></tr>'
+          : ultimasSol.map((s) => `
+            <tr>
+              <td>${s.nombre}</td>
+              <td>${s.correo}</td>
+              <td>${s.finalidad}</td>
+              <td><span class="etiqueta-estado etiqueta-estado--${s.estado}">${s.estado}</span></td>
+              <td>${formatearFecha(s.created_at)}</td>
+            </tr>
+          `).join('');
+
+        const ultimaAud = listaAuditoria.slice(0, 5);
+        document.getElementById('tabla-auditoria').innerHTML = ultimaAud.length === 0
+          ? '<tr><td colspan="5" class="tabla__sin-datos">Sin registros.</td></tr>'
+          : ultimaAud.map((log) => `
+            <tr>
+              <td><strong>${log.username || '—'}</strong></td>
+              <td>${log.accion}</td>
+              <td>${log.modulo}</td>
+              <td>${log.ip_address || log.ip || '—'}</td>
+              <td>${formatearFecha(log.created_at, true)}</td>
+            </tr>
+          `).join('');
+      } catch (error) {
+        console.error('Error dashboard admin:', error);
+      }
+    }
+
+    cargarResumen();
+  </script>
+</body>
+</html>

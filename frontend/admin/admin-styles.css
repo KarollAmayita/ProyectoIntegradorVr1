@@ -272,7 +272,7 @@ img {
   left: 0;
   width: var(--ancho-barra-lateral);
   height: 100vh;
-  background: var(--azul-oscuro-fondo);
+  background: var(--color-sidebar, var(--azul-oscuro-fondo));
   color: var(--blanco);
   padding: 24px 0;
   overflow-y: auto;
@@ -291,7 +291,7 @@ img {
 }
 
 .barra-lateral__marca-titulo .marca-argentina { color: var(--blanco); }
-.barra-lateral__marca-titulo .marca-comparte  { color: var(--celeste-medio); }
+.barra-lateral__marca-titulo .marca-comparte  { color: var(--color-accent, var(--celeste-medio)); }
 
 .barra-lateral__subtitulo {
   font-size: 11px;
@@ -338,13 +338,13 @@ img {
 }
 
 .barra-lateral__enlace--activo {
-  background: var(--celeste-fuerte);
+  background: var(--color-primary, var(--celeste-fuerte));
   color: var(--blanco);
   font-weight: 600;
 }
 
 .barra-lateral__enlace--activo:hover {
-  background: var(--celeste-fuerte);
+  background: var(--color-primary, var(--celeste-fuerte));
 }
 
 /* Contenido principal a la derecha de la sidebar */
@@ -802,3 +802,46 @@ img {
     font-size: 13px;
   }
 }
+
+/* Texto descriptivo en paneles del dashboard */
+.panel-contenido__texto {
+  color: var(--gris-texto);
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+/* Accesos rápidos — dashboard editor */
+.grilla-accesos-rapidos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.tarjeta-acceso {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 20px;
+  background: var(--blanco);
+  border-radius: 14px;
+  border: 1px solid var(--gris-borde);
+  box-shadow: var(--sombra-suave);
+  transition: transform 0.15s, box-shadow 0.15s;
+  text-align: center;
+  font-weight: 600;
+  color: var(--azul-marino);
+}
+
+.tarjeta-acceso i {
+  font-size: 32px;
+  color: var(--color-primary, var(--celeste-fuerte));
+}
+
+.tarjeta-acceso:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-media);
+  border-color: var(--color-primary, var(--celeste-medio));
+}
+

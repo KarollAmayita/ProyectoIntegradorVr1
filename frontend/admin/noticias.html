@@ -159,7 +159,7 @@
        ---------------------------------------------------------- */
     async function cargarNoticias() {
       try {
-        noticias = await llamarApi('/news');
+        noticias = await llamarApi('/noticias');
         pintarTabla();
       } catch (error) {
         tabla.innerHTML = `<tr><td colspan="7" class="tabla__sin-datos">Error: ${error.message}</td></tr>`;
@@ -168,7 +168,7 @@
 
     async function cargarPaises() {
       try {
-        paisesActivos = await llamarApi('/countries/active');
+        paisesActivos = await llamarApi('/paises/active');
 
         const selectorPais = document.getElementById('noticia-pais');
         selectorPais.innerHTML = '<option value="">Seleccioná un país</option>' +
@@ -183,9 +183,6 @@
       }
     }
 
-    /* ----------------------------------------------------------
-       PINTAR la tabla aplicando filtros
-       ---------------------------------------------------------- */
     function pintarTabla() {
       const textoBusqueda = filtroBusqueda.value.toLowerCase();
       const estadoFiltro = filtroEstado.value;
@@ -298,9 +295,9 @@
 
       try {
         if (idNoticia) {
-          await llamarApi(`/news/${idNoticia}`, { method: 'PUT', body: datos });
+          await llamarApi(`/noticias/${idNoticia}`, { method: 'PUT', body: datos });
         } else {
-          await llamarApi('/news', { method: 'POST', body: datos });
+          await llamarApi('/noticias', { method: 'POST', body: datos });
         }
         cerrarModal('modal-noticia');
         await cargarNoticias();
@@ -325,7 +322,7 @@
     document.getElementById('boton-confirmar-eliminar').addEventListener('click', async () => {
       if (!idNoticiaAEliminar) return;
       try {
-        await llamarApi(`/news/${idNoticiaAEliminar}`, { method: 'DELETE' });
+        await llamarApi(`/noticias/${idNoticiaAEliminar}`, { method: 'DELETE' });
         cerrarModal('modal-confirmar-eliminar');
         idNoticiaAEliminar = null;
         await cargarNoticias();

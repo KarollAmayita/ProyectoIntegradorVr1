@@ -180,7 +180,7 @@
 
     async function cargarTestimonios() {
       try {
-        testimonios = await llamarApi('/testimonials');
+        testimonios = await llamarApi('/testimonios');
         pintarTabla();
       } catch (error) {
         tabla.innerHTML = `<tr><td colspan="7" class="tabla__sin-datos">Error: ${error.message}</td></tr>`;
@@ -189,7 +189,7 @@
 
     async function cargarPaises() {
       try {
-        paisesActivos = await llamarApi('/countries/active');
+        paisesActivos = await llamarApi('/paises/active');
         const selectorPais = document.getElementById('testimonio-pais');
         selectorPais.innerHTML = '<option value="">Seleccioná un país</option>' +
           paisesActivos.map(pais => `<option value="${pais.id}">${pais.nombre}</option>`).join('');
@@ -313,9 +313,9 @@
 
       try {
         if (idTestimonio) {
-          await llamarApi(`/testimonials/${idTestimonio}`, { method: 'PUT', body: datos });
+          await llamarApi(`/testimonios/${idTestimonio}`, { method: 'PUT', body: datos });
         } else {
-          await llamarApi('/testimonials', { method: 'POST', body: datos });
+          await llamarApi('/testimonios', { method: 'POST', body: datos });
         }
         cerrarModal('modal-testimonio');
         await cargarTestimonios();
@@ -337,7 +337,7 @@
     document.getElementById('boton-confirmar-eliminar').addEventListener('click', async () => {
       if (!idTestimonioAEliminar) return;
       try {
-        await llamarApi(`/testimonials/${idTestimonioAEliminar}`, { method: 'DELETE' });
+        await llamarApi(`/testimonios/${idTestimonioAEliminar}`, { method: 'DELETE' });
         cerrarModal('modal-confirmar-eliminar');
         idTestimonioAEliminar = null;
         await cargarTestimonios();

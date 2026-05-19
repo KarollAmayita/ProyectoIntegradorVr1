@@ -168,13 +168,9 @@
 
   <script src="admin-shared.js"></script>
   <script>
-    exigirSesion();
+    if (!exigirRol('superadmin')) throw new Error('Sin permiso');
     pintarSidebar('usuarios');
     pintarTopbar('Usuarios');
-
-    if (!usuarioEs('superadmin')) {
-      window.location.href = '/admin/dashboard';
-    }
 
     let usuarios = [];
     let paisesActivos = [];
@@ -189,7 +185,7 @@
 
     async function cargarUsuarios() {
       try {
-        usuarios = await llamarApi('/users');
+        usuarios = normalizarListaApi(await llamarApi('/usuarios'));
         pintarTabla();
       } catch (error) {
         tabla.innerHTML = `<tr><td colspan="7" class="tabla__sin-datos">Error: ${error.message}</td></tr>`;
@@ -198,7 +194,7 @@
 
     async function cargarPaises() {
       try {
-        paisesActivos = await llamarApi('/countries/active');
+        paisesActivos = normalizarListaApi(await llamarApi('/paises/active'));
         const selectorPais = document.getElementById('usuario-pais');
         selectorPais.innerHTML = '<option value="">Sin país (solo para superadmin)</option>' +
           paisesActivos.map(pais => `<option value="${pais.id}">${pais.nombre}</option>`).join('');
@@ -292,7 +288,7 @@
       botonGuardar.disabled = true;
 
       try {
-        await llamarApi('/users', { method: 'POST', body: datos });
+        await llamarApi('/usuarios', { method: 'POST', body: datos });
         cerrarModal('modal-usuario');
         await cargarUsuarios();
       } catch (error) {
@@ -323,7 +319,7 @@
       const nuevaPassword = document.getElementById('password-nueva').value;
 
       try {
-        await llamarApi(`/users/${idUsuario}/password`, {
+        await llamarApi(`/usuarios/${idUsuario}/password`, {
           method: 'PUT',
           body: { nueva_password: nuevaPassword }
         });

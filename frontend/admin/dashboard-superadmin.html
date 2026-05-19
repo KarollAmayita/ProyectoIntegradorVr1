@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Superadmin - Latinoamérica Comparte</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin-styles.css" />
+</head>
+<body>
+  <div id="zona-sidebar"></div>
+  <main class="contenido-principal">
+    <div id="zona-topbar"></div>
+
+    <section class="grilla-estadisticas">
+      <div class="tarjeta-estadistica">
+        <p class="tarjeta-estadistica__etiqueta"><i class="bi bi-newspaper"></i> Total noticias</p>
+        <p class="tarjeta-estadistica__numero" id="conteo-noticias">—</p>
+      </div>
+      <div class="tarjeta-estadistica tarjeta-estadistica--verde">
+        <p class="tarjeta-estadistica__etiqueta"><i class="bi bi-check-circle"></i> Noticias publicadas</p>
+        <p class="tarjeta-estadistica__numero" id="conteo-noticias-publicadas">—</p>
+      </div>
+      <div class="tarjeta-estadistica tarjeta-estadistica--amarilla">
+        <p class="tarjeta-estadistica__etiqueta"><i class="bi bi-chat-quote"></i> Testimonios</p>
+        <p class="tarjeta-estadistica__numero" id="conteo-testimonios">—</p>
+      </div>
+      <div class="tarjeta-estadistica tarjeta-estadistica--naranja">
+        <p class="tarjeta-estadistica__etiqueta"><i class="bi bi-envelope-exclamation"></i> Solicitudes pendientes</p>
+        <p class="tarjeta-estadistica__numero" id="conteo-solicitudes-pendientes">—</p>
+      </div>
+    </section>
+
+    <section class="panel-contenido">
+      <h2 class="panel-contenido__titulo">Hola, <span id="saludo-nombre">administrador</span></h2>
+      <p class="panel-contenido__texto">Vista global del ecosistema multipaís (Argentina, Chile y Ecuador).</p>
+    </section>
+
+    <section class="panel-contenido">
+      <div class="panel-contenido__cabecera">
+        <h2 class="panel-contenido__titulo"><i class="bi bi-globe-americas"></i> Portales registrados</h2>
+      </div>
+      <div class="tabla-contenedor">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>País</th>
+              <th>Código</th>
+              <th>Slug</th>
+              <th>Estado</th>
+              <th>Portal público</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-portales">
+            <tr><td colspan="5" class="tabla__sin-datos">Cargando portales...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel-contenido">
+      <div class="panel-contenido__cabecera">
+        <h2 class="panel-contenido__titulo">Últimas solicitudes</h2>
+        <a href="/admin/solicitudes" class="boton boton--secundario">Ver todas</a>
+      </div>
+      <div class="tabla-contenedor">
+        <table class="tabla">
+          <thead>
+            <tr><th>Nombre</th><th>Correo</th><th>País</th><th>Motivo</th><th>Estado</th><th>Fecha</th></tr>
+          </thead>
+          <tbody id="tabla-ultimas-solicitudes">
+            <tr><td colspan="6" class="tabla__sin-datos">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel-contenido">
+      <div class="panel-contenido__cabecera">
+        <h2 class="panel-contenido__titulo">Última actividad (auditoría)</h2>
+        <a href="/admin/auditoria" class="boton boton--secundario">Ver bitácora</a>
+      </div>
+      <div class="tabla-contenedor">
+        <table class="tabla">
+          <thead>
+            <tr><th>Usuario</th><th>Acción</th><th>Módulo</th><th>IP</th><th>Fecha</th></tr>
+          </thead>
+          <tbody id="tabla-auditoria">
+            <tr><td colspan="5" class="tabla__sin-datos">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="admin-shared.js"></script>
+  <script>
+    if (!exigirRol('superadmin')) throw new Error('Sin permiso');
+
+    pintarSidebar('dashboard-superadmin');
+    pintarTopbar('Dashboard Superadmin');
+    document.getElementById('saludo-nombre').textContent = obtenerUsuario()?.nombre || 'administrador';
+
+    async function cargarResumen() {
+      try {
+        const [noticias, testimonios, solicitudes, paises, auditoriaRes] = await Promise.all([
+          llamarApi('/noticias'),
+          llamarApi('/testimonios'),
+          llamarApi('/solicitudes'),
+          llamarApi('/paises'),
+          llamarApi('/auditoria?limit=5')
+        ]);
+
+        const listaNoticias = normalizarListaApi(noticias);
+        const listaTestimonios = normalizarListaApi(testimonios);
+        const listaSolicitudes = normalizarListaApi(solicitudes);
+        const CODIGOS_PORTALES = ['AR', 'CL', 'EC'];
+        const listaPaises = normalizarListaApi(paises).filter((p) => CODIGOS_PORTALES.includes(p.codigo));
+        const listaAuditoria = normalizarListaApi(auditoriaRes);
+
+        document.getElementById('conteo-noticias').textContent = listaNoticias.length;
+        document.getElementById('conteo-noticias-publicadas').textContent =
+          listaNoticias.filter((n) => n.estado === 'publicado').length;
+        document.getElementById('conteo-testimonios').textContent = listaTestimonios.length;
+        document.getElementById('conteo-solicitudes-pendientes').textContent =
+          listaSolicitudes.filter((s) => s.estado === 'pendiente').length;
+
+        const tbodyPortales = document.getElementById('tabla-portales');
+        if (listaPaises.length === 0) {
+          tbodyPortales.innerHTML = '<tr><td colspan="5" class="tabla__sin-datos">No hay portales registrados.</td></tr>';
+        } else {
+          tbodyPortales.innerHTML = listaPaises.map((pais) => `
+            <tr>
+              <td><strong>${pais.nombre}</strong></td>
+              <td>${pais.codigo}</td>
+              <td>${pais.slug}</td>
+              <td><span class="etiqueta-estado etiqueta-estado--${pais.estado === 'activo' ? 'publicado' : 'borrador'}">${pais.estado}</span></td>
+              <td><a href="/${pais.slug}" target="_blank" rel="noopener">/${pais.slug}</a></td>
+            </tr>
+          `).join('');
+        }
+
+        const tbodySol = document.getElementById('tabla-ultimas-solicitudes');
+        const ultimasSol = listaSolicitudes.slice(0, 5);
+        tbodySol.innerHTML = ultimasSol.length === 0
+          ? '<tr><td colspan="6" class="tabla__sin-datos">Sin solicitudes.</td></tr>'
+          : ultimasSol.map((s) => `
+            <tr>
+              <td>${s.nombre}</td>
+              <td>${s.correo}</td>
+              <td>${s.paises?.nombre || '—'}</td>
+              <td>${s.finalidad}</td>
+              <td><span class="etiqueta-estado etiqueta-estado--${s.estado}">${s.estado}</span></td>
+              <td>${formatearFecha(s.created_at)}</td>
+            </tr>
+          `).join('');
+
+        const tbodyAud = document.getElementById('tabla-auditoria');
+        const ultimaAud = listaAuditoria.slice(0, 5);
+        tbodyAud.innerHTML = ultimaAud.length === 0
+          ? '<tr><td colspan="5" class="tabla__sin-datos">Sin registros de auditoría.</td></tr>'
+          : ultimaAud.map((log) => `
+            <tr>
+              <td><strong>${log.username || '—'}</strong></td>
+              <td>${log.accion}</td>
+              <td>${log.modulo}</td>
+              <td>${log.ip_address || log.ip || '—'}</td>
+              <td>${formatearFecha(log.created_at, true)}</td>
+            </tr>
+          `).join('');
+      } catch (error) {
+        console.error('Error cargando dashboard superadmin:', error);
+      }
+    }
+
+    cargarResumen();
+  </script>
+</body>
+</html>

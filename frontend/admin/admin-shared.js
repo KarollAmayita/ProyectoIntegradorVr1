@@ -1,17 +1,42 @@
-/* ============================================================
-   PANEL ADMIN - Código compartido por todas las pantallas
-   - Configuración del backend
-   - Lectura/escritura de sesión (token y usuario)
-   - Helper para llamar al API con JWT
-   - Sidebar dinámica según el rol
-   - Cerrar sesión
-   - Apertura/cierre de modales
-   ============================================================ */
+/* Panel admin compartido: sesión, API, layout y permisos por rol */
 
 const URL_BACKEND = '/api';
+const BASE_ADMIN = '/admin';
+
+/* Paleta por código de país (AR, CL, EC). Superadmin usa DEFAULT. */
+const COUNTRY_THEMES = {
+  AR: {
+    primary: '#6CACE4',
+    accent: '#F6B40E',
+    sidebar: '#1B3A5C',
+    brandLine1: 'Argentina',
+    brandLine2: 'Comparte'
+  },
+  CL: {
+    primary: '#D52B1E',
+    accent: '#FFFFFF',
+    sidebar: '#0039A6',
+    brandLine1: 'Chile',
+    brandLine2: 'Comparte'
+  },
+  EC: {
+    primary: '#FFD100',
+    accent: '#034EA2',
+    sidebar: '#ED1C24',
+    brandLine1: 'Ecuador',
+    brandLine2: 'Comparte'
+  },
+  DEFAULT: {
+    primary: '#1B3A5C',
+    accent: '#74ACDF',
+    sidebar: '#0F2A4A',
+    brandLine1: 'Latinoamérica',
+    brandLine2: 'Comparte'
+  }
+};
 
 /* ------------------------------------------------------------
-   SESIÓN: leer/guardar/limpiar token y usuario
+   SESIÓN
    ------------------------------------------------------------ */
 function obtenerToken() {
   return localStorage.getItem('token');
@@ -34,30 +59,97 @@ function limpiarSesion() {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   localStorage.removeItem('refreshToken');
+  localStorage.removeItem('demoMode');
+  localStorage.removeItem('demoRolActivo');
+}
+
+/** Limpia tokens ficticios guardados en versiones anteriores del front. */
+function esSesionDemoResidual() {
+  const token = obtenerToken();
+  return (
+    localStorage.getItem('demoMode') === 'true' ||
+    (token && token.startsWith('demo-token-'))
+  );
+}
+
+function obtenerUrlDashboardPorRol(rol) {
+  const rutas = {
+    superadmin: `${BASE_ADMIN}/dashboard-superadmin`,
+    admin_pais: `${BASE_ADMIN}/dashboard-admin`,
+    editor: `${BASE_ADMIN}/dashboard-editor`
+  };
+  return rutas[rol] || `${BASE_ADMIN}/login`;
+}
+
+function redirigirAlDashboardDelUsuario() {
+  const usuario = obtenerUsuario();
+  window.location.href = obtenerUrlDashboardPorRol(usuario?.rol);
+}
+
+function exigirRol(...rolesPermitidos) {
+  exigirSesion();
+  const usuario = obtenerUsuario();
+  if (!usuario || !rolesPermitidos.includes(usuario.rol)) {
+    redirigirAlDashboardDelUsuario();
+    return false;
+  }
+  return true;
 }
 
 /* ------------------------------------------------------------
-   AUTENTICACIÓN: si no hay token, redirige al login
-   Se llama al cargar cualquier página del admin (excepto login).
+   TEMA VISUAL POR PAÍS
    ------------------------------------------------------------ */
-const BASE_ADMIN = '/admin';
+function obtenerCodigoPaisUsuario(usuario) {
+  return usuario?.pais?.codigo || 'DEFAULT';
+}
 
-function exigirSesion() {
-  const token = obtenerToken();
-  if (!token) {
-    window.location.href = `${BASE_ADMIN}/login`;
+function obtenerMarcaUsuario(usuario) {
+  const codigo = obtenerCodigoPaisUsuario(usuario);
+  const tema = COUNTRY_THEMES[codigo] || COUNTRY_THEMES.DEFAULT;
+  return { linea1: tema.brandLine1, linea2: tema.brandLine2 };
+}
+
+function aplicarTemaPais(usuario) {
+  const codigo = obtenerCodigoPaisUsuario(usuario);
+  const tema = COUNTRY_THEMES[codigo] || COUNTRY_THEMES.DEFAULT;
+  const root = document.documentElement;
+
+  root.style.setProperty('--color-primary', tema.primary);
+  root.style.setProperty('--color-accent', tema.accent);
+  root.style.setProperty('--color-sidebar', tema.sidebar);
+  root.style.setProperty('--celeste-medio', tema.primary);
+  root.style.setProperty('--azul-oscuro-fondo', tema.sidebar);
+  root.style.setProperty('--azul-marino', tema.sidebar);
+
+  if (document.body) {
+    document.body.dataset.country = codigo.toLowerCase();
   }
 }
 
-/* ------------------------------------------------------------
-   HELPER PARA LLAMAR AL BACKEND
-   - Agrega Authorization: Bearer <token> automáticamente
-   - Si la respuesta es 401, cierra sesión y manda a login
-   - Devuelve directamente el JSON parseado
-   ------------------------------------------------------------ */
+function exigirSesion() {
+  if (esSesionDemoResidual()) {
+    limpiarSesion();
+    window.location.href = `${BASE_ADMIN}/login`;
+    return;
+  }
+
+  const token = obtenerToken();
+  if (!token) {
+    window.location.href = `${BASE_ADMIN}/login`;
+  } else {
+    aplicarTemaPais(obtenerUsuario());
+  }
+}
+
+/** Respuestas del API: array directo o { data: [] }. */
+function normalizarListaApi(respuesta) {
+  if (Array.isArray(respuesta)) return respuesta;
+  if (respuesta?.data && Array.isArray(respuesta.data)) return respuesta.data;
+  return [];
+}
+
 async function llamarApi(ruta, opciones = {}) {
   const token = obtenerToken();
-
   const cabeceras = {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -76,7 +168,6 @@ async function llamarApi(ruta, opciones = {}) {
     throw new Error('Sesión expirada');
   }
 
-  // Algunas respuestas (DELETE) pueden venir vacías
   let datos = null;
   const tipoContenido = respuesta.headers.get('content-type') || '';
   if (tipoContenido.includes('application/json')) {
@@ -91,36 +182,46 @@ async function llamarApi(ruta, opciones = {}) {
   return datos;
 }
 
-/* ------------------------------------------------------------
-   SIDEBAR Y TOPBAR: pintar la marca, los enlaces según rol y
-   el distintivo del usuario logueado.
-   Para usarlo cada página admin debe tener:
-     <aside id="zona-sidebar"></aside>
-     <header id="zona-topbar"></header>
-   ------------------------------------------------------------ */
+function obtenerIdDashboardPorRol(rol) {
+  const ids = {
+    superadmin: 'dashboard-superadmin',
+    admin_pais: 'dashboard-admin',
+    editor: 'dashboard-editor'
+  };
+  return ids[rol] || 'dashboard';
+}
+
 function pintarSidebar(paginaActiva) {
   const usuario = obtenerUsuario();
   if (!usuario) return;
 
+  aplicarTemaPais(usuario);
   const rol = usuario.rol;
+  const marca = obtenerMarcaUsuario(usuario);
+  const dashboardId = obtenerIdDashboardPorRol(rol);
 
-  // Definición de los enlaces del menú
-  // Cada uno marca para qué roles está disponible
   const enlaces = [
-    { id: 'dashboard',   archivo: 'dashboard.html',   icono: 'speedometer2', etiqueta: 'Dashboard',   roles: ['superadmin', 'admin_pais', 'editor'] },
-    { id: 'noticias',    archivo: 'noticias.html',    icono: 'newspaper',    etiqueta: 'Noticias',    roles: ['superadmin', 'admin_pais', 'editor'] },
-    { id: 'testimonios', archivo: 'testimonios.html', icono: 'chat-quote',   etiqueta: 'Testimonios', roles: ['superadmin', 'admin_pais', 'editor'] },
-    { id: 'solicitudes', archivo: 'solicitudes.html', icono: 'envelope',     etiqueta: 'Solicitudes', roles: ['superadmin', 'admin_pais', 'editor'] },
-    { id: 'usuarios',    archivo: 'usuarios.html',    icono: 'people',       etiqueta: 'Usuarios',    roles: ['superadmin'] },
-    { id: 'conexiones',  archivo: 'conexiones.html',  icono: 'clock-history', etiqueta: 'Conexiones',  roles: ['superadmin', 'admin_pais'] }
+    { id: dashboardId, archivo: obtenerUrlDashboardPorRol(rol).replace(BASE_ADMIN + '/', ''), icono: 'speedometer2', etiqueta: 'Dashboard', roles: ['superadmin', 'admin_pais', 'editor'] },
+    { id: 'noticias', archivo: 'noticias.html', icono: 'newspaper', etiqueta: 'Noticias', roles: ['superadmin', 'admin_pais', 'editor'] },
+    { id: 'testimonios', archivo: 'testimonios.html', icono: 'chat-quote', etiqueta: 'Testimonios', roles: ['superadmin', 'admin_pais', 'editor'] },
+    { id: 'solicitudes', archivo: 'solicitudes.html', icono: 'envelope', etiqueta: 'Solicitudes', roles: ['superadmin', 'admin_pais'] },
+    { id: 'usuarios', archivo: 'usuarios.html', icono: 'people', etiqueta: 'Usuarios', roles: ['superadmin'] },
+    { id: 'auditoria', archivo: 'auditoria.html', icono: 'journal-text', etiqueta: 'Auditoría', roles: ['superadmin', 'admin_pais'] }
   ];
 
-  const enlacesPermitidos = enlaces.filter(enlace => enlace.roles.includes(rol));
+  const enlacesPermitidos = enlaces.filter((enlace) => enlace.roles.includes(rol));
+  const idsActivosDashboard = ['dashboard', 'dashboard-superadmin', 'dashboard-admin', 'dashboard-editor'];
+  const esPaginaDashboard = idsActivosDashboard.includes(paginaActiva);
 
-  const htmlEnlaces = enlacesPermitidos.map(enlace => {
-    const claseActivo = enlace.id === paginaActiva ? 'barra-lateral__enlace--activo' : '';
+  const htmlEnlaces = enlacesPermitidos.map((enlace) => {
+    const activo = esPaginaDashboard
+      ? enlace.id === dashboardId
+      : enlace.id === paginaActiva;
+    const href = enlace.archivo.includes('dashboard')
+      ? obtenerUrlDashboardPorRol(rol)
+      : `${BASE_ADMIN}/${enlace.id}`;
     return `
-      <a href="${BASE_ADMIN}/${enlace.id}" class="barra-lateral__enlace ${claseActivo}">
+      <a href="${href}" class="barra-lateral__enlace ${activo ? 'barra-lateral__enlace--activo' : ''}">
         <i class="bi bi-${enlace.icono}"></i>
         ${enlace.etiqueta}
       </a>
@@ -133,16 +234,13 @@ function pintarSidebar(paginaActiva) {
       <aside class="barra-lateral">
         <div class="barra-lateral__marca">
           <div class="barra-lateral__marca-titulo">
-            <span class="marca-argentina">Argentina</span>
-            <span class="marca-comparte">Comparte</span>
+            <span class="marca-argentina">${marca.linea1}</span>
+            <span class="marca-comparte">${marca.linea2}</span>
           </div>
           <p class="barra-lateral__subtitulo">Panel administrativo</p>
         </div>
-
         <p class="barra-lateral__seccion-titulo">Menú</p>
-        <nav class="barra-lateral__menu">
-          ${htmlEnlaces}
-        </nav>
+        <nav class="barra-lateral__menu">${htmlEnlaces}</nav>
       </aside>
     `;
   }
@@ -153,8 +251,8 @@ function pintarTopbar(tituloPagina) {
   if (!usuario) return;
 
   const nombrePais = usuario.pais?.nombre || 'Todos los países';
-
   const zona = document.getElementById('zona-topbar');
+
   if (zona) {
     zona.innerHTML = `
       <header class="barra-superior-admin">
@@ -175,14 +273,10 @@ function pintarTopbar(tituloPagina) {
         </div>
       </header>
     `;
-
     document.getElementById('boton-cerrar-sesion').addEventListener('click', cerrarSesion);
   }
 }
 
-/* ------------------------------------------------------------
-   CERRAR SESIÓN (explícito + cierre de navegador)
-   ------------------------------------------------------------ */
 function cerrarSesion() {
   const refreshToken = localStorage.getItem('refreshToken');
 
@@ -198,7 +292,6 @@ function cerrarSesion() {
   window.location.href = `${BASE_ADMIN}/login`;
 }
 
-// Cierre automático al cerrar la pestaña/navegador
 window.addEventListener('beforeunload', function () {
   const refreshToken = localStorage.getItem('refreshToken');
   if (refreshToken) {
@@ -207,10 +300,6 @@ window.addEventListener('beforeunload', function () {
   }
 });
 
-/* ------------------------------------------------------------
-   MODALES: abrir y cerrar
-   Espera un contenedor con id que apunte al modal.
-   ------------------------------------------------------------ */
 function abrirModal(idModal) {
   const modal = document.getElementById(idModal);
   if (modal) modal.classList.add('fondo-modal--visible');
@@ -221,17 +310,10 @@ function cerrarModal(idModal) {
   if (modal) modal.classList.remove('fondo-modal--visible');
 }
 
-/* ------------------------------------------------------------
-   FORMATEAR FECHAS para mostrar bonito en tablas
-   ------------------------------------------------------------ */
 function formatearFecha(fechaIso, conHora = false) {
   if (!fechaIso) return '—';
   const fecha = new Date(fechaIso);
-  const opts = {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  };
+  const opts = { day: '2-digit', month: 'short', year: 'numeric' };
   if (conHora) {
     opts.hour = '2-digit';
     opts.minute = '2-digit';
@@ -239,9 +321,6 @@ function formatearFecha(fechaIso, conHora = false) {
   return fecha.toLocaleDateString('es-AR', opts);
 }
 
-/* ------------------------------------------------------------
-   ROLES: helpers para revisar permisos en el cliente
-   ------------------------------------------------------------ */
 function usuarioEs(...rolesPermitidos) {
   const usuario = obtenerUsuario();
   return usuario && rolesPermitidos.includes(usuario.rol);

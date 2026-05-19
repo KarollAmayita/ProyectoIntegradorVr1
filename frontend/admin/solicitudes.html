@@ -161,7 +161,7 @@
 
   <script src="admin-shared.js"></script>
   <script>
-    exigirSesion();
+    if (!exigirRol('superadmin', 'admin_pais')) throw new Error('Sin permiso');
     pintarSidebar('solicitudes');
     pintarTopbar('Solicitudes');
 
@@ -177,7 +177,7 @@
 
     async function cargarSolicitudes() {
       try {
-        solicitudes = await llamarApi('/contact-requests');
+        solicitudes = normalizarListaApi(await llamarApi('/solicitudes'));
         pintarTabla();
       } catch (error) {
         tabla.innerHTML = `<tr><td colspan="8" class="tabla__sin-datos">Error: ${error.message}</td></tr>`;
@@ -231,9 +231,6 @@
     filtroBusqueda.addEventListener('input', pintarTabla);
     filtroEstado.addEventListener('change', pintarTabla);
 
-    /* ----------------------------------------------------------
-       Abrir el modal de detalle
-       ---------------------------------------------------------- */
     function abrirDetalle(idSolicitud) {
       const solicitud = solicitudes.find(s => s.id === idSolicitud);
       if (!solicitud) return;
@@ -278,8 +275,8 @@
       botonGuardar.disabled = true;
 
       try {
-        await llamarApi(`/contact-requests/${idSolicitud}/status`, {
-          method: 'PUT',
+        await llamarApi(`/solicitudes/${idSolicitud}/estado`, {
+          method: 'PATCH',
           body: datos
         });
         cerrarModal('modal-detalle');
@@ -302,7 +299,7 @@
     document.getElementById('boton-confirmar-eliminar').addEventListener('click', async () => {
       if (!idSolicitudAEliminar) return;
       try {
-        await llamarApi(`/contact-requests/${idSolicitudAEliminar}`, { method: 'DELETE' });
+        await llamarApi(`/solicitudes/${idSolicitudAEliminar}`, { method: 'DELETE' });
         cerrarModal('modal-confirmar-eliminar');
         idSolicitudAEliminar = null;
         await cargarSolicitudes();

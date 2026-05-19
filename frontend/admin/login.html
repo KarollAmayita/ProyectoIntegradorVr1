@@ -22,7 +22,7 @@
     </div>
 
     <h2 class="tarjeta-login__titulo">Bienvenido/a</h2>
-    <p class="tarjeta-login__bienvenida">Ingresá con tus credenciales para administrar el portal.</p>
+    <p class="tarjeta-login__bienvenida">Ingresa con tus credenciales para administrar el portal.</p>
 
     <form id="formulario-login">
 
@@ -45,12 +45,16 @@
     </form>
 
     <p class="enlace-recuperar">
-      ¿Olvidaste tu contraseña <a href="recuperar.html">Recuperala acá</a>
+      ¿Olvidaste tu contraseña <a href="recuperar.html">Recuperar acá</a>
     </p>
   </div>
 
   <script src="admin-shared.js"></script>
   <script>
+    if (esSesionDemoResidual()) {
+      limpiarSesion();
+    }
+
     if (obtenerToken()) {
       window.location.href = '/admin/dashboard';
     }
@@ -80,10 +84,9 @@
           body: { username: usuario, password: password }
         });
 
-        // Guardamos token + refreshToken + datos del usuario
         guardarSesion(respuesta.token, respuesta.user, respuesta.refreshToken);
 
-        window.location.href = '/admin/dashboard';
+        window.location.href = obtenerUrlDashboardPorRol(respuesta.user.rol);
       } catch (error) {
         cajaError.textContent = error.message;
         cajaError.hidden = false;
