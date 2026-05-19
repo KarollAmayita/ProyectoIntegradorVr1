@@ -29,6 +29,16 @@
   --sombra-media: 0 10px 30px rgba(27, 58, 92, 0.12);
 }
 
+/* Fade-in suave al cargar cada página, evita parpadeo blanco */
+.panel-main {
+  animation: fadeIn 0.15s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -36,11 +46,11 @@
 }
 
 body {
+  margin: 0;
   font-family: 'Poppins', sans-serif;
   background: var(--gris-fondo);
   color: var(--azul-marino);
-  min-height: 100vh;
-  line-height: 1.5;
+  background-color: var(--gris-fondo);
 }
 
 a {
