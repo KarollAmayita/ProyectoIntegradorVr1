@@ -107,6 +107,8 @@ Desde el menu lateral se puede acceder a las diferentes secciones:
   - Noticias
   - Testimonios
   - Solicitudes
+  - Conexiones (historial de accesos)
+  - Auditoria (bitacora de eventos)
   - Usuarios (solo para superadmin)
 
 ================================================================================
@@ -305,13 +307,19 @@ Nota: Esta seccion solo esta disponible para usuarios con rol superadmin.
 
 9.3 Portales de otros paises
 
-  Actualmente solo Argentina tiene portal implementado. Los portales de
-  Colombia, Chile y Ecuador estan en desarrollo.
+  A diferencia del portal de Argentina (que consume datos de la API), los
+  portales de Chile, Colombia y Ecuador cargan datos mock (predefinidos)
+  para asegurar disponibilidad en la demostracion:
 
-  Las tarjetas de paises en la landing redirigen a sitios externos:
-  - Colombia: https://colombiacomparte.com
-  - Ecuador: https://ecuadorcomparte.com.co
-  - Chile: https://chilecomparte.com.co
+  - Chile: http://149.130.163.194:3001/chile
+  - Colombia: http://149.130.163.194:3001/colombia
+  - Ecuador: http://149.130.163.194:3001/ecuador
+
+  Cada portal incluye:
+  - Hero con presentacion del pais
+  - Voces de Cambio: Testimonios destacados
+  - Actualidad y Accion: Noticias del pais
+  - Formulario de contacto
 
 ================================================================================
 10. ROLES Y PERMISOS
@@ -329,6 +337,8 @@ Eliminar testimonios          SI           SI           NO
 Ver solicitudes               SI           SI           SI
 Gestionar solicitudes         SI           SI           NO
 Eliminar solicitudes          SI           SI           NO
+Ver conexiones                SI           SI           NO
+Ver auditoria                 SI           SI           NO
 Crear usuarios                SI           NO           NO
 Cambiar contrasena usuarios   SI           NO           NO
 Ver contenido de todo pais    SI           SOLO SU     SOLO SU
@@ -364,8 +374,9 @@ Ver contenido de todo pais    SI           SOLO SU     SOLO SU
 
 11.6 Como cambiar mi propia contrasena?
 
-  Actualmente el cambio de contrasena propio se realiza via la API:
-  PUT /api/auth/change-password. Consulta con el superadmin para asistencia.
+  En el menu, selecciona tu nombre de usuario (esquina superior derecha)
+  y elige "Cambiar contrasena". Debes ingresar tu contrasena actual y
+  la nueva contrasena.
 
 11.7 Que significan los estados de las solicitudes?
 

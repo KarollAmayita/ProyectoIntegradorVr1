@@ -32,32 +32,39 @@ Sistema CMS multi-país que permite gestionar contenidos (noticias, testimonios,
 ```
 ├── backend/
 │   ├── src/
-│   │   ├── config/           → supabase.js
-│   │   ├── controllers/      → auth, profile, admin, user, country, news, testimonial, contactRequest, connectionLog, archivos, auditoria, categoria, estadisticaPais, notificacion, historialNoticia, comentario
-│   │   ├── db/               → cms-multipais.sql
-│   │   ├── middlewares/      → auth, role, errorHandler, validation
+│   │   ├── config/           → supabase.js, swagger.js
+│   │   ├── controllers/      → auth, admin, user, country, news, testimonial, contactRequest, connectionLog, archivos, auditoria, categoria, estadisticaPais, notificacion, historialNoticia, comentario
+│   │   ├── db/               → cms-multipais.sql (+ migraciones)
+│   │   ├── middlewares/      → auth, role, errorHandler, validation, rateLimiter
 │   │   ├── repositories/     → capa de datos (14 repositorios)
-│   │   ├── routes/           → definición de rutas (14 archivos)
-│   │   ├── scripts/          → createSuperAdmin.js
-│   │   ├── services/         → lógica de negocio (14 servicios)
+│   │   ├── routes/           → definición de rutas (17 archivos)
+│   │   ├── scripts/          → createSuperAdmin.js, seedUsers.js, seedPortalData.js
+│   │   ├── services/         → lógica de negocio (15 servicios)
 │   │   ├── utils/errors.js, versionador.js
 │   │   └── app.js
-│   ├── .env
+│   ├── tests/                → unit (auth, news) + integration (api)
+│   ├── .env.example
 │   └── package.json
 ├── frontend/
-│   ├── admin/                → login, recuperar, dashboard, noticias, testimonios, solicitudes, usuarios, conexiones
+│   ├── admin/                → login, recuperar, dashboards (3 roles), noticias, testimonios, solicitudes, usuarios, conexiones, auditoria
 │   │   ├── admin-styles.css
 │   │   ├── admin-shared.js
 │   │   └── *.html
 │   ├── portales/
-│   │   ├── argentina/        → portal público (index.html, styles.css, main.js)
-│   │   └── indice/           → landing page multi-país (index.html, styles.css, main.js)
+│   │   ├── argentina/        → portal público Argentina
+│   │   ├── chile/            → portal público Chile
+│   │   ├── colombia/         → portal público Colombia
+│   │   ├── ecuador/          → portal público Ecuador
+│   │   └── indice/           → landing page multi-país
 │   └── assets/
 │       └── img/
-│           ├── argentina/
+│           ├── argentina/, chile/, colombia/, ecuador/
 │           └── portales/
 ├── Dockerfile
 ├── docker-compose.yml
+├── MANUAL_TECNICO.txt
+├── MANUAL_USUARIO.txt
+├── DOCUMENTO_MVP.txt
 └── README.md
 ```
 
@@ -75,7 +82,13 @@ npm run dev
 > Ejecutar `backend/src/db/cms-multipais.sql` en SQL Editor de Supabase
 
 ```bash
-node src/scripts/createSuperAdmin.js
+node src/scripts/createSuperAdmin.js    # crea superadmin
+node src/scripts/seedUsers.js           # (opcional) crea admin_pais + editor para cada país
+```
+
+**Seed de datos de portales** (noticias + testimonios para Colombia, Chile, Ecuador):
+```bash
+node src/scripts/seedPortalData.js
 ```
 
 Servidor en `http://localhost:3001`
@@ -223,10 +236,8 @@ POST http://localhost:3001/api/auth/login
 
 ### Parte 10: Ruta protegida
 
-Archivos: `profileController.js`, `profileRoutes.js`
-
 ```
-GET http://localhost:3001/api/profile/me
+GET http://localhost:3001/api/auth/me
 Authorization: Bearer TOKEN
 ```
 
@@ -415,11 +426,15 @@ Authorization: Bearer TOKEN
 | `/admin/login` | Inicio de sesión |
 | `/admin/recuperar` | Recuperación de contraseña |
 | `/admin/dashboard` | Dashboard principal |
+| `/admin/dashboard-superadmin` | Dashboard superadmin |
+| `/admin/dashboard-admin` | Dashboard admin_pais |
+| `/admin/dashboard-editor` | Dashboard editor |
 | `/admin/noticias` | Gestión de noticias |
 | `/admin/testimonios` | Gestión de testimonios |
 | `/admin/solicitudes` | Gestión de solicitudes |
 | `/admin/usuarios` | Gestión de usuarios (superadmin) |
 | `/admin/conexiones` | Historial de conexiones |
+| `/admin/auditoria` | Bitácora de eventos |
 
 ### Rutas públicas
 
@@ -427,6 +442,9 @@ Authorization: Bearer TOKEN
 |------|------------|
 | `/` | Landing page multi-país |
 | `/argentina` | Portal público de Argentina |
+| `/chile` | Portal público de Chile |
+| `/colombia` | Portal público de Colombia |
+| `/ecuador` | Portal público de Ecuador |
 
 ### Usuarios predefinidos
 
@@ -528,12 +546,6 @@ Authorization: Bearer TOKEN
 | DELETE | /api/users/:id | Sí (superadmin) | Desactivar |
 | DELETE | /api/users/:id/permanent | Sí (superadmin) | Eliminar permanentemente |
 
-### Perfil
-
-| Método | Ruta | Auth |
-|--------|------|------|
-| GET | /api/profile/me | Sí |
-
 ### Archivos
 
 | Método | Ruta | Auth | Descripción |
@@ -621,7 +633,6 @@ Todas las rutas anteriores también están disponibles con nombres en español:
 | /api/testimonials | /api/testimonios |
 | /api/contact-requests | /api/solicitudes |
 | /api/users | /api/usuarios |
-| /api/profile | /api/perfil |
 
 ### Rutas públicas con nombres en español
 
@@ -633,6 +644,21 @@ Todas las rutas anteriores también están disponibles con nombres en español:
 | POST /api/public/paises/:slug/solicitudes | Enviar solicitud |
 
 ---
+
+## Seguridad
+
+- **Rate limiting**: POST /api/auth/login limitado a 10 intentos cada 15 minutos (`rateLimiterMiddleware.js`)
+- **Token rotation**: Cada uso de refreshToken invalida el anterior y genera uno nuevo
+- **Documentación Swagger**: Disponible en `/api/docs` con especificación OpenAPI 3.0 de todos los endpoints
+- **Filtro por país**: Los usuarios `admin_pais` solo ven datos (noticias, testimonios, usuarios, auditoría, conexiones, etc.) de su propio país
+
+## Tests
+
+```bash
+cd backend
+npm test           # 47 tests (23 unit + 17 integration + 7 refresh token rotation)
+npm run test:unit  # solo unitarios
+```
 
 ## Despliegue con Docker (ARM64)
 

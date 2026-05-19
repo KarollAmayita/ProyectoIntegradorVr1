@@ -19,8 +19,9 @@ INDICE
 8.  Autenticacion y Seguridad
 9.  Frontend
 10. Despliegue con Docker
-11. CI/CD
-12. Solucion de Problemas
+11. Tests
+12. CI/CD
+13. Solucion de Problemas
 
 ================================================================================
 1. INTRODUCCION
@@ -224,11 +225,14 @@ Produccion:
   - Middleware 404
   - Middleware global de errores
 
-  Archivos estaticos servidos:
-  - /                    -> frontend/portales/indice/
-  - /assets/             -> frontend/assets/
-  - /admin/              -> frontend/admin/
-  - /argentina/          -> frontend/portales/argentina/
+   Archivos estaticos servidos:
+   - /                    -> frontend/portales/indice/
+   - /assets/             -> frontend/assets/
+   - /admin/              -> frontend/admin/
+   - /argentina/          -> frontend/portales/argentina/
+   - /chile/              -> frontend/portales/chile/
+   - /colombia/           -> frontend/portales/colombia/
+   - /ecuador/            -> frontend/portales/ecuador/
 
 ================================================================================
 6. BASE DE DATOS
@@ -344,13 +348,26 @@ Produccion:
   expires_at  timestamptz NOT NULL
   created_at  timestamptz DEFAULT now()
 
-6.9 Datos iniciales
+6.9 Tablas adicionales
 
-  Paises:
-    - Chile (CL, chile)
-    - Argentina (AR, argentina)
-    - Ecuador (EC, ecuador)
-    - Colombia (CO, colombia) - agregado manualmente en la BD
+   - refresh_tokens:       Tokens JWT de refresco (rotacion automatica)
+   - historial_conexiones: Registro de inicio/cierre de sesion
+   - archivos:             Archivos subidos (imagenes, PDFs)
+   - auditoria:            Bitacora de eventos CRUD
+   - categorias:           Categorias de noticias
+   - noticia_categorias:   Relacion N:M entre noticias y categorias
+   - estadisticas_pais:    Indicadores por pais
+   - notificaciones:       Notificaciones por usuario
+   - historial_noticias:   Versionado automatico de cambios en noticias
+   - comentarios:          Comentarios en noticias (con moderacion)
+
+6.10 Datos iniciales
+
+   Paises:
+     - Chile (CL, chile)
+     - Argentina (AR, argentina)
+     - Ecuador (EC, ecuador)
+     - Colombia (CO, colombia)
 
   Roles:
     - superadmin: Administrador general del sistema
@@ -373,9 +390,9 @@ Produccion:
   PUT    /change-password        Cambiar contrasena propia (auth)
   PATCH  /security-question      Cambiar pregunta de seguridad (auth)
 
-7.2 Perfil (/api/profile)
+7.2 Perfil (/api/auth)
 
-  GET    /me                     Obtener perfil del usuario autenticado (auth)
+   GET    /me                     Obtener perfil del usuario autenticado (auth)
 
 7.3 Admin (/api/admin)
 
@@ -422,58 +439,158 @@ Produccion:
   POST   /public                 Enviar solicitud de contacto
 
   Autenticados:
-  GET    /                       Listar solicitudes
+  GET    /                       Listar solicitudes (admin_pais filtra por pais_id)
+  GET    /:id                    Obtener solicitud
   PUT    /:id/status             Cambiar estado y observaciones
+  PUT    /:id                    Actualizar solicitud
+  PATCH  /:id                    Actualizar solicitud
   DELETE /:id                    Eliminar solicitud
 
-================================================================================
+7.9 Conexiones (/api/connection-logs)
+
+  Publicos:
+  GET    /summary                Resumen de conexiones
+
+  Autenticados:
+  GET    /                       Listar conexiones (admin_pais filtra por pais_id)
+  GET    /:id                    Obtener detalle de conexion
+
+7.10 Archivos (/api/archivos)
+
+  GET    /                       Listar archivos
+  GET    /:id                    Obtener archivo
+  POST   /                       Registrar URL
+  POST   /upload                 Subir archivo
+  PUT    /:id                    Actualizar archivo
+  PATCH  /:id                    Actualizar archivo
+  DELETE /:id                    Eliminar archivo
+
+7.11 Auditoria (/api/auditoria)
+
+  Autenticados:
+  GET    /                       Listar eventos (admin_pais filtra por pais_id)
+  GET    /:id                    Obtener detalle de evento
+
+7.12 Categorias (/api/categorias)
+
+  GET    /                       Listar categorias
+  GET    /:id                    Obtener categoria
+  POST   /                       Crear categoria
+  PUT    /:id                    Actualizar categoria
+  PATCH  /:id                    Actualizar categoria
+  DELETE /:id                    Eliminar categoria
+
+7.13 Estadisticas por Pais (/api/estadisticas-pais)
+
+  GET    /                       Listar estadisticas
+  GET    /:id                    Obtener estadistica
+  POST   /                       Crear estadistica
+  PUT    /:id                    Actualizar estadistica
+  PATCH  /:id                    Actualizar estadistica
+  DELETE /:id                    Eliminar estadistica
+
+7.14 Notificaciones (/api/notificaciones)
+
+  GET    /                       Listar notificaciones del usuario
+  GET    /no-leidas              Contar no leidas
+  PATCH  /:id/leer               Marcar como leida
+  PATCH  /leer-todas             Marcar todas como leidas
+
+7.15 Historial de Noticias (/api/historial-noticias)
+
+  GET    /noticia/:noticiaId     Versiones de una noticia
+  GET    /:id                    Obtener detalle de version
+
+7.16 Comentarios (/api/comentarios)
+
+  Publicos:
+  GET    /public/:noticiaId      Comentarios de una noticia
+  POST   /public                 Crear comentario (captcha incluido)
+
+  Autenticados:
+  GET    /                       Listar comentarios (admin_pais filtra por pais_id)
+  GET    /:id                    Obtener comentario
+  PATCH  /:id/moderar            Moderar (aprobar/rechazar)
+  DELETE /:id                    Eliminar comentario
+
+===============================================================================
 8. AUTENTICACION Y SEGURIDAD
 ================================================================================
 
 8.1 JWT (JSON Web Tokens)
 
   - Access token: expira en 2 horas
-  - Refresh token: expira en 7 dias
-  - Los tokens se generan con jsonwebtoken usando JWT_SECRET del .env
+  - Refresh token: expira en 7 dias con **rotacion** (cada uso invalida el anterior)
+  - Los tokens se generan con jsonwebtoken usando JWT_SECRET / JWT_REFRESH_SECRET del .env
+  - Se almacenan en la tabla `refresh_tokens` para permitir invalidacion
 
 8.2 Flujo de autenticacion
 
-  Login:
+  Login (rate limited: 10 intentos cada 15 min):
     1. POST /api/auth/login con username + password
-    2. Servidor verifica credenciales con bcryptjs
-    3. Responde con: { token, refreshToken, user }
+    2. rateLimiterMiddleware verifica intentos
+    3. Servidor verifica credenciales con bcryptjs
+    4. Responde con: { token, refreshToken, user }
 
   Acceso a rutas protegidas:
     1. Cliente envia header: Authorization: Bearer <token>
     2. authMiddleware verifica token
     3. Agrega req.usuario con datos del usuario
 
-  Refresco de token:
-    1. POST /api/auth/refresh-token con { refreshToken }
+  Refresco de token (con rotacion):
+    1. POST /api/auth/refresh con { refreshToken }
     2. Servidor valida refresh token en BD
-    3. Responde con nuevo access token y refresh token
+    3. Si es el mismo token ya usado, invalida TODOS los tokens del usuario (deteccion de robo)
+    4. Invalida el refresh token anterior
+    5. Responde con nuevo access token y refresh token
 
   Logout:
     - Invalida el refresh token en BD
-    - logout-all invalida TODOS los refresh tokens del usuario
+    - session-end invalida el refresh token actual
 
-8.3 Control de acceso por roles (RBAC)
+8.3 Documentacion API (Swagger)
+
+  Disponible en /api/docs con el servidor corriendo.
+  Implementado con swagger-jsdoc + swagger-ui-express.
+  Archivo de configuracion: src/config/swagger.js
+
+8.4 Control de acceso por roles (RBAC)
 
   roleMiddleware.js verifica:
   - superadmin: acceso a todo
-  - admin_pais: solo datos de su pais
+  - admin_pais: solo datos de su pais (filtro automatico en servicios)
   - editor: no puede eliminar, solo crear/editar
 
   El middleware de rol acepta roles permitidos como parametro:
     requireRole('superadmin', 'admin_pais')
 
-8.4 Contrasenas
+  Filtro por pais en admin_pais:
+  Todos los servicios de listado filtran automaticamente por pais_id del
+  usuario autenticado: news, testimonials, users, contact-requests,
+  connection-logs, auditoria, archivos, estadisticas-pais, comentarios.
+
+8.5 Rate Limiting
+
+  Middleware: src/middlewares/rateLimiterMiddleware.js
+  Aplica solo a POST /api/auth/login
+  Configuracion: 10 intentos cada 15 minutos por IP
+  Usa express-rate-limit con almacenamiento en memoria
+
+8.6 Contrasenas
 
   - Hash con bcryptjs (salt rounds: 10)
   - Recuperacion mediante pregunta de seguridad
   - La respuesta de seguridad tambien se almacena hasheada
 
-8.5 Manejo de errores
+8.7 Versionado de noticias
+
+  Utilidad: src/utils/versionador.js
+  Se ejecuta via trigger SQL en la tabla noticias:
+  - Cada vez que se crea o actualiza una noticia, se guarda automaticamente
+    una copia en historial_noticias (trigger noticias_version_trigger)
+  - Permite recuperar versiones anteriores y ver el historial de cambios
+
+8.8 Manejo de errores
 
   Clases de error personalizadas en utils/errors.js:
   - AppError (base)
@@ -513,19 +630,37 @@ Produccion:
   /admin/login              Inicio de sesion
   /admin/recuperar          Recuperacion de contrasena (3 pasos)
   /admin/dashboard          Dashboard con estadisticas
+  /admin/dashboard-superadmin  Dashboard para superadmin
+  /admin/dashboard-admin    Dashboard para admin_pais
+  /admin/dashboard-editor   Dashboard para editor
   /admin/noticias           CRUD de noticias
   /admin/testimonios        CRUD de testimonios
-  /admin/solicitudes        Gestion de solicitudes
+  /admin/solicitudes        Gestion de solicitudes de contacto
   /admin/usuarios           Gestion de usuarios (solo superadmin)
+  /admin/conexiones         Historial de conexiones
+  /admin/auditoria          Bitacora de eventos
+
+  Los dashboards varian segun el rol del usuario:
+  - superadmin: graficos de todos los paises, resumen de conexiones, acceso a usuarios
+  - admin_pais: estadisticas solo de su pais, notificaciones
+  - editor: resumen de noticias propias, notificaciones
 
 9.3 Portales Publicos
 
   /                          Landing page multipais
   /argentina                 Portal de Argentina
+  /chile                     Portal de Chile
+  /colombia                  Portal de Colombia
+  /ecuador                   Portal de Ecuador
 
   Los portales cargan datos desde:
-  - /api/news/public/:slug
-  - /api/testimonials/public/:slug
+  - /api/news/public/:countrySlug
+  - /api/testimonials/public/:countrySlug
+  - /api/countries/active
+
+  Los portales de Chile, Colombia y Ecuador usan datos mock (sin conexion a API)
+  para asegurar disponibilidad en el demo. El portal de Argentina consume datos
+  desde los endpoints reales de la API.
 
 ================================================================================
 10. DESPLIEGUE CON DOCKER
@@ -577,11 +712,35 @@ Produccion:
 
   Nota: El archivo .env debe existir en backend/ antes de construir.
 
-================================================================================
-11. CI/CD
-================================================================================
+===============================================================================
+11. TESTS
+===============================================================================
 
-11.1 GitHub Actions
+  Framework: Jest + Supertest (backend/tests/)
+
+  Tests unitarios (backend/tests/unit/):
+  - authService.test.js     - Registro, login, refresh con rotacion (25 tests)
+  - newsService.test.js     - CRUD de noticias (mockeando repositorio)
+
+  Tests de integracion (backend/tests/integration/):
+  - api.test.js             - Prueba todos los endpoints HTTP (22 tests)
+
+  Total: ~47 tests
+
+  Ejecutar:
+    npm test                 # Unit + integracion
+    npm run test:unit        # Solo unitarios
+    npm run test:integration # Solo integracion
+
+  Mocks: backend/tests/mocks/supabase.js
+  - Simula todas las funciones de Supabase (from, select, insert, update, delete)
+  - Configura datos de prueba para cada escenario
+
+===============================================================================
+12. CI/CD
+===============================================================================
+
+  12.1 GitHub Actions
 
   Archivo: .github/workflows/deploy.yml
 
@@ -597,48 +756,48 @@ Produccion:
   Secretos requeridos en GitHub:
     SSH_KEY: Clave privada SSH para acceder al servidor
 
-11.2 Servidor de produccion
+  12.2 Servidor de produccion
 
   IP: 149.130.163.194
   Puerto: 3001
   URL: http://149.130.163.194:3001/
 
-================================================================================
-12. SOLUCION DE PROBLEMAS
-================================================================================
+===============================================================================
+13. SOLUCION DE PROBLEMAS
+===============================================================================
 
-12.1 Error: No se puede conectar a Supabase
+13.1 Error: No se puede conectar a Supabase
 
   Verificar:
   - SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY en .env
   - Que el proyecto de Supabase este activo
   - Que las tablas esten creadas (ejecutar cms-multipais.sql)
 
-12.2 Error: 401 Unauthorized en rutas protegidas
+13.2 Error: 401 Unauthorized en rutas protegidas
 
   Verificar:
   - Token en header Authorization: Bearer <token>
   - Token no expirado (2 horas)
   - Refresh token valido (7 dias)
 
-12.3 Error: puerto 3001 en uso
+13.3 Error: puerto 3001 en uso
 
   Cambiar PORT en .env o detener el proceso que ocupa el puerto:
     netstat -ano | findstr :3001
 
-12.4 Error: Docker build falla
+13.4 Error: Docker build falla
 
   Verificar:
   - Docker corriendo
   - backend/package.json existe
   - backend/.env existe
 
-12.5 Error: 404 al acceder a rutas del frontend
+13.5 Error: 404 al acceder a rutas del frontend
 
   Verificar que los archivos HTML existan en frontend/admin/ y
   frontend/portales/. Las rutas en app.js deben coincidir.
 
-12.6 Error: bcryptjs falla en instalacion
+13.6 Error: bcryptjs falla en instalacion
 
   En Windows, asegurar que build tools de node esten instalados:
     npm install --global windows-build-tools

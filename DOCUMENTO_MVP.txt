@@ -2,7 +2,7 @@
 DOCUMENTO MVP - CMS MULTIPAIS
 ================================================================================
 Proyecto: Latinoamerica Comparte - Sistema de Gestion de Contenidos Multipais
-Version del documento: 1.0
+Version del documento: 1.1
 Fecha: Mayo 2026
 
 ================================================================================
@@ -10,9 +10,10 @@ Fecha: Mayo 2026
 ================================================================================
 
 Sistema CMS web que permite a una organizacion gestionar y publicar contenido
-(noticias, testimonios, solicitudes de contacto) para multiples paises desde
-un solo panel de administracion. El publico puede acceder a portales
-informativos por pais.
+(noticias, testimonios, solicitudes de contacto, comentarios, archivos) para
+multiples paises desde un solo panel de administracion con control de acceso
+por roles. Incluye bitacora de auditoria, versionado de contenido,
+notificaciones, y portales publicos informativos por pais.
 
 ================================================================================
 2. OBJETIVOS DEL MVP
@@ -41,10 +42,13 @@ F-05  Formulario publico de registro de testimonio por pais               Alta
 
 3.2 Autenticacion y Seguridad
 
-F-06  Inicio de sesion con JWT (access token 2h + refresh token 7d)       Alta
+F-06  Inicio de sesion con JWT (access token 2h + refresh token 7d
+      con rotacion)                                                        Alta
 F-07  Recuperacion de contrasena mediante pregunta de seguridad           Alta
 F-08  Cierre de sesion (individual y todas las sesiones)                  Alta
 F-09  Middleware de autenticacion y autorizacion por roles                Alta
+F-09b Rate limiting en login (10 intentos cada 15 min)                    Media
+F-09c Documentacion Swagger / OpenAPI 3.0                                 Media
 
 3.3 Panel de Administracion
 
@@ -55,7 +59,15 @@ F-12  CRUD completo de testimonios (crear, leer, editar, eliminar)        Alta
 F-13  Gestion de solicitudes de contacto (listar, cambiar estado,
       eliminar)                                                           Alta
 F-14  Gestion de usuarios (solo superadmin: listar, crear, cambiar
-      contrasena)                                                         Alta
+       contrasena)                                                         Alta
+F-14b Gestion de conexiones (historial de accesos)                        Media
+F-14c Gestion de auditoria (bitacora de eventos CRUD)                     Media
+F-14d Modulo de notificaciones por usuario                                Media
+F-14e Gestion de categorias para noticias                                 Media
+F-14f Versionado automatico de noticias (historial)                       Media
+F-14g Comentarios en noticias con moderacion                              Media
+F-14h Gestion de archivos (subida y registro de URLs)                     Media
+F-14i Estadisticas por pais                                               Media
 
 3.4 Infraestructura
 
@@ -75,10 +87,8 @@ Internacionalizacion (i18n) / soporte multilingue      Post-MVP
 Notificaciones por correo electronico                  Post-MVP
 Editor de contenido WYSIWYG avanzado                   Post-MVP
 Estadisticas y graficos avanzados en dashboard         Post-MVP
-Versionado de contenido (historial de cambios)         Post-MVP
 SEO avanzado (meta tags dinamicos, sitemap.xml)        Post-MVP
 App movil o PWA                                        Post-MVP
-Comentarios en noticias                                Post-MVP
 Integracion con redes sociales                         Post-MVP
 
 ================================================================================
@@ -110,18 +120,26 @@ Cliente (Navegador)
        v
 Express API (backend/)
   Routes -> Controllers -> Services -> Repositories
-  Middlewares: auth, roles, validation, error handler
+  Middlewares: auth, roles, validation, error handler, rate limiter
+  Documentacion: Swagger UI en /api/docs
        |
        v
 Supabase (PostgreSQL)
-  Tablas: paises, roles, usuarios, noticias,
-          testimonios, solicitudes_contacto, refresh_tokens
+  Tablas: paises, roles, usuarios, noticias, testimonios,
+          solicitudes_contacto, refresh_tokens, archivos,
+          auditoria, categorias, noticia_categorias,
+          estadisticas_pais, notificaciones,
+          historial_noticias, comentarios,
+          historial_conexiones
 
 Stack tecnico:
   Backend:   Node.js v20, Express 5
   Base de datos: PostgreSQL (Supabase)
   Frontend:  HTML5, CSS3, JavaScript vanilla
-  Autenticacion: JWT + bcryptjs
+  Autenticacion: JWT + bcryptjs con rotacion de refresh tokens
+  Documentacion API: Swagger (swagger-jsdoc + swagger-ui-express)
+  Rate limiting: express-rate-limit
+  Tests:     Jest + Supertest
   Infraestructura: Docker, docker-compose, Oracle Cloud
   CI/CD:     GitHub Actions
 
@@ -137,6 +155,14 @@ El control de acceso por roles funciona correctamente   Verificado
 La recuperacion de contrasena permite restablecer       Verificado
 El sistema se despliega con docker compose up           Verificado
 Los formularios publicos envian datos correctamente     Verificado
+Los portales de Chile, Colombia y Ecuador funcionan     Verificado
+Los refresh tokens rotan correctamente                  Verificado
+El rate limiting en login funciona                      Verificado
+La documentacion Swagger es accesible                   Verificado
+Los comentarios en noticias se moderan correctamente    Verificado
+El versionado de noticias registra el historial         Verificado
+La bitacora de auditoria registra eventos               Verificado
+Los usuarios admin_pais solo ven su propio pais         Verificado
 
 ================================================================================
 8. FLUJO DE USUARIO - MVP
@@ -173,17 +199,27 @@ testimonios              Testimonios por pais con estado y campo
 solicitudes_contacto     Solicitudes de contacto con estado y
                          seguimiento
 refresh_tokens           Tokens de refresco JWT
+historial_conexiones     Registro de inicio/cierre de sesion
+archivos                 Archivos subidos (imagenes, PDFs)
+auditoria                Bitacora de eventos CRUD
+categorias               Categorias de noticias
+noticia_categorias       Relacion N:M noticias-categorias
+estadisticas_pais        Indicadores por pais
+notificaciones           Notificaciones por usuario
+historial_noticias       Versionado de cambios en noticias
+comentarios              Comentarios en noticias (con moderacion)
 
 ================================================================================
 10. PROXIMOS PASOS (INMEDIATOS)
 ================================================================================
 
-1. Finalizar portales publicos para Chile, Colombia y Ecuador
-   (actualmente solo Argentina)
-2. Agregar paginacion en listados del panel admin
-3. Implementar busqueda/filtros en listados de contenido
-4. Agregar carga de imagenes optimizada
-5. Pruebas de seguridad (penetration testing basico)
+1. Agregar paginacion en listados del panel admin
+2. Implementar busqueda/filtros en listados de contenido
+3. Agregar carga de imagenes optimizada (drag-and-drop, preview)
+4. Pruebas de seguridad (penetration testing basico)
+5. Internacionalizacion (i18n) - soporte multilingue
+6. Notificaciones por correo electronico
+7. Editor de contenido WYSIWYG avanzado
 
 ================================================================================
 11. HISTORIAL DEL DOCUMENTO
@@ -192,3 +228,9 @@ refresh_tokens           Tokens de refresco JWT
 Version   Fecha       Cambios
 --------  ----------  ------------------------------------------------
 1.0       Mayo 2026   Version inicial del documento MVP
+1.1       Mayo 2026   Agregados modulos: auditoria, archivos, categorias,
+                      notificaciones, versionado, comentarios, estadisticas
+                      por pais, conexiones. Agregados portales Chile,
+                      Colombia y Ecuador. Rate limiting, Swagger, rotacion
+                      de refresh tokens. Filtro por pais en admin_pais.
+                      Tests unitarios y de integracion.
