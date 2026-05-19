@@ -1,4 +1,5 @@
 const newsService = require('../services/newsService');
+const auditoriaService = require('../services/auditoriaService');
 
 const listNews = async (req, res) => {
   try {
@@ -44,6 +45,13 @@ const createNews = async (req, res) => {
   try {
     const news = await newsService.createNews(req.body, req.user);
 
+    auditoriaService.registrar({
+      usuario_id: req.user.id, username: req.user.username,
+      accion: 'Crear noticia', modulo: 'noticias',
+      detalle: { titulo: req.body.titulo, pais_id: req.body.pais_id || req.user.pais_id },
+      ip_address: req.ip,
+    }).catch(() => {});
+
     return res.status(201).json({
       message: 'Noticia creada correctamente',
       data: news,
@@ -61,6 +69,13 @@ const updateNews = async (req, res) => {
 
     const news = await newsService.updateNews(id, req.body, req.user);
 
+    auditoriaService.registrar({
+      usuario_id: req.user.id, username: req.user.username,
+      accion: 'Actualizar noticia', modulo: 'noticias',
+      detalle: { id, cambios: Object.keys(req.body) },
+      ip_address: req.ip,
+    }).catch(() => {});
+
     return res.status(200).json({
       message: 'Noticia actualizada correctamente',
       data: news,
@@ -77,6 +92,13 @@ const deleteNews = async (req, res) => {
     const { id } = req.params;
 
     const result = await newsService.deleteNews(id, req.user);
+
+    auditoriaService.registrar({
+      usuario_id: req.user.id, username: req.user.username,
+      accion: 'Eliminar noticia', modulo: 'noticias',
+      detalle: { id, titulo: result?.titulo || '(eliminada)' },
+      ip_address: req.ip,
+    }).catch(() => {});
 
     return res.status(200).json(result);
   } catch (error) {
@@ -98,6 +120,14 @@ const getNewsById = async (req, res) => {
 const updateNewsStatus = async (req, res) => {
   try {
     const news = await newsService.updateNewsStatus(req.params.id, req.body, req.user);
+
+    auditoriaService.registrar({
+      usuario_id: req.user.id, username: req.user.username,
+      accion: 'Cambiar estado de noticia', modulo: 'noticias',
+      detalle: { id: req.params.id, estado: req.body.estado },
+      ip_address: req.ip,
+    }).catch(() => {});
+
     return res.status(200).json({ message: 'Estado actualizado correctamente', data: news });
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -107,6 +137,14 @@ const updateNewsStatus = async (req, res) => {
 const updateNewsImage = async (req, res) => {
   try {
     const news = await newsService.updateNewsImage(req.params.id, req.body, req.user);
+
+    auditoriaService.registrar({
+      usuario_id: req.user.id, username: req.user.username,
+      accion: 'Actualizar imagen de noticia', modulo: 'noticias',
+      detalle: { id: req.params.id },
+      ip_address: req.ip,
+    }).catch(() => {});
+
     return res.status(200).json({ message: 'Imagen actualizada correctamente', data: news });
   } catch (error) {
     return res.status(400).json({ message: error.message });

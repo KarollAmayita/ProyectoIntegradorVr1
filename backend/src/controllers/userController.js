@@ -1,8 +1,9 @@
 const userService = require('../services/userService');
+const auditoriaService = require('../services/auditoriaService');
 
 const listUsers = async (req, res) => {
   try {
-    const users = await userService.getUsers();
+    const users = await userService.getUsers(req.user);
 
     return res.status(200).json(users);
   } catch (error) {
@@ -15,6 +16,13 @@ const listUsers = async (req, res) => {
 const createUser = async (req, res) => {
   try {
     const user = await userService.createUser(req.body);
+
+    auditoriaService.registrar({
+      usuario_id: req.user.id, username: req.user.username,
+      accion: 'Crear usuario', modulo: 'usuarios',
+      detalle: { username: req.body.username, rol_id: req.body.rol_id, pais_id: req.body.pais_id },
+      ip_address: req.ip,
+    }).catch(() => {});
 
     return res.status(201).json({
       message: 'Usuario creado correctamente',
@@ -56,6 +64,14 @@ const updateUser = async (req, res) => {
 const deactivateUser = async (req, res) => {
   try {
     const result = await userService.deactivateUser(req.params.id, req.user);
+
+    auditoriaService.registrar({
+      usuario_id: req.user.id, username: req.user.username,
+      accion: 'Desactivar usuario', modulo: 'usuarios',
+      detalle: { usuario_id_desactivado: req.params.id },
+      ip_address: req.ip,
+    }).catch(() => {});
+
     return res.status(200).json(result);
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -65,6 +81,14 @@ const deactivateUser = async (req, res) => {
 const deleteUserPermanent = async (req, res) => {
   try {
     const result = await userService.deleteUserPermanent(req.params.id, req.user);
+
+    auditoriaService.registrar({
+      usuario_id: req.user.id, username: req.user.username,
+      accion: 'Eliminar usuario permanentemente', modulo: 'usuarios',
+      detalle: { usuario_id_eliminado: req.params.id },
+      ip_address: req.ip,
+    }).catch(() => {});
+
     return res.status(200).json(result);
   } catch (error) {
     return res.status(400).json({ message: error.message });

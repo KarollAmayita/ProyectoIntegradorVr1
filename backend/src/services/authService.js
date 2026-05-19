@@ -104,15 +104,23 @@ const refreshToken = async (token) => {
   }
 
   if (storedToken.usuarios.estado !== 'activo') {
+    await authRepository.deleteRefreshToken(token);
     throw new AuthenticationError('El usuario se encuentra inactivo');
   }
 
   const user = storedToken.usuarios;
-  const newToken = generateAccessToken(user, user.roles?.nombre, user.pais_id);
+
+  await authRepository.deleteRefreshToken(token);
+
+  const newAccessToken = generateAccessToken(user, user.roles?.nombre, user.pais_id);
+  const newRefreshToken = generateRefreshToken(user.id);
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+  await authRepository.createRefreshToken(user.id, newRefreshToken, expiresAt);
 
   return {
     message: 'Token renovado exitosamente',
-    token: newToken,
+    token: newAccessToken,
+    refreshToken: newRefreshToken,
   };
 };
 

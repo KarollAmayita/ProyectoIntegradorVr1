@@ -3,7 +3,7 @@
 -- ============================================
 
 -- Tabla paises
-create table paises (
+create table if not exists paises (
   id bigint generated always as identity primary key,
   nombre text not null,
   codigo text not null unique,
@@ -14,7 +14,7 @@ create table paises (
 );
 
 -- Tabla roles
-create table roles (
+create table if not exists roles (
   id bigint generated always as identity primary key,
   nombre text not null unique,
   descripcion text,
@@ -22,7 +22,7 @@ create table roles (
 );
 
 -- Tabla usuarios
-create table usuarios (
+create table if not exists usuarios (
   id bigint generated always as identity primary key,
   nombre text not null,
   apellido text not null,
@@ -41,7 +41,7 @@ create table usuarios (
 );
 
 -- Tabla noticias
-create table noticias (
+create table if not exists noticias (
   id bigint generated always as identity primary key,
   pais_id bigint not null references paises(id) on delete cascade,
   titulo text not null,
@@ -59,7 +59,7 @@ create table noticias (
 );
 
 -- Tabla testimonios
-create table testimonios (
+create table if not exists testimonios (
   id bigint generated always as identity primary key,
   pais_id bigint not null references paises(id) on delete cascade,
   nombre text not null,
@@ -79,7 +79,7 @@ create table testimonios (
 );
 
 -- Tabla solicitudes_contacto
-create table solicitudes_contacto (
+create table if not exists solicitudes_contacto (
   id bigint generated always as identity primary key,
   pais_id bigint not null references paises(id) on delete cascade,
   nombre text not null,
@@ -98,7 +98,7 @@ create table solicitudes_contacto (
 );
 
 -- Tabla refresh_tokens
-create table refresh_tokens (
+create table if not exists refresh_tokens (
   id bigint generated always as identity primary key,
   usuario_id bigint not null references usuarios(id) on delete cascade,
   token text not null unique,
@@ -111,14 +111,17 @@ create table refresh_tokens (
 -- ============================================
 
 insert into paises (nombre, codigo, slug) values
+('Colombia', 'CO', 'colombia'),
 ('Chile', 'CL', 'chile'),
 ('Argentina', 'AR', 'argentina'),
-('Ecuador', 'EC', 'ecuador');
+('Ecuador', 'EC', 'ecuador')
+on conflict (codigo) do nothing;
 
 insert into roles (nombre, descripcion) values
 ('superadmin', 'Administrador general del sistema'),
 ('admin_pais', 'Administrador de un país específico'),
-('editor', 'Usuario editor de contenidos');
+('editor', 'Usuario editor de contenidos')
+on conflict (nombre) do nothing;
 
 -- ============================================
 -- Tabla: archivos (centraliza imagenes/recursos)

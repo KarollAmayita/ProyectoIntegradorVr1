@@ -6,6 +6,7 @@ const listar = async (req, res) => {
     const { data, count } = await auditoriaService.listar({
       limit: parseInt(limit), offset: parseInt(offset),
       modulo: modulo || undefined, usuario_id: usuario_id || undefined,
+      user: req.user,
     });
     return res.status(200).json({ success: true, data, total: count });
   } catch (error) {

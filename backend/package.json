@@ -4,7 +4,9 @@
   "description": "API REST para sistema de gestión de contenidos multi-país desarrollado con Express y Supabase.",
   "main": "src/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --forceExit --detectOpenHandles",
+    "test:unit": "jest tests/unit --forceExit",
+    "test:integration": "jest tests/integration --forceExit --detectOpenHandles",
     "dev": "nodemon src/app.js",
     "start": "node src/app.js"
   },
@@ -23,10 +25,15 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-fileupload": "^1.5.2",
+    "express-rate-limit": "^8.5.2",
     "express-validator": "^7.3.2",
-    "jsonwebtoken": "^9.0.3"
+    "jsonwebtoken": "^9.0.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "jest": "^30.4.2",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2"
   }
 }

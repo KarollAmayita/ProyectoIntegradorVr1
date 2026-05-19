@@ -11,7 +11,7 @@ const create = async ({ usuario_id, username, ip_address, lugar, jwt_token, user
   return data;
 };
 
-const findAll = async ({ limit, offset, username, usuario_id } = {}) => {
+const findAll = async ({ limit, offset, username, usuario_id, usuario_ids } = {}) => {
   let query = supabase
     .from('historial_conexiones')
     .select('*', { count: 'exact' })
@@ -19,6 +19,7 @@ const findAll = async ({ limit, offset, username, usuario_id } = {}) => {
 
   if (username) query = query.eq('username', username);
   if (usuario_id) query = query.eq('usuario_id', usuario_id);
+  if (usuario_ids) query = query.in('usuario_id', usuario_ids);
 
   if (limit) query = query.range(offset || 0, (offset || 0) + limit - 1);
 

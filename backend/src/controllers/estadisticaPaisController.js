@@ -3,7 +3,7 @@ const estadisticaPaisService = require('../services/estadisticaPaisService');
 const listar = async (req, res) => {
   try {
     const { pais_id } = req.query;
-    const data = await estadisticaPaisService.listar(pais_id || undefined);
+    const data = await estadisticaPaisService.listar(pais_id || undefined, req.user);
     return res.status(200).json({ success: true, data });
   } catch (error) { return res.status(500).json({ success: false, message: error.message }); }
 };

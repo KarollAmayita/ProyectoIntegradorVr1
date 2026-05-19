@@ -206,7 +206,8 @@ function pintarSidebar(paginaActiva) {
     { id: 'testimonios', archivo: 'testimonios.html', icono: 'chat-quote', etiqueta: 'Testimonios', roles: ['superadmin', 'admin_pais', 'editor'] },
     { id: 'solicitudes', archivo: 'solicitudes.html', icono: 'envelope', etiqueta: 'Solicitudes', roles: ['superadmin', 'admin_pais'] },
     { id: 'usuarios', archivo: 'usuarios.html', icono: 'people', etiqueta: 'Usuarios', roles: ['superadmin'] },
-    { id: 'auditoria', archivo: 'auditoria.html', icono: 'journal-text', etiqueta: 'Auditoría', roles: ['superadmin', 'admin_pais'] }
+    { id: 'auditoria', archivo: 'auditoria.html', icono: 'journal-text', etiqueta: 'Auditoría', roles: ['superadmin', 'admin_pais'] },
+    { id: 'conexiones', archivo: 'conexiones.html', icono: 'clock-history', etiqueta: 'Conexiones', roles: ['superadmin', 'admin_pais'] }
   ];
 
   const enlacesPermitidos = enlaces.filter((enlace) => enlace.roles.includes(rol));
@@ -319,6 +320,12 @@ function formatearFecha(fechaIso, conHora = false) {
     opts.minute = '2-digit';
   }
   return fecha.toLocaleDateString('es-AR', opts);
+}
+
+function escapeHtml(texto) {
+  if (!texto) return '';
+  const mapa = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+  return String(texto).replace(/[&<>"']/g, (c) => mapa[c]);
 }
 
 function usuarioEs(...rolesPermitidos) {

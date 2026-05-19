@@ -55,25 +55,8 @@ const newsMock = [
 // ------------------------------------------------------------
 //  CARGA DE TESTIMONIOS
 // ------------------------------------------------------------
-async function loadTestimonials() {
-  const container = document.getElementById('testimonials-container');
-  if (!container) return;
-
-  try {
-    const res = await fetch(`${BACKEND_URL}/testimonials/public/${COUNTRY_SLUG}`);
-    if (!res.ok) throw new Error('API no disponible');
-    const data = await res.json();
-    if (!data || data.length === 0) throw new Error('Sin datos');
-    renderTestimonials(data.map(t => ({
-      quote: `"${t.contenido}"`,
-      authorName: t.nombre,
-      authorRole: t.cargo || t.empresa || '',
-      avatar: t.foto_url || '../../../assets/img/ecuador/testimonioMujer.jpg',
-      sideImage: null
-    })));
-  } catch {
-    renderTestimonials(testimonialsMock);
-  }
+function loadTestimonials() {
+  renderTestimonials(testimonialsMock);
 }
 
 function renderTestimonials(list) {
@@ -126,32 +109,8 @@ function renderTestimonials(list) {
 // ------------------------------------------------------------
 //  CARGA DE NOTICIAS
 // ------------------------------------------------------------
-async function loadNews() {
-  const container = document.getElementById('news-container');
-  if (!container) return;
-
-  try {
-    const res = await fetch(`${BACKEND_URL}/news/public/${COUNTRY_SLUG}`);
-    if (!res.ok) throw new Error('API no disponible');
-    const data = await res.json();
-    if (!data || data.length === 0) throw new Error('Sin datos');
-    renderNews(data.map(n => ({
-      category: '',
-      title: n.titulo,
-      summary: n.resumen,
-      date: formatDate(n.fecha_publicacion),
-      image: n.imagen_principal_url || '../../../assets/img/ecuador/reforestacion.jpg',
-      slug: n.slug
-    })));
-  } catch {
-    renderNews(newsMock);
-  }
-}
-
-function formatDate(iso) {
-  if (!iso) return '';
-  const d = new Date(iso);
-  return d.toLocaleDateString('es-EC', { year: 'numeric', month: 'long', day: 'numeric' });
+function loadNews() {
+  renderNews(newsMock);
 }
 
 function renderNews(list) {

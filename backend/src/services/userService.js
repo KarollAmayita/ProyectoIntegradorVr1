@@ -2,8 +2,11 @@ const bcrypt = require('bcryptjs');
 const userRepository = require('../repositories/userRepository');
 const rolRepository = require('../repositories/rolRepository');
 
-const getUsers = async () => {
-  return await userRepository.findAllUsers();
+const getUsers = async (user) => {
+  if (!user || user.rol === 'superadmin') {
+    return await userRepository.findAllUsers();
+  }
+  return await userRepository.findUsersByCountry(user.pais_id);
 };
 
 const createUser = async (payload) => {

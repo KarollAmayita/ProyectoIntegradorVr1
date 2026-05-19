@@ -29,17 +29,6 @@ const findByPaisId = async (paisId) => {
   return data;
 };
 
-const findByIndicador = async (paisId, indicador) => {
-  const { data, error } = await supabase
-    .from('estadisticas_pais')
-    .select('*')
-    .eq('pais_id', paisId)
-    .eq('indicador', indicador)
-    .maybeSingle();
-  if (error) throw new Error(error.message);
-  return data;
-};
-
 const create = async (payload) => {
   const { data, error } = await supabase.from('estadisticas_pais').insert([payload]).select().single();
   if (error) throw new Error(error.message);
@@ -57,4 +46,4 @@ const remove = async (id) => {
   if (error) throw new Error(error.message);
 };
 
-module.exports = { findAll, findById, findByPaisId, findByIndicador, create, update, remove };
+module.exports = { findAll, findById, findByPaisId, create, update, remove };

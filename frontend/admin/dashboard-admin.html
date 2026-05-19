@@ -56,15 +56,15 @@
 
     <section class="panel-contenido">
       <div class="panel-contenido__cabecera">
-        <h2 class="panel-contenido__titulo">Última actividad (auditoría)</h2>
-        <a href="/admin/auditoria" class="boton boton--secundario">Ver bitácora</a>
+        <h2 class="panel-contenido__titulo">Últimas conexiones</h2>
+        <a href="/admin/conexiones" class="boton boton--secundario">Ver bitácora</a>
       </div>
       <div class="tabla-contenedor">
         <table class="tabla">
           <thead>
-            <tr><th>Usuario</th><th>Acción</th><th>Módulo</th><th>IP</th><th>Fecha</th></tr>
+            <tr><th>Usuario</th><th>IP</th><th>Navegador</th><th>Hora de entrada</th><th>Hora de cierre</th></tr>
           </thead>
-          <tbody id="tabla-auditoria">
+          <tbody id="tabla-conexiones">
             <tr><td colspan="5" class="tabla__sin-datos">Cargando...</td></tr>
           </tbody>
         </table>
@@ -85,17 +85,17 @@
 
     async function cargarResumen() {
       try {
-        const [noticias, testimonios, solicitudes, auditoriaRes] = await Promise.all([
+        const [noticias, testimonios, solicitudes, conexionesRes] = await Promise.all([
           llamarApi('/noticias'),
           llamarApi('/testimonios'),
           llamarApi('/solicitudes'),
-          llamarApi('/auditoria?limit=5')
+          llamarApi('/connection-logs?limit=5')
         ]);
 
         const listaNoticias = normalizarListaApi(noticias);
         const listaTestimonios = normalizarListaApi(testimonios);
         const listaSolicitudes = normalizarListaApi(solicitudes);
-        const listaAuditoria = normalizarListaApi(auditoriaRes);
+        const listaConexiones = normalizarListaApi(conexionesRes);
 
         document.getElementById('conteo-noticias').textContent = listaNoticias.length;
         document.getElementById('conteo-noticias-publicadas').textContent =
@@ -117,16 +117,16 @@
             </tr>
           `).join('');
 
-        const ultimaAud = listaAuditoria.slice(0, 5);
-        document.getElementById('tabla-auditoria').innerHTML = ultimaAud.length === 0
-          ? '<tr><td colspan="5" class="tabla__sin-datos">Sin registros.</td></tr>'
-          : ultimaAud.map((log) => `
+        const ultimasCon = listaConexiones.slice(0, 5);
+        document.getElementById('tabla-conexiones').innerHTML = ultimasCon.length === 0
+          ? '<tr><td colspan="5" class="tabla__sin-datos">Sin conexiones registradas.</td></tr>'
+          : ultimasCon.map((log) => `
             <tr>
               <td><strong>${log.username || '—'}</strong></td>
-              <td>${log.accion}</td>
-              <td>${log.modulo}</td>
-              <td>${log.ip_address || log.ip || '—'}</td>
+              <td>${log.ip_address || '—'}</td>
+              <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(log.user_agent || '')}">${log.user_agent ? log.user_agent.substring(0, 60) + '…' : '—'}</td>
               <td>${formatearFecha(log.created_at, true)}</td>
+              <td>${log.logout_at ? formatearFecha(log.logout_at, true) : '<span class="etiqueta-estado etiqueta-estado--activo">Sesión activa</span>'}</td>
             </tr>
           `).join('');
       } catch (error) {

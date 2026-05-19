@@ -3,7 +3,19 @@ const supabase = require('../config/supabase');
 
 const BUCKET_NAME = 'archivos';
 
-const listar = async (params) => archivosRepository.findAll(params);
+const listar = async (params) => {
+  if (params.user?.rol === 'admin_pais' && params.user?.pais_id) {
+    const paisId = params.user.pais_id;
+    const [noticiasRes, testimoniosRes] = await Promise.all([
+      supabase.from('noticias').select('id').eq('pais_id', paisId),
+      supabase.from('testimonios').select('id').eq('pais_id', paisId),
+    ]);
+    const noticia_ids = noticiasRes.data?.map(n => n.id) || [];
+    const testimonio_ids = testimoniosRes.data?.map(t => t.id) || [];
+    return archivosRepository.findAll({ ...params, noticia_ids, testimonio_ids });
+  }
+  return archivosRepository.findAll(params);
+};
 const obtener = async (id) => archivosRepository.findById(id);
 
 const registrarUrl = async (payload, user) => {

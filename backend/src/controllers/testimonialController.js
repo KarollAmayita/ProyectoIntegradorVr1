@@ -1,4 +1,5 @@
 const testimonialService = require('../services/testimonialService');
+const auditoriaService = require('../services/auditoriaService');
 
 const listTestimonials = async (req, res) => {
   try {
@@ -29,6 +30,13 @@ const listPublicTestimonials = async (req, res) => {
 const createTestimonial = async (req, res) => {
   try {
     const testimonial = await testimonialService.createTestimonial(req.body, req.user);
+
+    auditoriaService.registrar({
+      usuario_id: req.user.id, username: req.user.username,
+      accion: 'Crear testimonio', modulo: 'testimonios',
+      detalle: { nombre: req.body.nombre, pais_id: req.body.pais_id },
+      ip_address: req.ip,
+    }).catch(() => {});
 
     return res.status(201).json({
       message: 'Testimonio creado correctamente',
@@ -68,6 +76,13 @@ const deleteTestimonial = async (req, res) => {
 
     const result = await testimonialService.deleteTestimonial(id, req.user);
 
+    auditoriaService.registrar({
+      usuario_id: req.user.id, username: req.user.username,
+      accion: 'Eliminar testimonio', modulo: 'testimonios',
+      detalle: { id },
+      ip_address: req.ip,
+    }).catch(() => {});
+
     return res.status(200).json(result);
   } catch (error) {
     return res.status(400).json({
@@ -103,6 +118,14 @@ const getTestimonialById = async (req, res) => {
 const updateTestimonialStatus = async (req, res) => {
   try {
     const testimonial = await testimonialService.updateTestimonialStatus(req.params.id, req.body, req.user);
+
+    auditoriaService.registrar({
+      usuario_id: req.user.id, username: req.user.username,
+      accion: 'Moderar testimonio', modulo: 'testimonios',
+      detalle: { id: req.params.id, estado: req.body.estado },
+      ip_address: req.ip,
+    }).catch(() => {});
+
     return res.status(200).json({ message: 'Estado actualizado correctamente', data: testimonial });
   } catch (error) {
     return res.status(400).json({ message: error.message });

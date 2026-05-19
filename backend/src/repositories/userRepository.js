@@ -135,8 +135,38 @@ const deleteUserPermanent = async (id) => {
   if (error) throw new Error(error.message);
 };
 
+const findUsersByCountry = async (pais_id) => {
+  const { data, error } = await supabase
+    .from('usuarios')
+    .select(`
+      id,
+      nombre,
+      apellido,
+      email,
+      username,
+      estado,
+      created_at,
+      roles (
+        id,
+        nombre
+      ),
+      paises (
+        id,
+        nombre,
+        codigo,
+        slug
+      )
+    `)
+    .eq('pais_id', pais_id)
+    .order('id', { ascending: true });
+
+  if (error) throw new Error(error.message);
+  return data;
+};
+
 module.exports = {
   findAllUsers,
+  findUsersByCountry,
   findUserByUsernameOrEmail,
   findUserById,
   createUser,

@@ -25,6 +25,8 @@ const comentarioRoutes = require('./routes/comentarioRoutes');
 
 // Importar middlewares
 const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 
 const app = express();
 
@@ -93,7 +95,7 @@ app.get('/admin/usuarios', (req, res) => {
 });
 
 app.get('/admin/conexiones', (req, res) => {
-  res.redirect('/admin/auditoria');
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'conexiones.html'));
 });
 
 app.get('/admin/auditoria', (req, res) => {
@@ -117,6 +119,12 @@ app.get('/colombia', (req, res) => {
 });
 
 
+// Documentación Swagger
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customSiteTitle: 'CMS Multipaís - API Docs',
+  customfavIcon: '/assets/img/favicon.ico',
+}));
+
 // Ruta base API
 app.get('/api', (req, res) => {
   res.json({
@@ -126,7 +134,7 @@ app.get('/api', (req, res) => {
 
 // Rutas API
 app.use('/api/auth', authRoutes);
-app.use('/api/profile', profileRoutes);
+
 app.use('/api/admin', adminRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/countries', countryRoutes);
@@ -164,6 +172,10 @@ app.use(errorHandler);
 // Servidor
 const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

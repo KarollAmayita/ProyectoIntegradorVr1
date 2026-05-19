@@ -1,7 +1,8 @@
 const estadisticaPaisRepository = require('../repositories/estadisticaPaisRepository');
 
-const listar = async (pais_id) => {
-  if (pais_id) return estadisticaPaisRepository.findByPaisId(pais_id);
+const listar = async (pais_id, user) => {
+  const finalPaisId = user?.rol !== 'superadmin' && user?.pais_id ? user.pais_id : pais_id;
+  if (finalPaisId) return estadisticaPaisRepository.findByPaisId(finalPaisId);
   return estadisticaPaisRepository.findAll();
 };
 

@@ -10,7 +10,7 @@ const list = async (req, res) => {
     if (offset) params.offset = parseInt(offset, 10);
     if (username) params.username = username;
 
-    const { data, count } = await connectionLogService.getLogs(params);
+    const { data, count } = await connectionLogService.getLogs({ ...params, user: req.user });
 
     return res.status(200).json({
       success: true,

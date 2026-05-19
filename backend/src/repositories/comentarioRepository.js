@@ -1,9 +1,10 @@
 const supabase = require('../config/supabase');
 
-const findAll = async ({ limit = 50, offset = 0, estado, noticia_id } = {}) => {
+const findAll = async ({ limit = 50, offset = 0, estado, noticia_id, noticia_ids } = {}) => {
   let query = supabase.from('comentarios').select('*, noticias(id, titulo)', { count: 'exact' }).order('created_at', { ascending: false });
   if (estado) query = query.eq('estado', estado);
   if (noticia_id) query = query.eq('noticia_id', noticia_id);
+  if (noticia_ids) query = query.in('noticia_id', noticia_ids);
   query = query.range(offset, offset + limit - 1);
   const { data, error, count } = await query;
   if (error) throw new Error(error.message);

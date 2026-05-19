@@ -2,7 +2,7 @@ const historialNoticiaService = require('../services/historialNoticiaService');
 
 const listar = async (req, res) => {
   try {
-    const versiones = await historialNoticiaService.listarPorNoticia(req.params.noticiaId);
+    const versiones = await historialNoticiaService.listarPorNoticia(req.params.noticiaId, req.user);
     return res.status(200).json({ success: true, data: versiones });
   } catch (error) { return res.status(500).json({ success: false, message: error.message }); }
 };

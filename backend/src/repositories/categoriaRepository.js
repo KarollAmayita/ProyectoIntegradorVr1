@@ -35,13 +35,4 @@ const remove = async (id) => {
   if (error) throw new Error(error.message);
 };
 
-const findCategoriasByNoticiaId = async (noticiaId) => {
-  const { data, error } = await supabase
-    .from('noticia_categorias')
-    .select('categoria_id, categorias(*)')
-    .eq('noticia_id', noticiaId);
-  if (error) throw new Error(error.message);
-  return data.map(r => r.categorias);
-};
-
-module.exports = { findAll, findById, findBySlug, create, update, remove, findCategoriasByNoticiaId };
+module.exports = { findAll, findById, findBySlug, create, update, remove };

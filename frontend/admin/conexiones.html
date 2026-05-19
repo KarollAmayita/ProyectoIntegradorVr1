@@ -2,8 +2,94 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Redirigiendo a auditoría...</title>
-  <script>window.location.replace('/admin/auditoria');</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bitácora de conexiones</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin-styles.css" />
 </head>
-<body></body>
+<body>
+  <div id="zona-sidebar"></div>
+  <main class="contenido-principal">
+    <div id="zona-topbar"></div>
+
+    <section class="panel-contenido">
+      <div class="panel-contenido__cabecera">
+        <h2 class="panel-contenido__titulo">Bitácora de conexiones</h2>
+        <span style="font-size:13px; color:#5A6C84;">
+          <i class="bi bi-info-circle"></i> Registro de inicios y cierres de sesión
+        </span>
+      </div>
+
+      <div class="barra-filtros">
+        <input type="text" id="filtro-usuario" placeholder="Filtrar por usuario..." />
+        <button class="boton boton--principal" id="boton-refrescar">
+          <i class="bi bi-arrow-clockwise"></i> Refrescar
+        </button>
+      </div>
+
+      <div class="tabla-contenedor">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>IP</th>
+              <th>Ubicación</th>
+              <th>Navegador</th>
+              <th>Hora de inicio</th>
+              <th>Hora de cierre</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-conexiones">
+            <tr><td colspan="6" class="tabla__sin-datos">Cargando bitácora...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="admin-shared.js"></script>
+  <script>
+    if (!exigirRol('superadmin', 'admin_pais')) throw new Error('Sin permiso');
+
+    pintarSidebar('conexiones');
+    pintarTopbar('Conexiones');
+
+    const tabla = document.getElementById('tabla-conexiones');
+    const filtroUsuario = document.getElementById('filtro-usuario');
+
+    async function cargarConexiones() {
+      try {
+        const user = filtroUsuario.value.trim();
+        const url = user ? `/connection-logs?limit=50&username=${encodeURIComponent(user)}` : '/connection-logs?limit=50';
+        const res = await llamarApi(url);
+        const logs = normalizarListaApi(res);
+
+        if (logs.length === 0) {
+          tabla.innerHTML = '<tr><td colspan="6" class="tabla__sin-datos">No hay registros de conexión.</td></tr>';
+          return;
+        }
+
+        tabla.innerHTML = logs.map((log) => `
+          <tr>
+            <td><strong>${escapeHtml(log.username || '—')}</strong></td>
+            <td>${escapeHtml(log.ip_address || '—')}</td>
+            <td>${escapeHtml(log.lugar || '—')}</td>
+            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(log.user_agent || '')}">${log.user_agent ? escapeHtml(log.user_agent.substring(0, 50)) + '…' : '—'}</td>
+            <td>${formatearFecha(log.created_at, true)}</td>
+            <td>${log.logout_at ? formatearFecha(log.logout_at, true) : '<span class="etiqueta-estado etiqueta-estado--activo">Activa</span>'}</td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        tabla.innerHTML = `<tr><td colspan="6" class="tabla__sin-datos">Error: ${error.message}</td></tr>`;
+      }
+    }
+
+    filtroUsuario.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') cargarConexiones();
+    });
+    document.getElementById('boton-refrescar').addEventListener('click', cargarConexiones);
+    cargarConexiones();
+  </script>
+</body>
 </html>

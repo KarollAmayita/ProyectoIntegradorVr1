@@ -26,10 +26,16 @@ const marcarTodasLeidas = async (usuarioId) => {
   if (error) throw new Error(error.message);
 };
 
+const findById = async (id) => {
+  const { data, error } = await supabase.from('notificaciones').select('*').eq('id', id).maybeSingle();
+  if (error) throw new Error(error.message);
+  return data;
+};
+
 const countNoLeidas = async (usuarioId) => {
   const { count, error } = await supabase.from('notificaciones').select('*', { count: 'exact', head: true }).eq('usuario_id', usuarioId).eq('leida', false);
   if (error) throw new Error(error.message);
   return count;
 };
 
-module.exports = { create, findByUsuarioId, marcarLeida, marcarTodasLeidas, countNoLeidas };
+module.exports = { create, findById, findByUsuarioId, marcarLeida, marcarTodasLeidas, countNoLeidas };

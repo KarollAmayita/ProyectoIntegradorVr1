@@ -1,4 +1,5 @@
 const contactRequestService = require('../services/contactRequestService');
+const auditoriaService = require('../services/auditoriaService');
 
 const listRequests = async (req, res) => {
   try {
@@ -36,6 +37,13 @@ const updateRequestStatus = async (req, res) => {
       req.body,
       req.user
     );
+
+    auditoriaService.registrar({
+      usuario_id: req.user.id, username: req.user.username,
+      accion: 'Cambiar estado de solicitud', modulo: 'solicitudes',
+      detalle: { id, estado: req.body.estado },
+      ip_address: req.ip,
+    }).catch(() => {});
 
     return res.status(200).json({
       message: 'Solicitud actualizada correctamente',

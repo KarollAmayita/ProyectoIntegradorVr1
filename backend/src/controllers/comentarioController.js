@@ -6,6 +6,7 @@ const listar = async (req, res) => {
     const { data, count } = await comentarioService.listar({
       limit: parseInt(limit) || 50, offset: parseInt(offset) || 0,
       estado: estado || undefined, noticia_id: noticia_id || undefined,
+      user: req.user,
     });
     return res.status(200).json({ success: true, data, total: count });
   } catch (error) { return res.status(500).json({ success: false, message: error.message }); }
@@ -38,14 +39,14 @@ const crear = async (req, res) => {
 const moderar = async (req, res) => {
   try {
     const { estado } = req.body;
-    const data = await comentarioService.moderar(req.params.id, estado);
+    const data = await comentarioService.moderar(req.params.id, estado, req.user);
     return res.status(200).json({ success: true, message: 'Comentario moderado', data });
   } catch (error) { return res.status(400).json({ success: false, message: error.message }); }
 };
 
 const eliminar = async (req, res) => {
   try {
-    const result = await comentarioService.eliminar(req.params.id);
+    const result = await comentarioService.eliminar(req.params.id, req.user);
     return res.status(200).json(result);
   } catch (error) { return res.status(400).json({ success: false, message: error.message }); }
 };

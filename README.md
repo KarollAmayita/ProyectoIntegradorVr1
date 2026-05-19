@@ -167,6 +167,7 @@ create table usuarios (
 insert into paises (nombre, codigo, slug) values
 ('Colombia', 'CO', 'colombia'),
 ('Chile', 'CL', 'chile'),
+('Argentina', 'AR', 'argentina'),
 ('Ecuador', 'EC', 'ecuador');
 
 insert into roles (nombre, descripcion) values
@@ -435,6 +436,12 @@ Authorization: Bearer TOKEN
 | adminarg | 123456 | admin_pais | Argentina |
 | admin_arg | 123456 | admin_pais | Argentina |
 | sistema | 123456 | editor | Argentina |
+| admin_chile | 123456 | admin_pais | Chile |
+| editor_chile | 123456 | editor | Chile |
+| admin_ecuador | 123456 | admin_pais | Ecuador |
+| editor_ecuador | 123456 | editor | Ecuador |
+| admin_colombia | 123456 | admin_pais | Colombia |
+| editor_colombia | 123456 | editor | Colombia |
 
 ---
 

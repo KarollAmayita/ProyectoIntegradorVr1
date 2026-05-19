@@ -1,3 +1,4 @@
+const supabase = require('../config/supabase');
 const connectionLogRepository = require('../repositories/connectionLogRepository');
 
 const logConnection = async ({ usuario_id, username, ip_address, jwt_token, user_agent }) => {
@@ -28,8 +29,19 @@ const logConnection = async ({ usuario_id, username, ip_address, jwt_token, user
   });
 };
 
-const getLogs = async ({ limit = 50, offset = 0, username, usuario_id } = {}) => {
-  return connectionLogRepository.findAll({ limit, offset, username, usuario_id });
+const getLogs = async ({ limit = 50, offset = 0, username, usuario_id, user } = {}) => {
+  let usuario_ids;
+
+  if (user && user.rol === 'admin_pais' && user.pais_id) {
+    const { data: usuarios } = await supabase
+      .from('usuarios')
+      .select('id')
+      .eq('pais_id', user.pais_id);
+    usuario_ids = usuarios?.map(u => u.id) || [];
+    if (usuario_ids.length === 0) return { data: [], count: 0 };
+  }
+
+  return connectionLogRepository.findAll({ limit, offset, username, usuario_id, usuario_ids });
 };
 
 const getLogById = async (id) => {
