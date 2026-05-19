@@ -64,6 +64,18 @@ app.get('/admin/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'dashboard.html'));
 });
 
+app.get('/admin/dashboard-superadmin', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'dashboard-superadmin.html'));
+});
+
+app.get('/admin/dashboard-admin', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'dashboard-admin.html'));
+});
+
+app.get('/admin/dashboard-editor', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'dashboard-editor.html'));
+});
+
 app.get('/admin/noticias', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'noticias.html'));
 });
@@ -81,7 +93,11 @@ app.get('/admin/usuarios', (req, res) => {
 });
 
 app.get('/admin/conexiones', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'conexiones.html'));
+  res.redirect('/admin/auditoria');
+});
+
+app.get('/admin/auditoria', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'admin', 'auditoria.html'));
 });
 
 app.get('/argentina', (req, res) => {

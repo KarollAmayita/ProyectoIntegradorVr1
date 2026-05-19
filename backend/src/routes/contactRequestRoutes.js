@@ -53,6 +53,13 @@ router.put(
   contactRequestController.updateRequestStatus
 );
 
+router.patch(
+  '/:id/estado',
+  verifyToken,
+  authorizeRoles('superadmin', 'admin_pais'),
+  contactRequestController.updateRequestStatus
+);
+
 router.delete(
   '/:id',
   verifyToken,
