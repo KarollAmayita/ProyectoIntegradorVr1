@@ -20,9 +20,9 @@ const COUNTRY_THEMES = {
     brandLine2: 'Comparte'
   },
   EC: {
-    primary: '#FFD100',
-    accent: '#034EA2',
-    sidebar: '#ED1C24',
+    primary: '#F4B400',   
+    accent: '#1F3A5F',    
+    sidebar: '#A31621', 
     brandLine1: 'Ecuador',
     brandLine2: 'Comparte'
   },
