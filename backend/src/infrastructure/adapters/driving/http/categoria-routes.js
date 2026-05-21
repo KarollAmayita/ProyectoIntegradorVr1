@@ -1,0 +1,16 @@
+const express = require('express');
+
+const createCategoriaRoutes = (categoriaController) => {
+  const router = express.Router();
+
+  router.get('/', categoriaController.listar);
+  router.get('/:id', categoriaController.obtener);
+  router.post('/', categoriaController.crear);
+  router.put('/:id', categoriaController.actualizar);
+  router.patch('/:id', categoriaController.actualizar);
+  router.delete('/:id', categoriaController.eliminar);
+
+  return router;
+};
+
+module.exports = createCategoriaRoutes;

@@ -7,8 +7,13 @@
   <script src="tema-inmediato.js"></script></head>
 <body>
   <script>
-    exigirSesion();
-    window.location.replace(obtenerUrlDashboardPorRol(obtenerUsuario()?.rol));
+    const usuario = obtenerUsuario();
+    if (!usuario || !usuario.rol) {
+      limpiarSesion();
+      window.location.replace(`${BASE_ADMIN}/login`);
+    } else {
+      window.location.replace(obtenerUrlDashboardPorRol(usuario.rol));
+    }
   </script>
 </body>
 </html>

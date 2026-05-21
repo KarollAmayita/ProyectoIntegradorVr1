@@ -56,8 +56,10 @@
       limpiarSesion();
     }
 
-    if (obtenerToken()) {
+    if (obtenerToken() && obtenerUsuario()?.rol) {
       window.location.href = '/admin/dashboard';
+    } else if (obtenerToken()) {
+      limpiarSesion();
     }
 
     const formularioLogin = document.getElementById('formulario-login');

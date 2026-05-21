@@ -1,6 +1,6 @@
 # CMS Multipaís
 
-API REST + Frontend para sistema de gestión de contenidos multi-país desarrollado con Express y Supabase.
+API REST + Frontend para sistema de gestión de contenidos multi-país desarrollado con Express, Supabase y **Arquitectura Hexagonal**.
 
 ## Descripción
 
@@ -23,49 +23,97 @@ Sistema CMS multi-país que permite gestionar contenidos (noticias, testimonios,
 
 - Node.js + Express 5
 - Supabase (PostgreSQL)
-- JWT (jsonwebtoken)
-- bcryptjs
+- JWT (jsonwebtoken) + bcryptjs
 - Docker + docker-compose
+- **Arquitectura Hexagonal** (Puertos y Adaptadores)
+
+## Arquitectura
+
+El backend sigue el patrón **Hexagonal (Puertos y Adaptadores)** con 4 capas + Composition Root:
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                    DRIVING ADAPTERS                       │
+│    controllers + routes (HTTP) → Express                 │
+│    backend/src/infrastructure/adapters/driving/http/      │
+├──────────────────────────────────────────────────────────┤
+│                    APPLICATION LAYER                      │
+│    services + use-cases (lógica de negocio)              │
+│    backend/src/application/                               │
+├──────────────────────────────────────────────────────────┤
+│                    DOMAIN LAYER                           │
+│    entities (reglas de negocio)                          │
+│    backend/src/domain/                                    │
+├──────────────────────────────────────────────────────────┤
+│                    PORTS (INTERFACES)                     │
+│    contratos que definen la comunicación entre capas     │
+│    backend/src/ports/<modulo>/outbound/                   │
+├──────────────────────────────────────────────────────────┤
+│                    DRIVEN ADAPTERS                        │
+│    repositorios Supabase, JWT, bcrypt, storage           │
+│    backend/src/infrastructure/adapters/driven/            │
+└──────────────────────────────────────────────────────────┘
+                    ↕ inyección de dependencias
+          ┌─────────────────────────────────────┐
+          │        COMPOSITION ROOT             │
+          │  backend/src/infrastructure/        │
+          │  composition-root.js                │
+          │  (centraliza DI de todo el sistema) │
+          └─────────────────────────────────────┘
+```
 
 ## Estructura del proyecto
 
 ```
-├── backend/
-│   ├── src/
-│   │   ├── config/           → supabase.js, swagger.js
-│   │   ├── controllers/      → auth, admin, user, country, news, testimonial, contactRequest, connectionLog, archivos, auditoria, categoria, estadisticaPais, notificacion, historialNoticia, comentario
-│   │   ├── db/               → cms-multipais.sql (+ migraciones)
-│   │   ├── middlewares/      → auth, role, errorHandler, validation, rateLimiter
-│   │   ├── repositories/     → capa de datos (14 repositorios)
-│   │   ├── routes/           → definición de rutas (17 archivos)
-│   │   ├── scripts/          → createSuperAdmin.js, seedUsers.js, seedPortalData.js
-│   │   ├── services/         → lógica de negocio (15 servicios)
-│   │   ├── utils/errors.js, versionador.js
-│   │   └── app.js
-│   ├── tests/                → unit (auth, news) + integration (api)
-│   ├── .env.example
-│   └── package.json
-├── frontend/
-│   ├── admin/                → login, recuperar, dashboards (3 roles), noticias, testimonios, solicitudes, usuarios, conexiones, auditoria
-│   │   ├── admin-styles.css
-│   │   ├── admin-shared.js
-│   │   └── *.html
-│   ├── portales/
-│   │   ├── argentina/        → portal público Argentina
-│   │   ├── chile/            → portal público Chile
-│   │   ├── colombia/         → portal público Colombia
-│   │   ├── ecuador/          → portal público Ecuador
-│   │   └── indice/           → landing page multi-país
-│   └── assets/
-│       └── img/
-│           ├── argentina/, chile/, colombia/, ecuador/
-│           └── portales/
-├── Dockerfile
-├── docker-compose.yml
-├── MANUAL_TECNICO.txt
-├── MANUAL_USUARIO.txt
-├── DOCUMENTO_MVP.txt
-└── README.md
+backend/
+├── src/
+│   ├── app-hexagonal.js           ← Entry point (alias app.js)
+│   ├── application/               ← Lógica de negocio
+│   │   ├── auth/auth-service.js
+│   │   ├── news/news-service.js
+│   │   ├── testimonial/  contact-request/  country/
+│   │   ├── user/  categoria/  auditoria/
+│   │   └── use-cases/           ← Casos de uso individuales
+│   │       ├── archivos/  comentario/  notificacion/
+│   │       ├── connection-log/  estadistica-pais/
+│   │       ├── admin/  profile/  historial-noticia/
+│   ├── domain/                    ← Entidades del negocio
+│   │   ├── auth/user.js
+│   │   ├── news/news.js
+│   │   ├── testimonial/  contact-request/  country/
+│   │   ├── categoria/  auditoria/  entities/
+│   ├── ports/                     ← Interfaces (puertos outbound)
+│   │   ├── auth/  news/  testimonial/  user/  country/
+│   │   ├── categoria/  contact-request/  auditoria/
+│   │   ├── repositories/  services/
+│   ├── infrastructure/            ← Adaptadores + DI
+│   │   ├── composition-root.js    ← Inyección de dependencias
+│   │   └── adapters/
+│   │       ├── driving/http/      ← Controladores + rutas Express
+│   │       │   ├── auth-controller.js  auth-routes.js
+│   │       │   ├── news-controller.js  news-routes.js
+│   │       │   ├── ... (16 módulos)
+│   │       └── driven/
+│   │           ├── database/      ← Repositorios Supabase
+│   │           ├── external/      ← JWT, bcrypt, logger
+│   │           └── storage/       ← Supabase Storage
+│   ├── config/                   ← supabase.js, swagger.js
+│   ├── middlewares/              ← auth, role, validation, rateLimiter
+│   ├── scripts/                  ← createSuperAdmin, seed, setup DB
+│   ├── db/                       ← Esquemas SQL
+│   └── utils/                    ← errors.js, versionador.js
+├── tests/                        ← Tests unitarios + integración
+├── .env.example
+└── package.json
+
+frontend/
+├── admin/                        ← Panel admin (login, CRUD, dashboards)
+│   ├── admin-styles.css
+│   ├── admin-shared.js
+│   └── *.html                    ← login, dashboards, noticias, etc.
+├── portales/                     ← Portales públicos por país
+│   ├── argentina/  chile/  colombia/  ecuador/  indice/
+└── assets/img/
 ```
 
 ---
@@ -95,375 +143,7 @@ Servidor en `http://localhost:3001`
 
 ---
 
-## Desarrollo por partes
-
-### Parte 1: Instalaciones
-
-```bash
-mkdir cms-multipais && cd cms-multipais && mkdir backend && cd backend
-npm init -y
-npm install express cors dotenv @supabase/supabase-js bcryptjs jsonwebtoken
-npm install nodemon -D
-```
-
-### Parte 2: package.json
-
-```json
-{
-  "name": "backend",
-  "version": "1.0.0",
-  "main": "src/app.js",
-  "scripts": { "dev": "nodemon src/app.js" },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.57.4",
-    "bcryptjs": "^3.0.3",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.2",
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2"
-  },
-  "devDependencies": { "nodemon": "^3.1.10" }
-}
-```
-
-### Parte 3: Estructura inicial del backend
-
-```
-backend/src/
-├── config/supabase.js
-├── controllers/authController.js
-├── services/authService.js
-├── repositories/authRepository.js
-├── routes/authRoutes.js
-├── middlewares/authMiddleware.js
-└── app.js
-```
-
-### Parte 4: Script SQL — Tablas
-
-```sql
-create table paises (
-  id bigint generated always as identity primary key,
-  nombre text not null, codigo text not null unique,
-  slug text not null unique, estado text not null default 'activo',
-  created_at timestamptz default now(), updated_at timestamptz default now()
-);
-
-create table roles (
-  id bigint generated always as identity primary key,
-  nombre text not null unique, descripcion text,
-  created_at timestamptz default now()
-);
-
-create table usuarios (
-  id bigint generated always as identity primary key,
-  nombre text not null, apellido text not null,
-  email text not null unique, username text not null unique,
-  password_hash text not null,
-  pregunta_seguridad text,
-  respuesta_seguridad_hash text,
-  password_updated_at timestamptz,
-  rol_id bigint not null references roles(id),
-  pais_id bigint references paises(id),
-  estado text not null default 'activo',
-  ultimo_acceso timestamptz,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
-);
-```
-
-> **Partes 14-16**: Agregar tablas `noticias`, `testimonios`, `solicitudes_contacto` (ver SQL completo en `backend/src/db/cms-multipais.sql`)
-
-### Parte 5: Datos iniciales
-
-```sql
-insert into paises (nombre, codigo, slug) values
-('Colombia', 'CO', 'colombia'),
-('Chile', 'CL', 'chile'),
-('Argentina', 'AR', 'argentina'),
-('Ecuador', 'EC', 'ecuador');
-
-insert into roles (nombre, descripcion) values
-('superadmin', 'Administrador general del sistema'),
-('admin_pais', 'Administrador de un país específico'),
-('editor', 'Usuario editor de contenidos');
-```
-
-### Parte 6: Variables de entorno
-
-```
-PORT=3001
-SUPABASE_URL=URL_DE_SUPABASE
-SUPABASE_SERVICE_ROLE_KEY=SERVICE_ROLE_KEY
-JWT_SECRET=clave_segura_cms_usta_multipais_2026
-```
-
-- `SUPABASE_URL`: Project settings → Data API → API URL
-- `SUPABASE_SERVICE_ROLE_KEY`: Project settings → API keys → service_role secret
-
-### Parte 7: Archivos del proyecto
-
-```
-src/config/supabase.js
-src/repositories/authRepository.js
-src/services/authService.js
-src/controllers/authController.js
-src/routes/authRoutes.js
-src/middlewares/authMiddleware.js
-src/app.js
-```
-
-```bash
-npm run dev
-```
-
-### Parte 8: Script superadmin
-
-```bash
-mkdir src/scripts
-# crear src/scripts/createSuperAdmin.js
-node src/scripts/createSuperAdmin.js
-```
-
-### Parte 9: Probar login
-
-```
-POST http://localhost:3001/api/auth/login
-```
-```json
-{ "username": "superadmin", "password": "123456" }
-```
-
-### Parte 10: Ruta protegida
-
-```
-GET http://localhost:3001/api/auth/me
-Authorization: Bearer TOKEN
-```
-
-### Parte 11: RBAC
-
-Archivos: `roleMiddleware.js`, `adminController.js`, `adminRoutes.js`
-
-```
-GET http://localhost:3001/api/admin/panel
-Authorization: Bearer TOKEN
-```
-
-### Parte 12: Módulo usuarios
-
-Archivos: `userRepository.js`, `userService.js`, `userController.js`, `userRoutes.js`
-
-```
-GET http://localhost:3001/api/users                          (listar)
-POST http://localhost:3001/api/users                         (crear)
-```
-Headers: `Authorization: Bearer TOKEN`
-
-Crear admin de Colombia:
-```json
-{
-  "nombre": "Admin", "apellido": "Colombia",
-  "email": "admin.co@cms.com", "username": "admin_colombia",
-  "password": "123456", "rol_id": 2, "pais_id": 1,
-  "pregunta_seguridad": "¿Cuál es el código inicial del sistema?",
-  "respuesta_seguridad": "cms2026"
-}
-```
-
-### Parte 13: Módulo países
-
-Archivos: `countryRepository.js`, `countryService.js`, `countryController.js`, `countryRoutes.js`
-
-```
-GET http://localhost:3001/api/countries           (todos, requiere token)
-GET http://localhost:3001/api/countries/active    (solo activos)
-```
-
-### Parte 14: Módulo noticias
-
-```sql
-create table noticias ( ... ); -- ver cms-multipais.sql
-```
-
-Archivos: `newsRepository.js`, `newsService.js`, `newsController.js`, `newsRoutes.js`
-
-```
-POST   /api/news                          (crear)
-GET    /api/news                          (listar admin)
-PUT    /api/news/:id                      (editar)
-DELETE /api/news/:id                      (eliminar)
-GET    /api/news/public/:countrySlug      (público)
-GET    /api/news/public/:countrySlug/:slug (detalle público)
-```
-
-### Parte 15: Módulo testimonios
-
-```sql
-create table testimonios ( ... ); -- ver cms-multipais.sql
-```
-
-Archivos: `testimonialRepository.js`, `testimonialService.js`, `testimonialController.js`, `testimonialRoutes.js`
-
-```
-POST   /api/testimonials                          (crear)
-GET    /api/testimonials                          (listar admin)
-PUT    /api/testimonials/:id                      (editar)
-DELETE /api/testimonials/:id                      (eliminar)
-GET    /api/testimonials/public/:countrySlug      (público)
-```
-
-### Parte 16: Módulo solicitudes de contacto
-
-```sql
-create table solicitudes_contacto ( ... ); -- ver cms-multipais.sql
-```
-
-Archivos: `contactRequestRepository.js`, `contactRequestService.js`, `contactRequestController.js`, `contactRequestRoutes.js`
-
-```
-POST   /api/contact-requests/public               (público, sin token)
-GET    /api/contact-requests                       (admin, requiere token)
-PUT    /api/contact-requests/:id/status            (admin)
-DELETE /api/contact-requests/:id                   (admin)
-```
-
-### Parte 17: Recuperación de contraseña
-
-#### Migración SQL
-
-```sql
-alter table usuarios
-add column if not exists pregunta_seguridad text,
-add column if not exists respuesta_seguridad_hash text,
-add column if not exists password_updated_at timestamptz;
-```
-
-#### Archivos actualizados
-
-```
-src/repositories/authRepository.js
-src/services/authService.js
-src/controllers/authController.js
-src/routes/authRoutes.js
-src/repositories/userRepository.js
-src/services/userService.js
-src/controllers/userController.js
-src/routes/userRoutes.js
-src/scripts/createSuperAdmin.js
-```
-
-#### Endpoints
-
-| Método | Ruta | Descripción | Auth |
-|--------|------|------------|------|
-| POST | /api/auth/forgot-password | Obtener pregunta de seguridad | No |
-| POST | /api/auth/reset-password | Restaurar contraseña | No |
-| PUT | /api/auth/change-password | Cambiar contraseña propia | Sí |
-| PATCH | /api/auth/security-question | Cambiar pregunta y respuesta | Sí |
-
-#### Probar en Postman
-
-**Olvidé mi contraseña:**
-```
-POST /api/auth/forgot-password
-```
-```json
-{ "identifier": "superadmin" }
-```
-Respuesta: `{ "pregunta_seguridad": "¿Cuál es el código inicial del sistema?" }`
-
-**Restaurar contraseña:**
-```
-POST /api/auth/reset-password
-```
-```json
-{
-  "username": "superadmin",
-  "respuesta_seguridad": "cms2026",
-  "nueva_password": "123456789"
-}
-```
-
-**Cambiar contraseña propia** (requiere token):
-```
-PUT /api/auth/change-password
-Authorization: Bearer TOKEN
-```
-```json
-{ "password_actual": "123456789", "nueva_password": "123456" }
-```
-
-**Superadmin cambia contraseña de otro**:
-```
-PUT /api/users/2/password
-Authorization: Bearer TOKEN_SUPERADMIN
-```
-```json
-{ "nueva_password": "123456" }
-```
-
-**Cambiar pregunta de seguridad** (requiere token):
-```
-PATCH /api/auth/security-question
-Authorization: Bearer TOKEN
-```
-```json
-{
-  "pregunta_seguridad": "¿Cuál es tu ciudad favorita?",
-  "respuesta_seguridad": "Tunja"
-}
-```
-
----
-
 ## Frontend
-
-### Rutas del panel administrativo
-
-| Ruta | Descripción |
-|------|------------|
-| `/admin/login` | Inicio de sesión |
-| `/admin/recuperar` | Recuperación de contraseña |
-| `/admin/dashboard` | Dashboard principal |
-| `/admin/dashboard-superadmin` | Dashboard superadmin |
-| `/admin/dashboard-admin` | Dashboard admin_pais |
-| `/admin/dashboard-editor` | Dashboard editor |
-| `/admin/noticias` | Gestión de noticias |
-| `/admin/testimonios` | Gestión de testimonios |
-| `/admin/solicitudes` | Gestión de solicitudes |
-| `/admin/usuarios` | Gestión de usuarios (superadmin) |
-| `/admin/conexiones` | Historial de conexiones |
-| `/admin/auditoria` | Bitácora de eventos |
-
-### Rutas públicas
-
-| Ruta | Descripción |
-|------|------------|
-| `/` | Landing page multi-país |
-| `/argentina` | Portal público de Argentina |
-| `/chile` | Portal público de Chile |
-| `/colombia` | Portal público de Colombia |
-| `/ecuador` | Portal público de Ecuador |
-
-### Usuarios predefinidos
-
-| Usuario | Password | Rol | País |
-|---------|----------|-----|------|
-| superadmin | 123456 | superadmin | Global |
-| adminarg | 123456 | admin_pais | Argentina |
-| admin_arg | 123456 | admin_pais | Argentina |
-| sistema | 123456 | editor | Argentina |
-| admin_chile | 123456 | admin_pais | Chile |
-| editor_chile | 123456 | editor | Chile |
-| admin_ecuador | 123456 | admin_pais | Ecuador |
-| editor_ecuador | 123456 | editor | Ecuador |
-| admin_colombia | 123456 | admin_pais | Colombia |
-| editor_colombia | 123456 | editor | Colombia |
-
----
-
-## Endpoints de la API
 
 ### Autenticación
 
@@ -647,10 +327,11 @@ Todas las rutas anteriores también están disponibles con nombres en español:
 
 ## Seguridad
 
-- **Rate limiting**: POST /api/auth/login limitado a 10 intentos cada 15 minutos (`rateLimiterMiddleware.js`)
+- **Rate limiting**: POST /api/auth/login limitado a 10 intentos cada 15 minutos
 - **Token rotation**: Cada uso de refreshToken invalida el anterior y genera uno nuevo
 - **Documentación Swagger**: Disponible en `/api/docs` con especificación OpenAPI 3.0 de todos los endpoints
-- **Filtro por país**: Los usuarios `admin_pais` solo ven datos (noticias, testimonios, usuarios, auditoría, conexiones, etc.) de su propio país
+- **Filtro por país**: Los usuarios `admin_pais` solo ven datos de su propio país (noticias, testimonios, usuarios, auditoría, conexiones, comentarios, archivos, solicitudes)
+- **RBAC**: Control de acceso basado en roles (`superadmin`, `admin_pais`, `editor`) con middleware `authorizeRoles`
 
 ## Tests
 

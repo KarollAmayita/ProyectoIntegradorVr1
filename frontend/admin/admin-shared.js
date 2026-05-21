@@ -136,9 +136,17 @@ function exigirSesion() {
   const token = obtenerToken();
   if (!token) {
     window.location.href = `${BASE_ADMIN}/login`;
-  } else {
-    aplicarTemaPais(obtenerUsuario());
+    return;
   }
+
+  const usuario = obtenerUsuario();
+  if (!usuario || !usuario.rol) {
+    limpiarSesion();
+    window.location.href = `${BASE_ADMIN}/login`;
+    return;
+  }
+
+  aplicarTemaPais(usuario);
 }
 
 /** Respuestas del API: array directo o { data: [] }. */
