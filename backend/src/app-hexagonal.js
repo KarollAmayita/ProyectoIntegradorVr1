@@ -27,7 +27,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(require('express-fileupload')());
 
 app.use(express.static(path.join(__dirname, '..', '..', 'frontend', 'portales', 'indice')));
 app.use('/assets', express.static(path.join(__dirname, '..', '..', 'frontend', 'assets')));
