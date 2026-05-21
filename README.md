@@ -143,6 +143,23 @@ Servidor en `http://localhost:3001`
 
 ---
 
+### Usuarios predefinidos
+
+| Usuario | Password | Rol | País |
+|---------|----------|-----|------|
+| superadmin | 123456 | superadmin | Global |
+| adminarg | 123456 | admin_pais | Argentina |
+| admin_arg | 123456 | admin_pais | Argentina |
+| sistema | 123456 | editor | Argentina |
+| admin_chile | 123456 | admin_pais | Chile |
+| editor_chile | 123456 | editor | Chile |
+| admin_ecuador | 123456 | admin_pais | Ecuador |
+| editor_ecuador | 123456 | editor | Ecuador |
+| admin_colombia | 123456 | admin_pais | Colombia |
+| editor_colombia | 123456 | editor | Colombia |
+
+---
+
 ## Frontend
 
 ### Autenticación
