@@ -7,7 +7,7 @@ const createTestUser = async () => {
     const password = 'editor123';
     const email = 'editor@test.com';
 
-    console.log('🔎 Verificando si ya existe el usuario...');
+    console.log('Verificando si ya existe el usuario...');
 
     const { data: existingUser } = await supabase
       .from('usuarios')
@@ -16,14 +16,14 @@ const createTestUser = async () => {
       .maybeSingle();
 
     if (existingUser) {
-      console.log('⚠️ El usuario testeditor ya existe');
+      console.log('El usuario testeditor ya existe');
       return;
     }
 
-    console.log('🔐 Generando hash de contraseña...');
+    console.log('Generando hash de contraseña...');
     const password_hash = bcrypt.hashSync(password, 10);
 
-    console.log('🔎 Buscando rol editor...');
+    console.log('Buscando rol editor...');
 
     const { data: role, error: roleError } = await supabase
       .from('roles')
@@ -32,10 +32,10 @@ const createTestUser = async () => {
       .single();
 
     if (roleError || !role) {
-      throw new Error('❌ No existe el rol editor en la base de datos');
+      throw new Error('No existe el rol editor en la base de datos');
     }
 
-    console.log('🔎 Buscando país Colombia...');
+    console.log('Buscando país Colombia...');
 
     const { data: country, error: countryError } = await supabase
       .from('paises')
@@ -44,10 +44,10 @@ const createTestUser = async () => {
       .single();
 
     if (countryError || !country) {
-      throw new Error('❌ No existe el país Colombia en la base de datos');
+      throw new Error('No existe el país Colombia en la base de datos');
     }
 
-    console.log('👤 Creando usuario editor...');
+    console.log('Creando usuario editor...');
 
     const { error } = await supabase
       .from('usuarios')
@@ -68,12 +68,12 @@ const createTestUser = async () => {
       throw new Error(error.message);
     }
 
-    console.log('✅ Usuario editor creado correctamente');
-    console.log('👤 Usuario:', username);
-    console.log('🔑 Password:', password);
-    console.log('🌍 País ID:', country.id);
+    console.log('Usuario editor creado correctamente');
+    console.log('Usuario:', username);
+    console.log('Password:', password);
+    console.log('País ID:', country.id);
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error('Error:', error.message);
   }
 };
 
