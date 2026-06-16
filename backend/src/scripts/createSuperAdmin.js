@@ -4,10 +4,10 @@ const supabase = require('../config/supabase');
 const createSuperAdmin = async () => {
   try {
     const username = 'superadmin';
-    const password = '123456'; // puedes cambiarlo
+    const password = '123456'; 
     const email = 'admin@cms.com';
 
-    console.log('🔎 Verificando si ya existe el usuario...');
+    console.log('Verificando si ya existe el usuario...');
 
     const { data: existingUser } = await supabase
       .from('usuarios')
@@ -16,15 +16,15 @@ const createSuperAdmin = async () => {
       .maybeSingle();
 
     if (existingUser) {
-      console.log('⚠️ El usuario superadmin ya existe');
+      console.log(' El usuario superadmin ya existe');
       return;
     }
 
-    console.log('🔐 Generando hash de contraseña...');
+    console.log(' Generando hash de contraseña...');
     const password_hash = bcrypt.hashSync(password, 10);
     const respuesta_seguridad_hash = bcrypt.hashSync('cms2026', 10);
 
-    console.log('🔎 Buscando rol superadmin...');
+    console.log(' Buscando rol superadmin...');
 
     const { data: role, error: roleError } = await supabase
       .from('roles')
@@ -33,10 +33,10 @@ const createSuperAdmin = async () => {
       .single();
 
     if (roleError || !role) {
-      throw new Error('❌ No existe el rol superadmin en la base de datos');
+      throw new Error(' No existe el rol superadmin en la base de datos');
     }
 
-    console.log('👤 Creando usuario superadmin...');
+    console.log('Creando usuario superadmin...');
 
     const { error } = await supabase
       .from('usuarios')
@@ -59,11 +59,11 @@ const createSuperAdmin = async () => {
       throw new Error(error.message);
     }
 
-    console.log('✅ Superadmin creado correctamente');
-    console.log('👤 Usuario:', username);
-    console.log('🔑 Password:', password);
+    console.log(' Superadmin creado correctamente');
+    console.log(' Usuario:', username);
+    console.log('Password:', password);
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error('Error:', error.message);
   }
 };
 

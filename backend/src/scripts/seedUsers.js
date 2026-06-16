@@ -44,7 +44,7 @@ const seedUsers = async () => {
           .single();
         if (ce) throw new Error(`Error creando país ${countryName}: ${ce.message}`);
         country = newCountry;
-        console.log(`✅ País creado: ${country.nombre}`);
+        console.log(`Pais creado: ${country.nombre}`);
       }
 
       for (const u of users) {
@@ -54,7 +54,7 @@ const seedUsers = async () => {
           .eq('username', u.username)
           .maybeSingle();
         if (existing) {
-          console.log(`⚠️  Ya existe: ${u.username}`);
+          console.log(`Ya existe: ${u.username}`);
           continue;
         }
 
@@ -71,16 +71,16 @@ const seedUsers = async () => {
           estado: 'activo',
         });
         if (ue) {
-          console.log(`❌ Error creando ${u.username}: ${ue.message}`);
+          console.log(`Error creando ${u.username}: ${ue.message}`);
         } else {
-          console.log(`✅ Creado: ${u.username} (${u.rol}, ${countryName}) — password: ${PASSWORD}`);
+          console.log(`Creado: ${u.username} (${u.rol}, ${countryName}) - password: ${PASSWORD}`);
         }
       }
     }
 
-    console.log('\n🏁 Seed completado.');
+    console.log('\nSeed completado.');
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error('Error:', error.message);
   }
 };
 

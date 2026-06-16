@@ -2,7 +2,7 @@ const supabase = require('../config/supabase');
 
 const createTable = async () => {
   try {
-    console.log('🔧 Creando tabla refresh_tokens...');
+    console.log('Creando tabla refresh_tokens...');
     
     const { error } = await supabase.rpc('exec_sql', {
       sql: `
@@ -17,8 +17,8 @@ const createTable = async () => {
     });
 
     if (error) {
-      console.error('❌ Error creando tabla vía RPC:', error.message);
-      console.log('⚠️ Necesitas ejecutar este SQL manualmente en Supabase SQL Editor:');
+      console.error('Error creando tabla vía RPC:', error.message);
+      console.log('Necesitas ejecutar este SQL manualmente en Supabase SQL Editor:');
       console.log(`
         create table if not exists refresh_tokens (
           id bigint generated always as identity primary key,
@@ -29,10 +29,10 @@ const createTable = async () => {
         );
       `);
     } else {
-      console.log('✅ Tabla refresh_tokens creada o ya existe');
+      console.log('Tabla refresh_tokens creada o ya existe');
     }
   } catch (err) {
-    console.error('❌ Error:', err.message);
+    console.error('Error:', err.message);
   }
   process.exit(0);
 };

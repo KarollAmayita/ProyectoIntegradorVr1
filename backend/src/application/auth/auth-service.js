@@ -7,7 +7,7 @@ class AuthService {
     tokenService,
     passwordHasher,
     connectionLogger,
-    userService // This is another application service
+    userService 
   }) {
     this.authRepository = authRepository;
     this.tokenService = tokenService;

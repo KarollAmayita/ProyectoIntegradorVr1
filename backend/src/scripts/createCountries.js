@@ -8,7 +8,7 @@ const countries = [
 
 const createCountries = async () => {
   try {
-    console.log('🌍 Verificando países existentes...');
+    console.log('Verificando paises existentes...');
 
     for (const country of countries) {
       const { data: existing } = await supabase
@@ -18,23 +18,23 @@ const createCountries = async () => {
         .maybeSingle();
 
       if (existing) {
-        console.log(`⚠️  ${country.nombre} ya existe`);
+        console.log(`${country.nombre} ya existe`);
       } else {
         const { error } = await supabase
           .from('paises')
           .insert([country]);
 
         if (error) {
-          console.error(`❌ Error creando ${country.nombre}:`, error.message);
+          console.error(`Error creando ${country.nombre}:`, error.message);
         } else {
-          console.log(`✅ ${country.nombre} creado correctamente`);
+          console.log(`${country.nombre} creado correctamente`);
         }
       }
     }
 
-    console.log('🎉 Proceso completado');
+    console.log('Proceso completado');
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error('Error:', error.message);
   }
 };
 
