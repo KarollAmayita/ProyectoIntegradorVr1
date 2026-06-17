@@ -1,7 +1,7 @@
 ================================================================================
 DOCUMENTO MVP - CMS MULTIPAIS
 ================================================================================
-Proyecto: Latinoamerica Comparte - Sistema de Gestion de Contenidos Multipais
+Proyecto: CMS Multiplataforma - Sistema de Gestion de Contenidos Multipais
 Version del documento: 1.1
 Fecha: Mayo 2026
 

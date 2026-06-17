@@ -36,9 +36,6 @@ class ContactRequestService {
       throw new ValidationError('El correo electrónico no tiene un formato válido');
     }
 
-    const defaultPhotoUrl = '../../../assets/img/portales/default_avatar.png';
-    const autorId = 1; 
-
     return await this.contactRequestRepository.createRequest({
       pais_id,
       nombre,
@@ -47,7 +44,6 @@ class ContactRequestService {
       finalidad,
       mensaje: mensaje || null,
       estado: 'pendiente',
-      autor_id: autorId,
     });
   }
 

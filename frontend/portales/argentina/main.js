@@ -10,7 +10,7 @@ const testimonialsMock = [
     avatar: '../../../assets/img/argentina/mujer.png'
   },
   {
-    quote: '"Llevamos educación digital a las escuelas rurales de la Patagonia. Argentina Comparte hizo que la distancia no sea una barrera."',
+    quote: '"Llevamos educación digital a las escuelas rurales de la Patagonia."',
     authorName: 'Javier Ortiz',
     authorRole: 'Proyecto Conectividad Sur',
     avatar: '../../../assets/img/argentina/hombre.png',
@@ -36,7 +36,7 @@ const newsMock = [
   {
     category: 'TECNOLOGÍA',
     title: 'Becas de Programación en Mendoza',
-    summary: 'Lanzamos 50 becas de Argentina Comparte para jóvenes de zonas rurales.',
+    summary: 'Lanzamos 50 becas para jóvenes de zonas rurales.',
     date: '02 de Mayo, 2026',
     image: '../../../assets/img/argentina/becas.jpg'
   }

@@ -10,28 +10,28 @@ const COUNTRY_THEMES = {
     accent: '#F6B40E',
     sidebar: '#1B3A5C',
     brandLine1: 'Argentina',
-    brandLine2: 'Comparte'
+    brandLine2: 'CMS Multiplataforma'
   },
   CL: {
     primary: '#D52B1E',
     accent: '#FFFFFF',
     sidebar: '#0039A6',
     brandLine1: 'Chile',
-    brandLine2: 'Comparte'
+    brandLine2: 'CMS Multiplataforma'
   },
   EC: {
     primary: '#F4B400',   
     accent: '#1F3A5F',    
     sidebar: '#A31621', 
     brandLine1: 'Ecuador',
-    brandLine2: 'Comparte'
+    brandLine2: 'CMS Multiplataforma'
   },
   DEFAULT: {
     primary: '#1B3A5C',
     accent: '#74ACDF',
     sidebar: '#0F2A4A',
-    brandLine1: 'Latinoamérica',
-    brandLine2: 'Comparte'
+    brandLine1: 'CMS',
+    brandLine2: 'Multiplataforma'
   }
 };
 
@@ -243,8 +243,8 @@ function pintarSidebar(paginaActiva) {
       <aside class="barra-lateral">
         <div class="barra-lateral__marca">
           <div class="barra-lateral__marca-titulo">
-            <span class="marca-argentina">${marca.linea1}</span>
-            <span class="marca-comparte">${marca.linea2}</span>
+            <span class="marca-brand">${marca.linea1}</span>
+            <span class="marca-sec">${marca.linea2}</span>
           </div>
           <p class="barra-lateral__subtitulo">Panel administrativo</p>
         </div>

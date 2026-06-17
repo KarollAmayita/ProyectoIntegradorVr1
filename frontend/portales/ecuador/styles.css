@@ -91,7 +91,7 @@ ul { list-style: none; }
 }
 
 .brand-ecuador  { color: var(--ec-yellow-dark); }
-.brand-comparte { color: var(--ec-blue); }
+.brand-sec { color: var(--ec-blue); }
 
 .main-menu { display: flex; gap: 28px; }
 
@@ -658,7 +658,7 @@ ul { list-style: none; }
 
 .footer__brand-title { font-size: 22px; font-weight: 700; margin-bottom: 16px; }
 .footer__brand-title .brand-ecuador  { color: var(--ec-yellow); }
-.footer__brand-title .brand-comparte { color: var(--white); }
+.footer__brand-title .brand-sec { color: var(--white); }
 
 .footer__title {
   font-size: 13px; font-weight: 700; text-transform: uppercase;

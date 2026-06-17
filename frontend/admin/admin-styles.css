@@ -99,8 +99,8 @@ img {
   margin-bottom: 8px;
 }
 
-.tarjeta-login__marca .marca-argentina { color: var(--azul-marino); }
-.tarjeta-login__marca .marca-comparte  { color: var(--celeste-fuerte); }
+.tarjeta-login__marca .marca-brand { color: var(--azul-marino); }
+.tarjeta-login__marca .marca-sec  { color: var(--celeste-fuerte); }
 
 .tarjeta-login__subtitulo {
   font-size: 14px;
@@ -300,8 +300,8 @@ img {
   font-weight: 700;
 }
 
-.barra-lateral__marca-titulo .marca-argentina { color: var(--blanco); }
-.barra-lateral__marca-titulo .marca-comparte  { color: var(--color-accent, var(--celeste-medio)); }
+.barra-lateral__marca-titulo .marca-brand { color: var(--blanco); }
+.barra-lateral__marca-titulo .marca-sec  { color: var(--color-accent, var(--celeste-medio)); }
 
 .barra-lateral__subtitulo {
   font-size: 11px;

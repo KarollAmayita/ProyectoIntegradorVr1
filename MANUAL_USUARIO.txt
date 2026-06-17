@@ -1,7 +1,7 @@
 ================================================================================
 MANUAL DE USUARIO - CMS MULTIPAIS
 ================================================================================
-Proyecto: Latinoamerica Comparte - Sistema de Gestion de Contenidos Multipais
+Proyecto: CMS Multiplataforma - Sistema de Gestion de Contenidos Multipais
 Version: 1.0
 Fecha: Mayo 2026
 
@@ -25,7 +25,7 @@ INDICE
 1. INTRODUCCION
 ================================================================================
 
-Bienvenido al CMS Multipais de Latinoamerica Comparte. Este sistema permite
+Bienvenido al CMS Multiplataforma. Este sistema permite
 gestionar el contenido digital de la organizacion para multiples paises desde
 un solo lugar.
 
@@ -288,7 +288,7 @@ Nota: Esta seccion solo esta disponible para usuarios con rol superadmin.
   URL: http://149.130.163.194:3001/
 
   Secciones:
-  - Hero: Presentacion de Latinoamerica Comparte
+  - Hero: Presentacion de CMS Multiplataforma
   - Paises: Acceso a portales por pais
   - Quienes somos: Historia y mision
   - Impacto: Metricas y resultados

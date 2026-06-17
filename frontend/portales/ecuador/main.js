@@ -1,5 +1,5 @@
 // ============================================================
-//  PORTAL ECUADOR COMPARTE - main.js
+//  PORTAL ECUADOR - main.js
 //  Lógica: testimonios, noticias, búsqueda, formulario
 // ============================================================
 
@@ -32,14 +32,14 @@ const newsMock = [
   {
     category: 'MEDIO AMBIENTE',
     title: 'Reforestación en la reserva Cayambe-Coca suma 2.000 árboles',
-    summary: 'Voluntarios de Ecuador Comparte recuperan zonas afectadas por la deforestación en la sierra norte.',
+    summary: 'Voluntarios recuperan zonas afectadas por la deforestación en la sierra norte.',
     date: '10 de Mayo, 2026',
     image: '../../assets/img/ecuador/reforestacion.jpg'    
   },
   {
     category: 'EDUCACIÓN',
     title: 'Talleres de robótica llegan a escuelas rurales de Loja',
-    summary: 'Ecuador Comparte capacita a 300 estudiantes en tecnología y pensamiento computacional.',
+    summary: '300 estudiantes capacitados en tecnología y pensamiento computacional.',
     date: '03 de Mayo, 2026',
     image: '../../assets/img/ecuador/tallerrobotica.png'      
   },
@@ -188,7 +188,7 @@ async function sendTestimonialForm(event) {
     if (!response.ok) throw new Error(responseJson.message || 'No se pudo enviar el testimonio');
 
     form.reset();
-    successBox.textContent = '¡Testimonio enviado! Gracias por compartir tu experiencia con Ecuador Comparte.';
+    successBox.textContent = '¡Testimonio enviado! Gracias por compartir tu experiencia.';
     successBox.hidden = false;
   } catch (error) {
     showError(error.message);

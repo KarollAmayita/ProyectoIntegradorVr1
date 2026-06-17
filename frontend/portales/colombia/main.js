@@ -1,5 +1,5 @@
 // ============================================================
-//  PORTAL COLOMBIA COMPARTE - main.js
+//  PORTAL COLOMBIA - main.js
 // ============================================================
 
 const BACKEND_URL = '/api';
@@ -12,7 +12,7 @@ const COUNTRY_SLUG = 'colombia';
 // ------------------------------------------------------------
 const testimonialsMock = [
   {
-    quote: '"En Medellín encontramos en Colombia Comparte el puente que une el talento de nuestra comunidad con quienes más lo necesitan."',
+    quote: '"En Medellín encontramos el puente que une el talento de nuestra comunidad con quienes más lo necesitan."',
     authorName: 'Sofía Ramírez',
     authorRole: 'Medellín',
     avatar: '../../assets/img/colombia/testiMujer.jpeg',
@@ -36,7 +36,7 @@ const newsMock = [
   },
   {
     category: 'EDUCACIÓN',
-    title: 'Colombia Comparte lleva bibliotecas móviles a la Guajira',
+    title: 'Bibliotecas móviles llegan a la Guajira',
     summary: 'Con 12 módulos itinerantes, 1.500 niños y niñas tendrán acceso semanal a libros y talleres de lectura.',
     date: '01 de Mayo, 2026',
     image: '../../assets/img/colombia/guajira.jpg'
@@ -186,7 +186,7 @@ async function sendTestimonialForm(event) {
     if (!response.ok) throw new Error(responseJson.message || 'No se pudo enviar el testimonio');
 
     form.reset();
-    successBox.textContent = '¡Testimonio enviado! Gracias por compartir tu experiencia con Colombia Comparte.';
+    successBox.textContent = '¡Testimonio enviado! Gracias por compartir tu experiencia.';
     successBox.hidden = false;
   } catch (error) {
     showError(error.message);

@@ -1,5 +1,5 @@
 // ============================================================
-//  PORTAL CHILE COMPARTE - main.js
+//  PORTAL CHILE - main.js
 //  Lógica: testimonios, noticias, búsqueda, formulario
 // ============================================================
 
@@ -14,7 +14,7 @@ const COUNTRY_SLUG = 'chile';
 // ------------------------------------------------------------
 const testimonialsMock = [
   {
-    quote: '"En Valparaíso aprendimos que compartir es reconstruir. Chile Comparte nos dio las herramientas para levantar nuestra comunidad."',
+    quote: '"En Valparaíso aprendimos que compartir es reconstruir. La comunidad nos dio las herramientas para levantarnos."',
     authorName: 'Camila Torres',
     authorRole: 'Valparaíso',
     avatar: '../../../assets/img/chile/testimonioMujer.jpg'
@@ -39,14 +39,14 @@ const newsMock = [
   {
     category: 'MEDIOAMBIENTE',
     title: 'Reforestación en la región del Maule suma 1.000 árboles',
-    summary: 'Voluntarios de Chile Comparte trabajan en la recuperación de zonas afectadas por incendios forestales.',
+    summary: 'Voluntarios trabajan en la recuperación de zonas afectadas por incendios forestales.',
     date: '05 de Mayo, 2026',
     image: '../../../assets/img/chile/reforestacion.jpg'
   },
   {
     category: 'EDUCACIÓN',
     title: 'Becas de programación para jóvenes de Antofagasta',
-    summary: 'Chile Comparte lanza 40 becas para jóvenes de regiones con menor acceso a formación tecnológica.',
+    summary: '40 becas para jóvenes de regiones con menor acceso a formación tecnológica.',
     date: '28 de Abril, 2026',
     image: '../../../assets/img/chile/becas.jpg'
   }
@@ -192,7 +192,7 @@ async function sendTestimonialForm(event) {
     }
 
     form.reset();
-    successBox.textContent = '¡Testimonio enviado! Gracias por compartir tu experiencia con Chile Comparte.';
+    successBox.textContent = '¡Testimonio enviado! Gracias por compartir tu experiencia.';
     successBox.hidden = false;
   } catch (error) {
     showError(error.message);
